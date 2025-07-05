@@ -83,7 +83,7 @@ const HowItWorks: React.FC<HowItWorksProps> = ({ setCurrentView }) => {
               text="How It Works"
               className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent"
               animateOn="view"
-              speed={280}
+              speed={120}
             />
           </h2>
           <p className={`text-xl ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'} max-w-3xl mx-auto`}>
@@ -124,7 +124,7 @@ const HowItWorks: React.FC<HowItWorksProps> = ({ setCurrentView }) => {
                       text={step.title}
                       className={theme === 'light' ? 'text-gray-900' : 'text-white'}
                       animateOn="view"
-                      speed={140}
+                      speed={80}
                     />
                   </h3>
                   <p className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-300'} leading-relaxed`}>
@@ -132,7 +132,7 @@ const HowItWorks: React.FC<HowItWorksProps> = ({ setCurrentView }) => {
                       text={step.description}
                       className={theme === 'light' ? 'text-gray-600' : 'text-gray-300'}
                       animateOn="view"
-                      speed={180}
+                      speed={100}
                     />
                   </p>
                 </div>

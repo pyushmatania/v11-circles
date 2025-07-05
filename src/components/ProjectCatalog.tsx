@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PixelCard from './PixelCard';
 import { Film, Music, Tv, Search, Star, Clock, Users, TrendingUp, ChevronLeft, ChevronRight, Play, Plus, Info, Siren as Fire, Award, Globe, Filter, Grid3X3, List, SlidersHorizontal, X, Calendar, DollarSign, MapPin, Heart, Share2, Bookmark, ArrowRight, Eye } from 'lucide-react';
@@ -12,67 +12,22 @@ interface ProjectCatalogProps {
   onTrackInvestment?: () => void;
 }
 
-const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) => {
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [initialTab, setInitialTab] = useState<'overview' | 'invest'>('overview');
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'cards'>('cards');
-  const [showFilters, setShowFilters] = useState(false);
-  const [showAllProjects, setShowAllProjects] = useState<string | null>(null);
-  const [showMobileSearch, setShowMobileSearch] = useState(false);
-  const isMobile = useIsMobile();
-  
-  // Auto-sliding hero carousel state
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [isPaused, setIsPaused] = useState(false);
-  const autoSlideRef = useRef<NodeJS.Timeout | null>(null);
-  const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const [touchStartX, setTouchStartX] = useState(0);
-  
-  // Filter states
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedType, setSelectedType] = useState<string>('all');
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
-  const [selectedGenre, setSelectedGenre] = useState<string>('all');
-  const [fundingRange, setFundingRange] = useState<[number, number]>([0, 100]);
-  const [sortBy, setSortBy] = useState<string>('trending');
-
-  const handleProjectClick = (project: Project, tab: 'overview' | 'invest' = 'overview') => {
-    setSelectedProject(project);
-    setInitialTab(tab);
-    setIsModalOpen(true);
-  };
-
-  const handleInvestClick = (project: Project) => {
-    confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
-    handleProjectClick(project, 'invest');
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedProject(null);
-    setInitialTab('overview');
-  };
-
-  // Filter options
-  const categories = [
+// Memoized filter options to prevent recreation on every render
+const FILTER_OPTIONS = {
+  categories: [
     { id: 'all', label: 'All Categories' },
     { id: 'bollywood', label: 'Bollywood' },
     { id: 'hollywood', label: 'Hollywood' },
     { id: 'regional', label: 'Regional' },
     { id: 'independent', label: 'Independent' }
-  ];
-
-  const types = [
+  ],
+  types: [
     { id: 'all', label: 'All Types' },
     { id: 'film', label: 'Films' },
     { id: 'webseries', label: 'Web Series' },
     { id: 'music', label: 'Music' }
-  ];
-
-  const languages = [
+  ],
+  languages: [
     { id: 'all', label: 'All Languages' },
     { id: 'hindi', label: 'Hindi' },
     { id: 'english', label: 'English' },
@@ -80,9 +35,8 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
     { id: 'telugu', label: 'Telugu' },
     { id: 'kannada', label: 'Kannada' },
     { id: 'malayalam', label: 'Malayalam' }
-  ];
-
-  const genres = [
+  ],
+  genres: [
     { id: 'all', label: 'All Genres' },
     { id: 'action', label: 'Action' },
     { id: 'drama', label: 'Drama' },
@@ -93,9 +47,8 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
     { id: 'sci-fi', label: 'Sci-Fi' },
     { id: 'fantasy', label: 'Fantasy' },
     { id: 'documentary', label: 'Documentary' }
-  ];
-
-  const sortOptions = [
+  ],
+  sortOptions: [
     { id: 'trending', label: 'Trending' },
     { id: 'newest', label: 'Newest First' },
     { id: 'funding-high', label: 'Highest Funded' },
@@ -104,138 +57,175 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
     { id: 'rating', label: 'Highest Rated' },
     { id: 'amount-high', label: 'Highest Target' },
     { id: 'amount-low', label: 'Lowest Target' }
-  ];
+  ]
+} as const;
 
-  // Apply filters and sorting
-  const filteredProjects = extendedProjects.filter(project => {
-    const matchesSearch = searchTerm === '' || 
-      project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (project.director && project.director.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (project.artist && project.artist.toLowerCase().includes(searchTerm.toLowerCase()));
+const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) => {
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [initialTab, setInitialTab] = useState<'overview' | 'invest'>('overview');
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'cards'>('cards');
+  const [showFilters, setShowFilters] = useState(false);
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const isMobile = useIsMobile();
+  
+  // Auto-sliding hero carousel state
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const autoSlideRef = useRef<number | null>(null);
+  const pauseTimeoutRef = useRef<number | null>(null);
+  const [touchStartX, setTouchStartX] = useState(0);
+  
+  // Filter states
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedType, setSelectedType] = useState<string>('all');
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
+  const [selectedGenre, setSelectedGenre] = useState<string>('all');
+  const [fundingRange, setFundingRange] = useState<[number, number]>([0, 100]);
+  const [sortBy, setSortBy] = useState<string>('trending');
+  const [showAllProjects, setShowAllProjects] = useState<string | null>(null);
 
-    const matchesCategory = selectedCategory === 'all' || 
-      project.category.toLowerCase().includes(selectedCategory);
-    
-    const matchesType = selectedType === 'all' || project.type === selectedType;
-    
-    const matchesLanguage = selectedLanguage === 'all' || 
-      project.language.toLowerCase() === selectedLanguage;
-    
-    const matchesGenre = selectedGenre === 'all' || 
-      project.genre.toLowerCase().includes(selectedGenre) ||
-      project.tags.some(tag => tag.toLowerCase().includes(selectedGenre));
-    
-    const matchesFunding = project.fundedPercentage >= fundingRange[0] && 
-      project.fundedPercentage <= fundingRange[1];
+  // Memoized callback functions to prevent unnecessary re-renders
+  const handleProjectClick = useCallback((project: Project, tab: 'overview' | 'invest' = 'overview') => {
+    setSelectedProject(project);
+    setInitialTab(tab);
+    setIsModalOpen(true);
+  }, []);
 
-    return matchesSearch && matchesCategory && matchesType && 
-           matchesLanguage && matchesGenre && matchesFunding;
-  }).sort((a, b) => {
-    switch (sortBy) {
-      case 'funding-high':
-        return b.fundedPercentage - a.fundedPercentage;
-      case 'funding-low':
-        return a.fundedPercentage - b.fundedPercentage;
-      case 'ending-soon':
-        const aTime = a.timeLeft ? parseInt(a.timeLeft) : 999;
-        const bTime = b.timeLeft ? parseInt(b.timeLeft) : 999;
-        return aTime - bTime;
-      case 'rating':
-        return (b.rating || 0) - (a.rating || 0);
-      case 'amount-high':
-        return b.targetAmount - a.targetAmount;
-      case 'amount-low':
-        return a.targetAmount - b.targetAmount;
-      case 'newest':
-        return b.id.localeCompare(a.id);
-      default: // trending
-        return b.fundedPercentage - a.fundedPercentage;
-    }
-  });
+  const handleInvestClick = useCallback((project: Project) => {
+    confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
+    handleProjectClick(project, 'invest');
+  }, [handleProjectClick]);
 
-  // Organize projects by categories for Netflix-style layout
-  const trendingProjects = extendedProjects
-    .filter(p => p.fundedPercentage > 70)
-    .sort((a, b) => b.fundedPercentage - a.fundedPercentage)
-    .slice(0, 10);
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+    setSelectedProject(null);
+    setInitialTab('overview');
+  }, []);
 
-  const bollywoodFilms = extendedProjects
-    .filter(p => p.type === 'film' && p.category === 'Bollywood')
-    .slice(0, 10);
+  // Memoized filtered and sorted projects
+  const filteredProjects = useMemo(() => {
+    return extendedProjects.filter(project => {
+      const matchesSearch = searchTerm === '' || 
+        project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (project.director && project.director.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (project.artist && project.artist.toLowerCase().includes(searchTerm.toLowerCase()));
 
-  const regionalContent = extendedProjects
-    .filter(p => p.category === 'Regional')
-    .slice(0, 10);
+      const matchesCategory = selectedCategory === 'all' || 
+        project.category.toLowerCase().includes(selectedCategory);
+      
+      const matchesType = selectedType === 'all' || project.type === selectedType;
+      
+      const matchesLanguage = selectedLanguage === 'all' || 
+        project.language.toLowerCase() === selectedLanguage;
+      
+      const matchesGenre = selectedGenre === 'all' || 
+        project.genre.toLowerCase().includes(selectedGenre) ||
+        project.tags.some((tag: string) => tag.toLowerCase().includes(selectedGenre));
+      
+      const matchesFunding = project.fundedPercentage >= fundingRange[0] && 
+        project.fundedPercentage <= fundingRange[1];
 
-  const musicProjects = extendedProjects
-    .filter(p => p.type === 'music')
-    .slice(0, 10);
-
-  const webSeries = extendedProjects
-    .filter(p => p.type === 'webseries')
-    .slice(0, 10);
-
-  const hollywoodProjects = extendedProjects
-    .filter(p => p.category === 'Hollywood')
-    .slice(0, 10);
-
-  const newReleases = extendedProjects
-    .filter(p => p.timeLeft && parseInt(p.timeLeft) < 15)
-    .slice(0, 10);
-
-  const highRatedProjects = extendedProjects
-    .filter(p => p.rating && p.rating >= 4.5)
-    .slice(0, 10);
-
-  const endingSoon = extendedProjects
-    .filter(p => p.timeLeft && parseInt(p.timeLeft) <= 7)
-    .slice(0, 10);
-
-  // Featured projects for hero carousel (top 7 highest funded)
-  const featuredProjects = extendedProjects
-    .sort((a, b) => b.fundedPercentage - a.fundedPercentage)
-    .slice(0, 7);
-
-  // Auto-slide functionality
-  React.useEffect(() => {
-    if (isAutoPlaying && !isPaused) {
-      autoSlideRef.current = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % featuredProjects.length);
-      }, 2500);
-    }
-
-    return () => {
-      if (autoSlideRef.current) {
-        clearInterval(autoSlideRef.current);
+      return matchesSearch && matchesCategory && matchesType && 
+             matchesLanguage && matchesGenre && matchesFunding;
+    }).sort((a, b) => {
+      switch (sortBy) {
+        case 'funding-high':
+          return b.fundedPercentage - a.fundedPercentage;
+        case 'funding-low':
+          return a.fundedPercentage - b.fundedPercentage;
+        case 'ending-soon':
+          const aTime = a.timeLeft ? parseInt(a.timeLeft) : 999;
+          const bTime = b.timeLeft ? parseInt(b.timeLeft) : 999;
+          return aTime - bTime;
+        case 'rating':
+          return (b.rating || 0) - (a.rating || 0);
+        case 'amount-high':
+          return b.targetAmount - a.targetAmount;
+        case 'amount-low':
+          return a.targetAmount - b.targetAmount;
+        case 'newest':
+          return b.id.localeCompare(a.id);
+        default: // trending
+          return b.fundedPercentage - a.fundedPercentage;
       }
+    });
+  }, [searchTerm, selectedCategory, selectedType, selectedLanguage, selectedGenre, fundingRange, sortBy]);
+
+  // Memoized categorized projects for Netflix-style layout
+  const categorizedProjects = useMemo(() => {
+    const trendingProjects = extendedProjects
+      .filter(p => p.fundedPercentage > 70)
+      .sort((a, b) => b.fundedPercentage - a.fundedPercentage)
+      .slice(0, 10);
+
+    const bollywoodFilms = extendedProjects
+      .filter(p => p.type === 'film' && p.category === 'Bollywood')
+      .slice(0, 10);
+
+    const regionalContent = extendedProjects
+      .filter(p => p.category === 'Regional')
+      .slice(0, 10);
+
+    const musicProjects = extendedProjects
+      .filter(p => p.type === 'music')
+      .slice(0, 10);
+
+    const webSeries = extendedProjects
+      .filter(p => p.type === 'webseries')
+      .slice(0, 10);
+
+    const hollywoodProjects = extendedProjects
+      .filter(p => p.category === 'Hollywood')
+      .slice(0, 10);
+
+    const newReleases = extendedProjects
+      .filter(p => p.timeLeft && parseInt(p.timeLeft) < 15)
+      .slice(0, 10);
+
+    const highRatedProjects = extendedProjects
+      .filter(p => p.rating && p.rating >= 4.5)
+      .slice(0, 10);
+
+    const endingSoon = extendedProjects
+      .filter(p => p.timeLeft && parseInt(p.timeLeft) <= 7)
+      .slice(0, 10);
+
+    const featuredProjects = extendedProjects
+      .sort((a, b) => b.fundedPercentage - a.fundedPercentage)
+      .slice(0, 7);
+
+    return {
+      trendingProjects,
+      bollywoodFilms,
+      regionalContent,
+      musicProjects,
+      webSeries,
+      hollywoodProjects,
+      newReleases,
+      highRatedProjects,
+      endingSoon,
+      featuredProjects
     };
-  }, [isAutoPlaying, isPaused, featuredProjects.length]);
+  }, []);
 
-  const handleSlideChange = (index: number) => {
+  // Memoized callback functions for carousel controls
+  const handleSlideChange = useCallback((index: number) => {
     setCurrentSlide(index);
-    setIsPaused(true);
-    
-    // Clear existing timeout
-    if (pauseTimeoutRef.current) {
-      clearTimeout(pauseTimeoutRef.current);
-    }
-    
-    // Resume auto-play after 5 seconds
-    pauseTimeoutRef.current = setTimeout(() => {
-      setIsPaused(false);
-    }, 5000);
-  };
+  }, []);
 
-  const nextSlide = () => {
-    handleSlideChange((currentSlide + 1) % featuredProjects.length);
-  };
+  const nextSlide = useCallback(() => {
+    setCurrentSlide(prev => (prev + 1) % categorizedProjects.featuredProjects.length);
+  }, [categorizedProjects.featuredProjects.length]);
 
-  const prevSlide = () => {
-    handleSlideChange(currentSlide === 0 ? featuredProjects.length - 1 : currentSlide - 1);
-  };
+  const prevSlide = useCallback(() => {
+    setCurrentSlide(prev => prev === 0 ? categorizedProjects.featuredProjects.length - 1 : prev - 1);
+  }, [categorizedProjects.featuredProjects.length]);
 
-  const clearFilters = () => {
+  const clearFilters = useCallback(() => {
     setSelectedCategory('all');
     setSelectedType('all');
     setSelectedLanguage('all');
@@ -243,14 +233,14 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
     setFundingRange([0, 100]);
     setSortBy('trending');
     setSearchTerm('');
-  };
+    setShowAllProjects(null);
+  }, []);
 
-  // Handle section header clicks
-  const handleSectionClick = (sectionType: string) => {
+  const handleSectionClick = useCallback((sectionType: string) => {
     setShowAllProjects(sectionType);
     setSearchTerm('');
     setShowFilters(false);
-    
+
     // Set appropriate filters based on section
     switch (sectionType) {
       case 'trending':
@@ -296,7 +286,41 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
       default:
         break;
     }
-  };
+  }, []);
+
+  // Auto-slide functionality
+  React.useEffect(() => {
+    if (isAutoPlaying && !isPaused) {
+      autoSlideRef.current = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % categorizedProjects.featuredProjects.length);
+      }, 2500);
+    }
+
+    return () => {
+      if (autoSlideRef.current) {
+        clearInterval(autoSlideRef.current);
+      }
+    };
+  }, [isAutoPlaying, isPaused, categorizedProjects.featuredProjects.length]);
+
+  // Filter options
+  const categories = FILTER_OPTIONS.categories;
+  const types = FILTER_OPTIONS.types;
+  const languages = FILTER_OPTIONS.languages;
+  const genres = FILTER_OPTIONS.genres;
+  const sortOptions = FILTER_OPTIONS.sortOptions;
+
+  // Organize projects by categories for Netflix-style layout
+  const trendingProjects = categorizedProjects.trendingProjects;
+  const bollywoodFilms = categorizedProjects.bollywoodFilms;
+  const regionalContent = categorizedProjects.regionalContent;
+  const musicProjects = categorizedProjects.musicProjects;
+  const webSeries = categorizedProjects.webSeries;
+  const hollywoodProjects = categorizedProjects.hollywoodProjects;
+  const newReleases = categorizedProjects.newReleases;
+  const highRatedProjects = categorizedProjects.highRatedProjects;
+  const endingSoon = categorizedProjects.endingSoon;
+  const featuredProjects = categorizedProjects.featuredProjects;
 
   return (
     <div className="min-h-screen bg-black pb-[100px]">
@@ -535,7 +559,10 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
               type="text"
               placeholder="Search for films, music, web series, directors, artists..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setShowAllProjects(null);
+              }}
               className="w-full pl-14 pr-4 py-4 bg-gray-900 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-gray-800 transition-all duration-300 text-lg"
             />
           </div>
@@ -570,7 +597,10 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
 
           {/* Filter Toggle */}
           <button
-            onClick={() => setShowFilters(!showFilters)}
+            onClick={() => {
+              setShowFilters(!showFilters);
+              setShowAllProjects(null);
+            }}
             className={`flex items-center gap-2 px-6 py-4 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all duration-300 ${isMobile ? 'hidden' : ''}`}
           >
             <Filter className="w-5 h-5" />
@@ -753,12 +783,14 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
                       key={project.id} 
                       project={project} 
                       onClick={() => handleProjectClick(project)}
+                      onInvestClick={handleInvestClick}
                     />
                   ) : (
                     <ProjectCard 
                       key={project.id} 
                       project={project} 
                       onClick={() => handleProjectClick(project)}
+                      onInvestClick={handleInvestClick}
                       compact={viewMode === 'grid'}
                     />
                   )
@@ -780,71 +812,80 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
           </div>
         ) : (
           <div className="space-y-12">
-            {/* Netflix-style Sections with Clickable Headers */}
             <ProjectRow
+              id="row-trending"
               title="🔥 Trending Now"
               projects={trendingProjects}
               onProjectClick={handleProjectClick}
+              onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('trending')}
             />
-            
             {endingSoon.length > 0 && (
-              <ProjectRow 
-                title="⏰ Ending Soon - Last Chance!" 
-                projects={endingSoon} 
+              <ProjectRow
+                id="row-ending-soon"
+                title="⏰ Ending Soon - Last Chance!"
+                projects={endingSoon}
                 onProjectClick={handleProjectClick}
+                onInvestClick={handleInvestClick}
                 onHeaderClick={() => handleSectionClick('ending-soon')}
                 urgent
               />
             )}
-            
-            <ProjectRow 
-              title="🎬 Bollywood Blockbusters" 
-              projects={bollywoodFilms} 
+            <ProjectRow
+              id="row-bollywood"
+              title="🎬 Bollywood Blockbusters"
+              projects={bollywoodFilms}
               onProjectClick={handleProjectClick}
+              onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('bollywood')}
             />
-            
-            <ProjectRow 
-              title="🎵 Music & Albums" 
-              projects={musicProjects} 
+            <ProjectRow
+              id="row-music"
+              title="🎵 Music & Albums"
+              projects={musicProjects}
               onProjectClick={handleProjectClick}
+              onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('music')}
             />
-            
-            <ProjectRow 
-              title="📺 Binge-Worthy Web Series" 
-              projects={webSeries} 
+            <ProjectRow
+              id="row-webseries"
+              title="📺 Binge-Worthy Web Series"
+              projects={webSeries}
               onProjectClick={handleProjectClick}
+              onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('webseries')}
             />
-            
-            <ProjectRow 
-              title="🌍 Regional Cinema Gems" 
-              projects={regionalContent} 
+            <ProjectRow
+              id="row-regional"
+              title="🌍 Regional Cinema Gems"
+              projects={regionalContent}
               onProjectClick={handleProjectClick}
+              onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('regional')}
             />
-            
-            <ProjectRow 
-              title="🏆 Highly Rated Projects" 
-              projects={highRatedProjects} 
+            <ProjectRow
+              id="row-high-rated"
+              title="🏆 Highly Rated Projects"
+              projects={highRatedProjects}
               onProjectClick={handleProjectClick}
+              onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('high-rated')}
             />
-            
-            <ProjectRow 
-              title="🆕 Fresh Releases" 
-              projects={newReleases} 
+            <ProjectRow
+              id="row-new-releases"
+              title="🆕 Fresh Releases"
+              projects={newReleases}
               onProjectClick={handleProjectClick}
+              onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('new-releases')}
             />
-            
             {hollywoodProjects.length > 0 && (
-              <ProjectRow 
-                title="🌟 Hollywood International" 
-                projects={hollywoodProjects} 
+              <ProjectRow
+                id="row-hollywood"
+                title="🌟 Hollywood International"
+                projects={hollywoodProjects}
                 onProjectClick={handleProjectClick}
+                onInvestClick={handleInvestClick}
                 onHeaderClick={() => handleSectionClick('hollywood')}
               />
             )}
@@ -869,12 +910,14 @@ interface ProjectRowProps {
   title: string;
   projects: Project[];
   onProjectClick: (project: Project, tab?: 'overview' | 'invest') => void;
+  onInvestClick: (project: Project) => void;
   onHeaderClick?: () => void;
   featured?: boolean;
   urgent?: boolean;
+  id: string;
 }
 
-const ProjectRow: React.FC<ProjectRowProps> = ({ title, projects, onProjectClick, onHeaderClick, featured, urgent }) => {
+const ProjectRow = React.memo<ProjectRowProps>(({ title, projects, onProjectClick, onInvestClick, onHeaderClick, featured, urgent, id }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: 'left' | 'right') => {
@@ -930,30 +973,31 @@ const ProjectRow: React.FC<ProjectRowProps> = ({ title, projects, onProjectClick
         className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {projects.map((project, index) => (
+        {projects.map((project) => (
           <ProjectCard
             key={project.id} 
             project={project} 
             onClick={() => onProjectClick(project)}
-            featured={featured && index === 0}
+            onInvestClick={onInvestClick}
             urgent={urgent}
           />
         ))}
       </div>
     </div>
   );
-};
+});
 
 // Enhanced Project Card Component with Blur Background on Hover
 interface ProjectCardProps {
   project: Project;
   onClick: () => void;
+  onInvestClick: (project: Project) => void;
   featured?: boolean;
   urgent?: boolean;
   compact?: boolean;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, featured, urgent, compact }) => {
+const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestClick, featured, urgent, compact }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const cardWidth = featured ? 'w-96' : compact ? 'w-48' : 'w-72';
@@ -1135,7 +1179,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, featured, u
                 {/* Action Buttons */}
                 <div className="flex items-center gap-2 pt-2">
                   <button
-                    onClick={() => handleInvestClick(project)}
+                    onClick={() => onInvestClick(project)}
                     className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-white text-black rounded-lg font-semibold text-sm hover:bg-gray-200 transition-colors shadow-lg"
                   >
                     <Play className="w-4 h-4 fill-current" />
@@ -1169,15 +1213,16 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, featured, u
     </motion.div>
     </PixelCard>
   );
-};
+});
 
 // List View Project Card
 interface ListProjectCardProps {
   project: Project;
   onClick: () => void;
+  onInvestClick: (project: Project) => void;
 }
 
-const ListProjectCard: React.FC<ListProjectCardProps> = ({ project, onClick }) => {
+const ListProjectCard: React.FC<ListProjectCardProps> = ({ project, onClick, onInvestClick }) => {
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
@@ -1245,7 +1290,7 @@ const ListProjectCard: React.FC<ListProjectCardProps> = ({ project, onClick }) =
           </div>
           
           <button
-            onClick={() => handleInvestClick(project)}
+            onClick={() => onInvestClick(project)}
             className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:from-purple-500 hover:to-blue-500 transition-all duration-300"
           >
             Invest Now

@@ -1,3 +1,5 @@
+import { Project } from '../types';
+
 export const extendedProjects: Project[] = [
 {
   id: "1",
@@ -89,7 +91,7 @@ export const extendedProjects: Project[] = [
   type: "film",
   category: "Hollywood",
   language: "English",
-  poster: "https://m.media-amazon.com/images/M/MV5BNThiZjA3MjItZGY5Ni00ZmJhLWEwN2EtOTBlYTA4Y2E0M2ZmXkEyXkFqcGc@._V1_SX1080.jpg",
+  poster: "https://m.media-amazon.com/images/M/MV5BZWMyYzFjYTYtNTRjYi00OGExLWE2YzgtOGRmYjAxZTU3NzBiXkEyXkFqcGdeQXVyMzQ0MzA0NTM@._V1_FMjpg_UX1000_.jpg",
   fundedPercentage: 98,
   targetAmount: 100000000,
   raisedAmount: 98000000,
@@ -117,7 +119,7 @@ export const extendedProjects: Project[] = [
   type: "film",
   category: "Hollywood",
   language: "English",
-  poster: "https://m.media-amazon.com/images/M/MV5BY2Q2ZmI5ZjUtNWVhMC00YzJkLTlmYjMtY2RmZDhkNzEzYjZhXkEyXkFqcGc@._V1_SX1080.jpg",
+  poster: "https://m.media-amazon.com/images/M/MV5BMDExZGMyOTMtMDgyYi00NGIwLWJhMTEtOTdkZGFjNmZiMTEwXkEyXkFqcGdeQXVyMjM4NTM5NDY@._V1_FMjpg_UX1000_.jpg",
   fundedPercentage: 99,
   targetAmount: 100000000,
   raisedAmount: 99000000,
@@ -145,7 +147,7 @@ export const extendedProjects: Project[] = [
   type: "film",
   category: "Hollywood",
   language: "English",
-  poster: "https://m.media-amazon.com/images/M/MV5BNmQxNjZlZTctMWJiMC00NGMxLWJjNTctNTFiNjA1Njk3ZDQ5XkEyXkFqcGc@._V1_SX1080.jpg",
+  poster: "https://m.media-amazon.com/images/M/MV5BYjhiNjBlODctY2ZiOC00YjVlLWFlNzAtNTVhNzM1YjI1NzMxXkEyXkFqcGdeQXVyMjQxNTE1MDA@._V1_FMjpg_UX1000_.jpg",
   fundedPercentage: 93,
   targetAmount: 100000000,
   raisedAmount: 93000000,
@@ -173,7 +175,7 @@ export const extendedProjects: Project[] = [
   type: "film",
   category: "Hollywood",
   language: "English",
-  poster: "https://m.media-amazon.com/images/M/MV5BMmU5NGJlMzAtMGNmOC00YjJjLTgyMzUtNjAyYmE4Njg5YWMyXkEyXkFqcGc@._V1_SX1080.jpg",
+  poster: "https://m.media-amazon.com/images/M/MV5BM2MyNTAwZGEtNTAxNC00ODVjLTgzZjUtYmU0YjAzNmQyZDEwXkEyXkFqcGdeQXVyNDc2NTg3NzA@._V1_FMjpg_UX1000_.jpg",
   fundedPercentage: 84,
   targetAmount: 120000000,
   raisedAmount: 100800000,
@@ -201,11 +203,11 @@ export const extendedProjects: Project[] = [
   type: "film",
   category: "Hollywood",
   language: "English",
-  poster: "https://m.media-amazon.com/images/M/MV5BOTJhOTMxMmItZmE0Ny00MDc3LWEzOGEtOGFkMzY4MWYyZDQ0XkEyXkFqcGc@._V1_SX1080.jpg",
-  fundedPercentage: 92,
-  targetAmount: 80000000,
-  raisedAmount: 73600000,
-  timeLeft: "7 days",
+  poster: "https://m.media-amazon.com/images/M/MV5BNzVlYzk0NDMtYzFhMy00ZGY2LWE1ODYtMzk5Y2M2NWZmNzBhXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_FMjpg_UX1000_.jpg",
+  fundedPercentage: 87,
+  targetAmount: 100000000,
+  raisedAmount: 87000000,
+  timeLeft: "12 days",
   tags: [
     "Action",
     "Adventure",
@@ -225,70 +227,15 @@ export const extendedProjects: Project[] = [
 },
 {
   id: "9",
-  title: "The Flash",
-  type: "film",
-  category: "Hollywood",
-  language: "English",
-  poster: "https://m.media-amazon.com/images/M/MV5BMjU0ZjZhNDQtMDhkYi00OWQyLWE3NGYtNzBlY2VmM2I4ZDg5XkEyXkFqcGc@._V1_SX1080.jpg",
-  fundedPercentage: 83,
-  targetAmount: 120000000,
-  raisedAmount: 99600000,
-  timeLeft: "2 days",
-  tags: [
-    "Action",
-    "Adventure",
-    "Drama"
-  ],
-  description: "After being struck by lightning, Barry Allen wakes up from his coma to discover he's been given the power of super speed, becoming the Flash, and fighting crime in Central City.",
-  director: "N/A",
-  genre: "Action, Adventure, Drama",
-  perks: [
-    "Behind-the-scenes",
-    "Signed Poster",
-    "Premiere Invite",
-    "Set Visit"
-  ],
-  rating: 4.5,
-  trailer: "https://www.youtube.com/watch?v=hebWYacbdvc"
-},
-{
-  id: "10",
-  title: "Top Gun: Maverick",
-  type: "film",
-  category: "Hollywood",
-  language: "English",
-  poster: "https://m.media-amazon.com/images/M/MV5BMDBkZDNjMWEtOTdmMi00NmExLTg5MmMtNTFlYTJlNWY5YTdmXkEyXkFqcGc@._V1_SX1080.jpg",
-  fundedPercentage: 86,
-  targetAmount: 100000000,
-  raisedAmount: 86000000,
-  timeLeft: "8 days",
-  tags: [
-    "Action",
-    "Drama"
-  ],
-  description: "The story involves Maverick confronting his past while training a group of younger Top Gun graduates, including the son of his deceased best friend, for a dangerous mission.",
-  director: "Joseph Kosinski",
-  genre: "Action, Drama",
-  perks: [
-    "Behind-the-scenes",
-    "Signed Poster",
-    "Premiere Invite",
-    "Set Visit"
-  ],
-  rating: 4.6,
-  trailer: "https://www.youtube.com/watch?v=qSqVVswa420"
-},
-{
-  id: "11",
   title: "Black Panther: Wakanda Forever",
   type: "film",
   category: "Hollywood",
   language: "English",
-  poster: "https://m.media-amazon.com/images/M/MV5BYWY5NDY1ZjItZDQxMy00MTAzLTgyOGQtNTQxYjFiMzZjMjUyXkEyXkFqcGc@._V1_SX1080.jpg",
-  fundedPercentage: 97,
+  poster: "https://m.media-amazon.com/images/M/MV5BYWY5NDY1ZjItZDQxMy00MTAzLTgyOGQtNTQxYjFiMzZjMjUyXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_FMjpg_UX1000_.jpg",
+  fundedPercentage: 91,
   targetAmount: 100000000,
-  raisedAmount: 97000000,
-  timeLeft: "2 days",
+  raisedAmount: 91000000,
+  timeLeft: "15 days",
   tags: [
     "Action",
     "Adventure",
@@ -307,220 +254,24 @@ export const extendedProjects: Project[] = [
   trailer: "https://www.youtube.com/watch?v=_Z3QKkl1WyM"
 },
 {
-  id: "12",
-  title: "Doctor Strange in the Multiverse of Madness",
+  id: "10",
+  title: "Top Gun: Maverick",
   type: "film",
   category: "Hollywood",
   language: "English",
-  poster: "https://m.media-amazon.com/images/M/MV5BN2YxZGRjMzYtZjE1ZC00MDI0LThjZmQtZTZmMzVmMmQ2NzBmXkEyXkFqcGc@._V1_SX1080.jpg",
-  fundedPercentage: 83,
-  targetAmount: 120000000,
-  raisedAmount: 99600000,
-  timeLeft: "3 days",
-  tags: [
-    "Action",
-    "Adventure",
-    "Fantasy"
-  ],
-  description: "Doctor Strange teams up with a mysterious teenage girl who can travel across multiverses, to battle other-universe versions of himself which threaten to wipe out the multiverse. They seek help from the Scarlet Witch, Wong and others.",
-  director: "Sam Raimi",
-  genre: "Action, Adventure, Fantasy",
-  perks: [
-    "Behind-the-scenes",
-    "Signed Poster",
-    "Premiere Invite",
-    "Set Visit"
-  ],
-  rating: 4.4,
-  trailer: "https://www.youtube.com/watch?v=aWzlQ2N6qqg"
-},
-{
-  id: "13",
-  title: "Fast X",
-  type: "film",
-  category: "Hollywood",
-  language: "English",
-  poster: "https://m.media-amazon.com/images/M/MV5BYzEwZjczOTktYzU1OS00YjJlLTgyY2UtNWEzODBlN2RjZDEwXkEyXkFqcGc@._V1_SX1080.jpg",
-  fundedPercentage: 94,
-  targetAmount: 100000000,
-  raisedAmount: 94000000,
-  timeLeft: "5 days",
-  tags: [
-    "Action",
-    "Adventure",
-    "Crime"
-  ],
-  description: "Dom Toretto and his family are targeted by the vengeful son of drug kingpin Hernan Reyes.",
-  director: "Louis Leterrier",
-  genre: "Action, Adventure, Crime",
-  perks: [
-    "Behind-the-scenes",
-    "Signed Poster",
-    "Premiere Invite",
-    "Set Visit"
-  ],
-  rating: 4.8,
-  trailer: "https://www.youtube.com/watch?v=32RAq6JzY-w"
-},
-{
-  id: "14",
-  title: "Mission: Impossible \u2013 Dead Reckoning",
-  type: "film",
-  category: "Hollywood",
-  language: "English",
-  poster: "https://m.media-amazon.com/images/M/MV5BN2U4OTdmM2QtZTkxYy00ZmQyLTg2N2UtMDdmMGJmNDhlZDU1XkEyXkFqcGc@._V1_SX1080.jpg",
-  fundedPercentage: 92,
-  targetAmount: 80000000,
-  raisedAmount: 73600000,
-  timeLeft: "4 days",
-  tags: [
-    "Action",
-    "Adventure",
-    "Thriller"
-  ],
-  description: "Ethan Hunt and his IMF team must track down a dangerous weapon before it falls into the wrong hands.",
-  director: "Christopher McQuarrie",
-  genre: "Action, Adventure, Thriller",
-  perks: [
-    "Behind-the-scenes",
-    "Signed Poster",
-    "Premiere Invite",
-    "Set Visit"
-  ],
-  rating: 4.7,
-  trailer: "https://www.youtube.com/watch?v=avz06PDqDbM"
-},
-{
-  id: "15",
-  title: "The Marvels",
-  type: "film",
-  category: "Hollywood",
-  language: "English",
-  poster: "https://m.media-amazon.com/images/M/MV5BYzczOWM4MzItMWMyOS00ZDczLWIxMzctNzBmYTgzOTI1MzI3XkEyXkFqcGc@._V1_SX1080.jpg",
-  fundedPercentage: 91,
-  targetAmount: 100000000,
-  raisedAmount: 91000000,
-  timeLeft: "8 days",
-  tags: [
-    "Action",
-    "Adventure",
-    "Sci-Fi"
-  ],
-  description: "Carol Danvers gets her powers entangled with those of Kamala Khan and Monica Rambeau, forcing them to work together to save the universe.",
-  director: "Nia DaCosta",
-  genre: "Action, Adventure, Sci-Fi",
-  perks: [
-    "Behind-the-scenes",
-    "Signed Poster",
-    "Premiere Invite",
-    "Set Visit"
-  ],
-  rating: 4.3,
-  trailer: "https://www.youtube.com/watch?v=wS_qbDztgVY"
-},
-{
-  id: "16",
-  title: "The Super Mario Bros. Movie",
-  type: "film",
-  category: "Hollywood",
-  language: "English",
-  poster: "https://m.media-amazon.com/images/M/MV5BOGZlN2EzOTYtMzUzOS00NTM3LTg0MTQtZDVjZGM4YmJlNWNhXkEyXkFqcGc@._V1_SX1080.jpg",
-  fundedPercentage: 96,
-  targetAmount: 100000000,
-  raisedAmount: 96000000,
-  timeLeft: "6 days",
-  tags: [
-    "Animation",
-    "Adventure",
-    "Comedy"
-  ],
-  description: "Brooklyn plumbers Mario and Luigi are warped to the magical Mushroom Kingdom, and Mario must team up with Princess Peach, Toad, and Donkey Kong to save Luigi from the evil Bowser.",
-  director: "Aaron Horvath, Michael Jelenic, Pierre Leduc",
-  genre: "Animation, Adventure, Comedy",
-  perks: [
-    "Behind-the-scenes",
-    "Signed Poster",
-    "Premiere Invite",
-    "Set Visit"
-  ],
-  rating: 4.6,
-  trailer: "https://www.youtube.com/watch?v=TnGl01FkMMo"
-},
-{
-  id: "17",
-  title: "The Little Mermaid",
-  type: "film",
-  category: "Hollywood",
-  language: "English",
-  poster: "https://m.media-amazon.com/images/M/MV5BNmQ3ODcyZGMtMjNlOS00YzhlLTg0YzAtZGVjNmQ0OTYyNDg0XkEyXkFqcGc@._V1_SX1080.jpg",
+  poster: "https://m.media-amazon.com/images/M/MV5BMDBkZDNjMWEtOTdmMi00NmExLTg5MmMtNTFlYTJlNWY5YTdmXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_FMjpg_UX1000_.jpg",
   fundedPercentage: 95,
   targetAmount: 100000000,
   raisedAmount: 95000000,
-  timeLeft: "8 days",
-  tags: [
-    "Animation",
-    "Adventure",
-    "Family"
-  ],
-  description: "A mermaid princess makes a Faustian bargain in an attempt to become human and win a prince's love.",
-  director: "Ron Clements, John Musker",
-  genre: "Animation, Adventure, Family",
-  perks: [
-    "Behind-the-scenes",
-    "Signed Poster",
-    "Premiere Invite",
-    "Set Visit"
-  ],
-  rating: 4.8,
-  trailer: "https://www.youtube.com/watch?v=kpGo2_d3oYE"
-},
-{
-  id: "18",
-  title: "Indiana Jones and the Dial of Destiny",
-  type: "film",
-  category: "Hollywood",
-  language: "English",
-  poster: "https://m.media-amazon.com/images/M/MV5BYWJlOWE2ZjEtZGRhOC00M2YzLWFkZGEtYzIzZWI2Zjg3NWYxXkEyXkFqcGc@._V1_SX1080.jpg",
-  fundedPercentage: 98,
-  targetAmount: 80000000,
-  raisedAmount: 78400000,
-  timeLeft: "2 days",
+  timeLeft: "5 days",
   tags: [
     "Action",
-    "Adventure",
-    "Sci-Fi"
+    "Drama",
+    "Thriller"
   ],
-  description: "Archaeologist Indiana Jones races against time to retrieve a legendary artifact that can change the course of history.",
-  director: "James Mangold",
-  genre: "Action, Adventure, Sci-Fi",
-  perks: [
-    "Behind-the-scenes",
-    "Signed Poster",
-    "Premiere Invite",
-    "Set Visit"
-  ],
-  rating: 4.8,
-  trailer: "https://www.youtube.com/watch?v=eQfMbSe7F2g"
-},
-{
-  id: "19",
-  title: "Ant-Man and the Wasp: Quantumania",
-  type: "film",
-  category: "Hollywood",
-  language: "English",
-  poster: "https://m.media-amazon.com/images/M/MV5BMThkYWY5ZjQtYjJlMS00MDFmLWFkYzEtODEzZjg5YWFmMGY4XkEyXkFqcGc@._V1_SX1080.jpg",
-  fundedPercentage: 87,
-  targetAmount: 80000000,
-  raisedAmount: 69600000,
-  timeLeft: "2 days",
-  tags: [
-    "Action",
-    "Adventure",
-    "Comedy"
-  ],
-  description: "Scott Lang and Hope Van Dyne are dragged into the Quantum Realm, along with Hope's parents and Scott's daughter Cassie. Together they must find a way to escape, but what secrets is Hope's mother hiding? And who is the mysterious K...",
-  director: "Peyton Reed",
-  genre: "Action, Adventure, Comedy",
+  description: "After thirty years, Maverick is still pushing the envelope as a top naval aviator, but must confront ghosts of his past when he leads TOP GUN's elite graduates on a mission that demands the ultimate sacrifice from those chosen to fly it.",
+  director: "Joseph Kosinski",
+  genre: "Action, Drama, Thriller",
   perks: [
     "Behind-the-scenes",
     "Signed Poster",
@@ -528,34 +279,286 @@ export const extendedProjects: Project[] = [
     "Set Visit"
   ],
   rating: 4.9,
-  trailer: "https://www.youtube.com/watch?v=ZlNFpri-Y40"
+  trailer: "https://www.youtube.com/watch?v=giXco2jaZ_4"
 },
 {
-  id: "20",
-  title: "Wonka",
+  id: "11",
+  title: "Pathaan 2",
   type: "film",
-  category: "Hollywood",
-  language: "English",
-  poster: "https://m.media-amazon.com/images/M/MV5BM2Y1N2ZhNjctYjVhZC00MDg2LWFhNTItMzI3ZjAwZDhjYmFiXkEyXkFqcGc@._V1_SX1080.jpg",
-  fundedPercentage: 81,
-  targetAmount: 80000000,
-  raisedAmount: 64800000,
-  timeLeft: "7 days",
+  category: "Bollywood",
+  language: "Hindi",
+  poster: "https://m.media-amazon.com/images/M/MV5BYjFjMTQzY2EtZjQ5MC00NGUyLWJiYWMtZDI3MTQ1MGU4OGY2XkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_FMjpg_UX1000_.jpg",
+  fundedPercentage: 88,
+  targetAmount: 50000000,
+  raisedAmount: 44000000,
+  timeLeft: "6 days",
   tags: [
-    "Adventure",
-    "Comedy",
-    "Family"
+    "Action",
+    "Thriller",
+    "Shah Rukh Khan"
   ],
-  description: "With dreams of opening a shop in a city renowned for its chocolate, a young and poor Willy Wonka discovers that the industry is run by a cartel of greedy chocolatiers.",
-  director: "Paul King",
-  genre: "Adventure, Comedy, Family",
+  description: "The much-awaited sequel to the blockbuster Pathaan",
+  director: "Siddharth Anand",
+  genre: "Action, Thriller, Spy",
   perks: [
     "Behind-the-scenes",
     "Signed Poster",
     "Premiere Invite",
     "Set Visit"
   ],
-  rating: 5.0,
-  trailer: "https://www.youtube.com/watch?v=otNh9bTjXWg"
+  rating: 4.6,
+  trailer: "https://www.youtube.com/watch?v=vqu4z34wENw"
 },
+{
+  id: "12",
+  title: "Jawan: The Return",
+  type: "film",
+  category: "Bollywood",
+  language: "Hindi",
+  poster: "https://m.media-amazon.com/images/M/MV5BN2I4ZWY2NGYtZWFkZS00N2Y4LWJkZWEtN2YzM2ZlYjcyZWJjXkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_FMjpg_UX1000_.jpg",
+  fundedPercentage: 92,
+  targetAmount: 60000000,
+  raisedAmount: 55200000,
+  timeLeft: "4 days",
+  tags: [
+    "Action",
+    "Crime",
+    "Drama"
+  ],
+  description: "A high-octane action thriller that outlines the emotional journey of a man who is set to rectify the wrongs in society.",
+  director: "Atlee",
+  genre: "Action, Crime, Drama",
+  perks: [
+    "Behind-the-scenes",
+    "Signed Poster",
+    "Premiere Invite",
+    "Set Visit"
+  ],
+  rating: 4.7,
+  trailer: "https://www.youtube.com/watch?v=COv52xeypAs"
+},
+{
+  id: "13",
+  title: "Animal",
+  type: "film",
+  category: "Bollywood",
+  language: "Hindi",
+  poster: "https://m.media-amazon.com/images/M/MV5BMTQ4MzQzMzM2Nl5BMl5BanBnXkFtZTgwMTQ1NzU3MDI@._V1_FMjpg_UX1000_.jpg",
+  fundedPercentage: 85,
+  targetAmount: 45000000,
+  raisedAmount: 38250000,
+  timeLeft: "11 days",
+  tags: [
+    "Action",
+    "Crime",
+    "Drama"
+  ],
+  description: "A father, who is often away due to work, is unable to comprehend the intensity of his son's love. The son believes that their love is beyond any measure.",
+  director: "Sandeep Reddy Vanga",
+  genre: "Action, Crime, Drama",
+  perks: [
+    "Behind-the-scenes",
+    "Signed Poster",
+    "Premiere Invite",
+    "Set Visit"
+  ],
+  rating: 4.5,
+  trailer: "https://www.youtube.com/watch?v=Dd2PyqovJXw"
+},
+{
+  id: "14",
+  title: "RRR 2",
+  type: "film",
+  category: "Regional",
+  language: "Telugu",
+  poster: "https://m.media-amazon.com/images/M/MV5BODUwNDNjYzctODUxNy00ZTA2LWIyYTEtMDc5Y2E5ZjBmNTMzXkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_FMjpg_UX1000_.jpg",
+  fundedPercentage: 96,
+  targetAmount: 40000000,
+  raisedAmount: 38400000,
+  timeLeft: "2 days",
+  tags: [
+    "Action",
+    "Drama",
+    "Historical"
+  ],
+  description: "A tale of two legendary revolutionaries and their journey far away from home. After their journey they return home to start fighting back against British colonialists in the 1920s.",
+  director: "S.S. Rajamouli",
+  genre: "Action, Drama, Historical",
+  perks: [
+    "Behind-the-scenes",
+    "Signed Poster",
+    "Premiere Invite",
+    "Set Visit"
+  ],
+  rating: 4.9,
+  trailer: "https://www.youtube.com/watch?v=foiB8Jfd0RY"
+},
+{
+  id: "15",
+  title: "KGF: Chapter 3",
+  type: "film",
+  category: "Regional",
+  language: "Kannada",
+  poster: "https://m.media-amazon.com/images/M/MV5BZGNhNDU2NWEtYjI4ZC00OGU1LWI4NzMtNjI0ZjU5NjBjZDZhXkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_FMjpg_UX1000_.jpg",
+  fundedPercentage: 89,
+  targetAmount: 35000000,
+  raisedAmount: 31150000,
+  timeLeft: "8 days",
+  tags: [
+    "Action",
+    "Crime",
+    "Drama"
+  ],
+  description: "In the blood-soaked Kolar Gold Fields, Rocky's name strikes fear into his foes. While his allies look up to him, the government sees him as a threat to law and order.",
+  director: "Prashanth Neel",
+  genre: "Action, Crime, Drama",
+  perks: [
+    "Behind-the-scenes",
+    "Signed Poster",
+    "Premiere Invite",
+    "Set Visit"
+  ],
+  rating: 4.8,
+  trailer: "https://www.youtube.com/watch?v=JKa05nyUmuQ"
+},
+{
+  id: "16",
+  title: "Pushpa 3",
+  type: "film",
+  category: "Regional",
+  language: "Telugu",
+  poster: "https://m.media-amazon.com/images/M/MV5BNDFhOTNhNzYtN2Y5My00ZmRlLWI2NWQtMzBkNzk2YWIyNzJlXkEyXkFqcGdeQXVyMTI1NDEyNTM5._V1_FMjpg_UX1000_.jpg",
+  fundedPercentage: 87,
+  targetAmount: 30000000,
+  raisedAmount: 26100000,
+  timeLeft: "12 days",
+  tags: [
+    "Action",
+    "Crime",
+    "Drama"
+  ],
+  description: "A laborer rises through the ranks of a red sandalwood smuggling syndicate, making some powerful enemies in the process.",
+  director: "Sukumar",
+  genre: "Action, Crime, Drama",
+  perks: [
+    "Behind-the-scenes",
+    "Signed Poster",
+    "Premiere Invite",
+    "Set Visit"
+  ],
+  rating: 4.6,
+  trailer: "https://www.youtube.com/watch?v=Q1NKMPhP8PY"
+},
+{
+  id: "17",
+  title: "Mirzapur Season 3",
+  type: "webseries",
+  category: "Independent",
+  language: "Hindi",
+  poster: "https://m.media-amazon.com/images/M/MV5BMzRjZWVmMzItNTdmYS00OWEzLTgyOGUtNThiNTU2ZThlYjY0XkEyXkFqcGdeQXVyOTAzMTc2MjA@._V1_FMjpg_UX1000_.jpg",
+  fundedPercentage: 78,
+  targetAmount: 25000000,
+  raisedAmount: 19500000,
+  timeLeft: "14 days",
+  tags: [
+    "Crime",
+    "Drama",
+    "Thriller"
+  ],
+  description: "The third season of the crime drama series that follows the power struggle in the lawless city of Mirzapur.",
+  director: "Gurmmeet Singh",
+  genre: "Crime, Drama, Thriller",
+  perks: [
+    "Behind-the-scenes",
+    "Signed Poster",
+    "Premiere Invite",
+    "Set Visit"
+  ],
+  rating: 4.7,
+  trailer: "https://www.youtube.com/watch?v=foiB8Jfd0RY"
+},
+{
+  id: "18",
+  title: "Sacred Games Season 3",
+  type: "webseries",
+  category: "Independent",
+  language: "Hindi",
+  poster: "https://m.media-amazon.com/images/M/MV5BMzRjZWVmMzItNTdmYS00OWEzLTgyOGUtNThiNTU2ZThlYjY0XkEyXkFqcGdeQXVyOTAzMTc2MjA@._V1_FMjpg_UX1000_.jpg",
+  fundedPercentage: 82,
+  targetAmount: 30000000,
+  raisedAmount: 24600000,
+  timeLeft: "9 days",
+  tags: [
+    "Crime",
+    "Drama",
+    "Mystery"
+  ],
+  description: "A police officer receives a phone call from a gangster who tells him to save the city within 25 days.",
+  director: "Vikramaditya Motwane",
+  genre: "Crime, Drama, Mystery",
+  perks: [
+    "Behind-the-scenes",
+    "Signed Poster",
+    "Premiere Invite",
+    "Set Visit"
+  ],
+  rating: 4.8,
+  trailer: "https://www.youtube.com/watch?v=foiB8Jfd0RY"
+},
+{
+  id: "19",
+  title: "A.R. Rahman: Symphony of India",
+  type: "music",
+  category: "Independent",
+  language: "Hindi",
+  poster: "https://i.scdn.co/image/ab67616d0000b273f54b99bf27cda88f4a7403ac",
+  fundedPercentage: 94,
+  targetAmount: 15000000,
+  raisedAmount: 14100000,
+  timeLeft: "3 days",
+  tags: [
+    "Classical Fusion",
+    "Orchestra",
+    "A.R. Rahman"
+  ],
+  description: "A.R. Rahman's symphonic tribute to Indian classical music",
+  artist: "A.R. Rahman",
+  genre: "Classical Fusion",
+  perks: [
+    "Studio Session",
+    "Orchestra Performance",
+    "Signed Vinyl",
+    "Music Masterclass"
+  ],
+  rating: 4.9,
+  trailer: "https://www.youtube.com/watch?v=foiB8Jfd0RY"
+},
+{
+  id: "20",
+  title: "Arijit Singh: Unplugged Sessions",
+  type: "music",
+  category: "Independent",
+  language: "Hindi",
+  poster: "https://i.scdn.co/image/ab67616d0000b273f54b99bf27cda88f4a7403ac",
+  fundedPercentage: 91,
+  targetAmount: 12000000,
+  raisedAmount: 10920000,
+  timeLeft: "7 days",
+  tags: [
+    "Acoustic",
+    "Soul",
+    "Arijit Singh"
+  ],
+  description: "Arijit Singh's intimate acoustic sessions featuring his most beloved songs",
+  artist: "Arijit Singh",
+  genre: "Acoustic, Soul",
+  perks: [
+    "Signed Vinyl",
+    "Exclusive Merch",
+    "Concert Tickets",
+    "Meet & Greet"
+  ],
+  rating: 4.8,
+  trailer: "https://www.youtube.com/watch?v=foiB8Jfd0RY"
+}
 ];
