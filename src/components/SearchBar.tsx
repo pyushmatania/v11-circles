@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, 
@@ -15,6 +15,7 @@ import {
 import { useTheme } from './ThemeProvider';
 import { extendedProjects } from '../data/extendedProjects';
 import { Project } from '../types';
+import { useDebounce } from '../hooks/useDebounce';
 
 interface SearchBarProps {
   onSelectProject?: (project: Project) => void;
@@ -31,6 +32,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSelectProject, onViewAllResults
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Debounce search term to avoid excessive API calls
+  const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
   // Load recent searches from localStorage
   useEffect(() => {
@@ -54,8 +58,47 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSelectProject, onViewAllResults
     };
   }, []);
 
+  // Memoized search function
+  const performSearch = useCallback((term: string) => {
+    if (term.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    setIsLoading(true);
+
+    // Use setTimeout to prevent blocking the UI
+    setTimeout(() => {
+      let results = extendedProjects.filter(project => {
+        return project.title.toLowerCase().includes(term.toLowerCase()) ||
+          project.description.toLowerCase().includes(term.toLowerCase()) ||
+          project.tags.some((tag: string) => tag.toLowerCase().includes(term.toLowerCase())) ||
+          (project.director && project.director.toLowerCase().includes(term.toLowerCase())) ||
+          (project.artist && project.artist.toLowerCase().includes(term.toLowerCase()));
+      });
+
+      // Sort by relevance (title match first)
+      results = results.sort((a, b) => {
+        const aInTitle = a.title.toLowerCase().includes(term.toLowerCase());
+        const bInTitle = b.title.toLowerCase().includes(term.toLowerCase());
+
+        if (aInTitle && !bInTitle) return -1;
+        if (!aInTitle && bInTitle) return 1;
+        return 0;
+      });
+
+      setSearchResults(results.slice(0, 5)); // Limit to 5 results
+      setIsLoading(false);
+    }, 0);
+  }, []);
+
+  // Perform search when debounced term changes
+  useEffect(() => {
+    performSearch(debouncedSearchTerm);
+  }, [debouncedSearchTerm, performSearch]);
+
   // Save recent search
-  const saveRecentSearch = (term: string) => {
+  const saveRecentSearch = useCallback((term: string) => {
     if (!term.trim()) return;
     
     const updatedSearches = [
@@ -65,80 +108,79 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSelectProject, onViewAllResults
     
     setRecentSearches(updatedSearches);
     localStorage.setItem('circles_recent_searches', JSON.stringify(updatedSearches));
-  };
+  }, [recentSearches]);
 
   // Clear recent searches
-  const clearRecentSearches = () => {
+  const clearRecentSearches = useCallback(() => {
     setRecentSearches([]);
     localStorage.removeItem('circles_recent_searches');
-  };
+  }, []);
 
   // Handle search input change
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchTerm(value);
     setIsOpen(true);
-  };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (searchTerm.length >= 2) {
-        performSearch(searchTerm);
-      } else {
-        setSearchResults([]);
-      }
-    }, 200);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
-
-  // Perform search
-  const performSearch = (term: string) => {
-    setIsLoading(true);
-
-    let results = extendedProjects.filter(project => {
-      return project.title.toLowerCase().includes(term.toLowerCase()) ||
-        project.description.toLowerCase().includes(term.toLowerCase()) ||
-        project.tags.some(tag => tag.toLowerCase().includes(term.toLowerCase())) ||
-        (project.director && project.director.toLowerCase().includes(term.toLowerCase())) ||
-        (project.artist && project.artist.toLowerCase().includes(term.toLowerCase()));
-    });
-
-    // Sort by relevance (title match first)
-    results = results.sort((a, b) => {
-      const aInTitle = a.title.toLowerCase().includes(term.toLowerCase());
-      const bInTitle = b.title.toLowerCase().includes(term.toLowerCase());
-
-      if (aInTitle && !bInTitle) return -1;
-      if (!aInTitle && bInTitle) return 1;
-      return 0;
-    });
-
-    setSearchResults(results.slice(0, 5)); // Limit to 5 results
-    setIsLoading(false);
-  };
+  }, []);
 
   // Handle search submission
-  const handleSearchSubmit = (e?: React.FormEvent) => {
+  const handleSearchSubmit = useCallback((e?: React.FormEvent) => {
     if (e) e.preventDefault();
     
     if (searchTerm.trim()) {
       saveRecentSearch(searchTerm);
       performSearch(searchTerm);
     }
-  };
+  }, [searchTerm, saveRecentSearch, performSearch]);
 
   // Clear search
-  const clearSearch = () => {
+  const clearSearch = useCallback(() => {
     setSearchTerm('');
     setSearchResults([]);
     setSelectedIndex(-1);
     if (inputRef.current) {
       inputRef.current.focus();
     }
-  };
+  }, []);
+
+  // Memoized type icon getter
+  const getTypeIcon = useCallback((type: string) => {
+    switch (type) {
+      case 'film': return <Film className="w-4 h-4" />;
+      case 'music': return <Music className="w-4 h-4" />;
+      case 'webseries': return <Tv className="w-4 h-4" />;
+      default: return <Film className="w-4 h-4" />;
+    }
+  }, []);
+
+  // Memoized type color getter
+  const getTypeColor = useCallback((type: string) => {
+    switch (type) {
+      case 'film': return 'text-purple-400';
+      case 'music': return 'text-blue-400';
+      case 'webseries': return 'text-green-400';
+      default: return 'text-gray-400';
+    }
+  }, []);
+
+  // Memoized text highlighting function
+  const highlightMatch = useCallback((text: string, query: string) => {
+    if (!query.trim()) return text;
+    
+    const regex = new RegExp(`(${query})`, 'gi');
+    const parts = text.split(regex);
+    
+    return parts.map((part, index) => 
+      regex.test(part) ? (
+        <span key={index} className="bg-yellow-400/30 text-yellow-200 font-semibold">
+          {part}
+        </span>
+      ) : part
+    );
+  }, []);
 
   // Handle keyboard navigation
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     // Arrow down
     if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -191,57 +233,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSelectProject, onViewAllResults
     else if (e.key === 'Escape') {
       setIsOpen(false);
     }
-  };
-
-  // Get project type icon
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'film': return <Film className="w-4 h-4" />;
-      case 'music': return <Music className="w-4 h-4" />;
-      case 'webseries': return <Tv className="w-4 h-4" />;
-      default: return <Film className="w-4 h-4" />;
-    }
-  };
-
-  // Get project type color
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'film': 
-        return theme === 'light' ? 'bg-purple-100 text-purple-700' : 'bg-purple-900/30 text-purple-400';
-      case 'music': 
-        return theme === 'light' ? 'bg-blue-100 text-blue-700' : 'bg-blue-900/30 text-blue-400';
-      case 'webseries': 
-        return theme === 'light' ? 'bg-green-100 text-green-700' : 'bg-green-900/30 text-green-400';
-      default: 
-        return theme === 'light' ? 'bg-gray-100 text-gray-700' : 'bg-gray-800 text-gray-400';
-    }
-  };
-
-  // Highlight matching text
-  const highlightMatch = (text: string, query: string) => {
-    if (!query.trim()) return text;
-
-    const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(`(${safeQuery})`, 'gi');
-    const parts = text.split(regex);
-
-    return (
-      <>
-        {parts.map((part, i) => {
-          regex.lastIndex = 0; // reset for each new string
-          return regex.test(part) ? (
-            <span key={i} className={`font-bold ${
-              theme === 'light' ? 'text-purple-700' : 'text-purple-400'
-            }`}>
-              {part}
-            </span>
-          ) : (
-            <span key={i}>{part}</span>
-          );
-        })}
-      </>
-    );
-  };
+  }, [isOpen, searchResults, recentSearches, selectedIndex, onSelectProject, searchTerm, saveRecentSearch, performSearch, handleSearchSubmit]);
 
   return (
     <div ref={searchRef} className="relative">

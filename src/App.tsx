@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense, useCallback } from 'react';
 import Hero from './components/Hero';
 import ProblemSolution from './components/ProblemSolution';
 import HowItWorks from './components/HowItWorks';
@@ -8,23 +8,32 @@ import TechTrust from './components/TechTrust';
 import Rewards from './components/Rewards';
 import Testimonials from './components/Testimonials';
 import CallToAction from './components/CallToAction';
-import Dashboard from './components/Dashboard';
-import ProjectCatalog from './components/ProjectCatalog';
-import Community from './components/Community';
-import Merchandise from './components/Merchandise';
 import Navigation from './components/Navigation';
-import ProfilePage from './components/profile/ProfilePage';
 import AuthModal from './components/auth/AuthModal';
 import ToastContainer from './components/auth/ToastNotification';
-import AdminDashboard from './components/admin/AdminDashboard';
-import PortfolioAnalytics from './components/PortfolioAnalytics';
-import ProjectComparison from './components/ProjectComparison';
-import NewsAndUpdates from './components/NewsAndUpdates';
-import NotificationCenter from './components/NotificationCenter';
-import EnhancedSearch from './components/EnhancedSearch';
 import { ThemeProvider } from './components/ThemeProvider';
 import { AuthProvider, useAuth } from './components/auth/AuthProvider';
 import { useToast } from './hooks/useToast';
+
+// Lazy load heavy components for better performance
+const Dashboard = lazy(() => import('./components/Dashboard'));
+const ProjectCatalog = lazy(() => import('./components/ProjectCatalog'));
+const Community = lazy(() => import('./components/Community'));
+const Merchandise = lazy(() => import('./components/Merchandise'));
+const ProfilePage = lazy(() => import('./components/profile/ProfilePage'));
+const AdminDashboard = lazy(() => import('./components/admin/AdminDashboard'));
+const PortfolioAnalytics = lazy(() => import('./components/PortfolioAnalytics'));
+const ProjectComparison = lazy(() => import('./components/ProjectComparison'));
+const NewsAndUpdates = lazy(() => import('./components/NewsAndUpdates'));
+const NotificationCenter = lazy(() => import('./components/NotificationCenter'));
+const EnhancedSearch = lazy(() => import('./components/EnhancedSearch'));
+
+// Loading component for lazy-loaded routes
+const LoadingSpinner = () => (
+  <div className="min-h-screen flex items-center justify-center bg-black">
+    <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+  </div>
+);
 
 function AppContent() {
   const [currentView, setCurrentView] = useState<'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search'>('home');
@@ -33,16 +42,16 @@ function AppContent() {
   const { isAuthenticated } = useAuth();
   const { toasts, toast, removeToast } = useToast();
 
-  const handleAuthRequired = (mode: 'login' | 'register' = 'login') => {
+  const handleAuthRequired = useCallback((mode: 'login' | 'register' = 'login') => {
     if (!isAuthenticated) {
       setAuthModalMode(mode);
       setAuthModalOpen(true);
       return false;
     }
     return true;
-  };
+  }, [isAuthenticated]);
 
-  const handleViewChange = (view: typeof currentView) => {
+  const handleViewChange = useCallback((view: typeof currentView) => {
     // Check if authentication is required for certain views
     if (['profile', 'portfolio'].includes(view)) {
       if (!handleAuthRequired()) {
@@ -51,36 +60,80 @@ function AppContent() {
       }
     }
     setCurrentView(view);
-  };
+  }, [handleAuthRequired, toast]);
 
   // If admin view is selected, render the admin dashboard
   if (currentView === 'admin') {
-    return <AdminDashboard />;
+    return (
+      <Suspense fallback={<LoadingSpinner />}>
+        <AdminDashboard />
+      </Suspense>
+    );
   }
 
   const renderCurrentView = () => {
     switch (currentView) {
       case 'projects':
-        return <ProjectCatalog onTrackInvestment={() => handleViewChange('dashboard')} />;
+        return (
+          <Suspense fallback={<LoadingSpinner />}>
+            <ProjectCatalog onTrackInvestment={() => handleViewChange('dashboard')} />
+          </Suspense>
+        );
       case 'dashboard':
         // Dashboard is now accessible without login
-        return <Dashboard />;
+        return (
+          <Suspense fallback={<LoadingSpinner />}>
+            <Dashboard />
+          </Suspense>
+        );
       case 'community':
-        return <Community />;
+        return (
+          <Suspense fallback={<LoadingSpinner />}>
+            <Community />
+          </Suspense>
+        );
       case 'merch':
-        return <Merchandise />;
+        return (
+          <Suspense fallback={<LoadingSpinner />}>
+            <Merchandise />
+          </Suspense>
+        );
       case 'profile':
-        return isAuthenticated ? <ProfilePage /> : null;
+        return isAuthenticated ? (
+          <Suspense fallback={<LoadingSpinner />}>
+            <ProfilePage />
+          </Suspense>
+        ) : null;
       case 'portfolio':
-        return isAuthenticated ? <PortfolioAnalytics /> : null;
+        return isAuthenticated ? (
+          <Suspense fallback={<LoadingSpinner />}>
+            <PortfolioAnalytics />
+          </Suspense>
+        ) : null;
       case 'compare':
-        return <ProjectComparison onTrackInvestment={() => handleViewChange('dashboard')} setCurrentView={handleViewChange} />;
+        return (
+          <Suspense fallback={<LoadingSpinner />}>
+            <ProjectComparison onTrackInvestment={() => handleViewChange('dashboard')} setCurrentView={handleViewChange} />
+          </Suspense>
+        );
       case 'news':
-        return <NewsAndUpdates />;
+        return (
+          <Suspense fallback={<LoadingSpinner />}>
+            <NewsAndUpdates />
+          </Suspense>
+        );
       case 'notifications':
-        return <NotificationCenter />;
+        return (
+          <Suspense fallback={<LoadingSpinner />}>
+            <NotificationCenter />
+          </Suspense>
+        );
       case 'search':
-        return <EnhancedSearch />;
+        return (
+          <Suspense fallback={<LoadingSpinner />}>
+            <EnhancedSearch />
+          </Suspense>
+        );
       default:
         return (
           <>

@@ -6,19 +6,36 @@ export default defineConfig({
   plugins: [react()],
   optimizeDeps: {
     exclude: ['lucide-react'],
+    include: [
+      'react',
+      'react-dom',
+      'framer-motion',
+      'canvas-confetti',
+      'gsap',
+      'lottie-react',
+      'matter-js',
+      'react-dropzone',
+      'react-table'
+    ]
   },
   build: {
+    target: 'esnext',
+    minify: 'esbuild',
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            return id.toString().split('node_modules/')[1].split('/')[0];
-          }
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'animation-vendor': ['framer-motion', 'gsap', 'canvas-confetti'],
+          'ui-vendor': ['lucide-react', 'lottie-react'],
+          'utils-vendor': ['matter-js', 'react-dropzone', 'react-table']
         },
+        chunkFileNames: 'assets/js/[name]-[hash].js',
+        entryFileNames: 'assets/js/[name]-[hash].js',
+        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]'
       },
     },
+    chunkSizeWarningLimit: 1000,
+    sourcemap: false
   },
-  test: {
-    environment: 'jsdom',
-  },
+
 });

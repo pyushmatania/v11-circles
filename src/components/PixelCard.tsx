@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, memo } from "react";
 import './PixelCard.css';
 
 class Pixel {
@@ -172,7 +172,7 @@ interface PixelCardProps {
   children?: React.ReactNode;
 }
 
-export default function PixelCard({
+const PixelCard = memo(function PixelCard({
   variant = "default",
   gap,
   speed,
@@ -312,4 +312,6 @@ export default function PixelCard({
       {children}
     </div>
   );
-}
+});
+
+export default PixelCard;
