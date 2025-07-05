@@ -917,7 +917,7 @@ interface ProjectRowProps {
   id: string;
 }
 
-const ProjectRow: React.FC<ProjectRowProps> = ({ title, projects, onProjectClick, onInvestClick, onHeaderClick, featured, urgent, id }) => {
+const ProjectRow = React.memo<ProjectRowProps>(({ title, projects, onProjectClick, onInvestClick, onHeaderClick, featured, urgent, id }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: 'left' | 'right') => {
@@ -985,7 +985,7 @@ const ProjectRow: React.FC<ProjectRowProps> = ({ title, projects, onProjectClick
       </div>
     </div>
   );
-};
+});
 
 // Enhanced Project Card Component with Blur Background on Hover
 interface ProjectCardProps {
@@ -997,7 +997,7 @@ interface ProjectCardProps {
   compact?: boolean;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, onInvestClick, featured, urgent, compact }) => {
+const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestClick, featured, urgent, compact }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const cardWidth = featured ? 'w-96' : compact ? 'w-48' : 'w-72';
@@ -1213,7 +1213,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, onInvestCli
     </motion.div>
     </PixelCard>
   );
-};
+});
 
 // List View Project Card
 interface ListProjectCardProps {

@@ -1,240 +1,206 @@
+import React, { useRef, useEffect } from 'react';
+
 /**
- * Performance monitoring utilities for Circles app
- * Tracks key performance metrics and provides optimization insights
+ * Elite Performance Monitor for Circles
+ * Tracks component performance, bundle sizes, and user interactions
  */
 
-export interface PerformanceMetrics {
-  firstContentfulPaint?: number;
-  largestContentfulPaint?: number;
-  firstInputDelay?: number;
-  cumulativeLayoutShift?: number;
-  timeToInteractive?: number;
+interface PerformanceMetrics {
+  componentName: string;
+  renderTime: number;
+  timestamp: number;
+  props: Record<string, any>;
 }
 
-export interface PerformanceObserver {
-  onMetricUpdate?: (metrics: PerformanceMetrics) => void;
-  onError?: (error: Error) => void;
+interface BundleMetrics {
+  name: string;
+  size: number;
+  loadTime: number;
 }
 
 class PerformanceMonitor {
-  private metrics: PerformanceMetrics = {};
-  private observers: PerformanceObserver[] = [];
-  private isObserving = false;
+  private metrics: PerformanceMetrics[] = [];
+  private bundleMetrics: BundleMetrics[] = [];
+  private isEnabled: boolean;
 
-  /**
-   * Start monitoring performance metrics
-   */
-  startMonitoring(): void {
-    if (this.isObserving || typeof window === 'undefined') return;
-
-    this.isObserving = true;
-
-    // Monitor First Contentful Paint
-    this.observeFirstContentfulPaint();
-    
-    // Monitor Largest Contentful Paint
-    this.observeLargestContentfulPaint();
-    
-    // Monitor First Input Delay
-    this.observeFirstInputDelay();
-    
-    // Monitor Cumulative Layout Shift
-    this.observeCumulativeLayoutShift();
+  constructor() {
+    this.isEnabled = import.meta.env.DEV || localStorage.getItem('circles-performance-monitor') === 'true';
   }
 
   /**
-   * Stop monitoring performance metrics
+   * Track component render performance
    */
-  stopMonitoring(): void {
-    this.isObserving = false;
-  }
+  trackComponentRender(componentName: string, renderTime: number, props?: Record<string, any>) {
+    if (!this.isEnabled) return;
 
-  /**
-   * Add performance observer
-   */
-  addObserver(observer: PerformanceObserver): void {
-    this.observers.push(observer);
-  }
+    this.metrics.push({
+      componentName,
+      renderTime,
+      timestamp: performance.now(),
+      props: props || {}
+    });
 
-  /**
-   * Remove performance observer
-   */
-  removeObserver(observer: PerformanceObserver): void {
-    const index = this.observers.indexOf(observer);
-    if (index > -1) {
-      this.observers.splice(index, 1);
+    // Log slow renders in development
+    if (import.meta.env.DEV && renderTime > 16) {
+      console.warn(`🐌 Slow render detected: ${componentName} took ${renderTime.toFixed(2)}ms`);
     }
   }
 
   /**
-   * Get current performance metrics
+   * Track bundle loading performance
    */
-  getMetrics(): PerformanceMetrics {
-    return { ...this.metrics };
-  }
+  trackBundleLoad(name: string, size: number, loadTime: number) {
+    if (!this.isEnabled) return;
 
-  /**
-   * Measure component render time
-   */
-  measureRenderTime(componentName: string, renderFn: () => void): number {
-    const start = performance.now();
-    renderFn();
-    const end = performance.now();
-    const duration = end - start;
-    
-    console.log(`[Performance] ${componentName} render time: ${duration.toFixed(2)}ms`);
-    return duration;
-  }
-
-  /**
-   * Measure async operation time
-   */
-  async measureAsyncTime<T>(
-    operationName: string,
-    asyncFn: () => Promise<T>
-  ): Promise<T> {
-    const start = performance.now();
-    try {
-      const result = await asyncFn();
-      const end = performance.now();
-      const duration = end - start;
-      
-      console.log(`[Performance] ${operationName} completed in: ${duration.toFixed(2)}ms`);
-      return result;
-    } catch (error) {
-      const end = performance.now();
-      const duration = end - start;
-      
-      console.error(`[Performance] ${operationName} failed after: ${duration.toFixed(2)}ms`, error);
-      throw error;
-    }
-  }
-
-  private observeFirstContentfulPaint(): void {
-    if ('PerformanceObserver' in window) {
-      try {
-        const observer = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          const fcp = entries.find(entry => entry.name === 'first-contentful-paint');
-          if (fcp) {
-            this.metrics.firstContentfulPaint = fcp.startTime;
-            this.notifyObservers();
-          }
-        });
-        observer.observe({ entryTypes: ['paint'] });
-      } catch (error) {
-        console.warn('Failed to observe First Contentful Paint:', error);
-      }
-    }
-  }
-
-  private observeLargestContentfulPaint(): void {
-    if ('PerformanceObserver' in window) {
-      try {
-        const observer = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          const lcp = entries[entries.length - 1];
-          if (lcp) {
-            this.metrics.largestContentfulPaint = lcp.startTime;
-            this.notifyObservers();
-          }
-        });
-        observer.observe({ entryTypes: ['largest-contentful-paint'] });
-      } catch (error) {
-        console.warn('Failed to observe Largest Contentful Paint:', error);
-      }
-    }
-  }
-
-  private observeFirstInputDelay(): void {
-    if ('PerformanceObserver' in window) {
-      try {
-        const observer = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          const fid = entries.find(entry => entry.entryType === 'first-input') as any;
-          if (fid) {
-            this.metrics.firstInputDelay = fid.processingStart - fid.startTime;
-            this.notifyObservers();
-          }
-        });
-        observer.observe({ entryTypes: ['first-input'] });
-      } catch (error) {
-        console.warn('Failed to observe First Input Delay:', error);
-      }
-    }
-  }
-
-  private observeCumulativeLayoutShift(): void {
-    if ('PerformanceObserver' in window) {
-      try {
-        let clsValue = 0;
-        const observer = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          entries.forEach((entry: any) => {
-            if (!entry.hadRecentInput) {
-              clsValue += entry.value;
-            }
-          });
-          this.metrics.cumulativeLayoutShift = clsValue;
-          this.notifyObservers();
-        });
-        observer.observe({ entryTypes: ['layout-shift'] });
-      } catch (error) {
-        console.warn('Failed to observe Cumulative Layout Shift:', error);
-      }
-    }
-  }
-
-  private notifyObservers(): void {
-    this.observers.forEach(observer => {
-      try {
-        observer.onMetricUpdate?.(this.getMetrics());
-      } catch (error) {
-        observer.onError?.(error as Error);
-      }
+    this.bundleMetrics.push({
+      name,
+      size,
+      loadTime
     });
   }
 
   /**
-   * Get performance score based on metrics
+   * Get performance summary
    */
-  getPerformanceScore(): number {
-    const { firstContentfulPaint, largestContentfulPaint, firstInputDelay, cumulativeLayoutShift } = this.metrics;
-    
-    let score = 100;
-    
-    // FCP scoring (0-100)
-    if (firstContentfulPaint) {
-      if (firstContentfulPaint > 2000) score -= 20;
-      else if (firstContentfulPaint > 1500) score -= 10;
-    }
-    
-    // LCP scoring (0-100)
-    if (largestContentfulPaint) {
-      if (largestContentfulPaint > 4000) score -= 25;
-      else if (largestContentfulPaint > 2500) score -= 15;
-    }
-    
-    // FID scoring (0-100)
-    if (firstInputDelay) {
-      if (firstInputDelay > 300) score -= 25;
-      else if (firstInputDelay > 100) score -= 15;
-    }
-    
-    // CLS scoring (0-100)
-    if (cumulativeLayoutShift) {
-      if (cumulativeLayoutShift > 0.25) score -= 30;
-      else if (cumulativeLayoutShift > 0.1) score -= 20;
-    }
-    
-    return Math.max(0, score);
+  getPerformanceSummary() {
+    if (this.metrics.length === 0) return null;
+
+    const avgRenderTime = this.metrics.reduce((sum, m) => sum + m.renderTime, 0) / this.metrics.length;
+    const slowRenders = this.metrics.filter(m => m.renderTime > 16).length;
+    const totalRenders = this.metrics.length;
+
+    return {
+      totalRenders,
+      avgRenderTime: avgRenderTime.toFixed(2),
+      slowRenders,
+      slowRenderPercentage: ((slowRenders / totalRenders) * 100).toFixed(1),
+      bundleMetrics: this.bundleMetrics
+    };
+  }
+
+  /**
+   * Get slowest components
+   */
+  getSlowestComponents(limit: number = 5) {
+    return this.metrics
+      .sort((a, b) => b.renderTime - a.renderTime)
+      .slice(0, limit)
+      .map(m => ({
+        name: m.componentName,
+        renderTime: m.renderTime.toFixed(2),
+        timestamp: new Date().toISOString()
+      }));
+  }
+
+  /**
+   * Clear metrics
+   */
+  clear() {
+    this.metrics = [];
+    this.bundleMetrics = [];
+  }
+
+  /**
+   * Export metrics for analysis
+   */
+  exportMetrics() {
+    return {
+      metrics: this.metrics,
+      bundleMetrics: this.bundleMetrics,
+      summary: this.getPerformanceSummary()
+    };
   }
 }
 
-// Export singleton instance
+// Global performance monitor instance
 export const performanceMonitor = new PerformanceMonitor();
 
-// Auto-start monitoring in development
-if (import.meta.env.DEV) {
-  performanceMonitor.startMonitoring();
-} 
+/**
+ * Higher-order component for performance tracking
+ */
+export function withPerformanceTracking<P extends object>(
+  WrappedComponent: React.ComponentType<P>,
+  componentName?: string
+) {
+  const displayName = componentName || WrappedComponent.displayName || WrappedComponent.name || 'Component';
+
+  const PerformanceTrackedComponent = React.memo<P>((props) => {
+    const startTime = performance.now();
+    
+    const result = React.createElement(WrappedComponent, props);
+    
+    const renderTime = performance.now() - startTime;
+    performanceMonitor.trackComponentRender(displayName, renderTime, props);
+    
+    return result;
+  });
+
+  PerformanceTrackedComponent.displayName = `withPerformanceTracking(${displayName})`;
+  
+  return PerformanceTrackedComponent;
+}
+
+/**
+ * Hook for tracking custom performance metrics
+ */
+export function usePerformanceTracking(componentName: string) {
+  const startTime = useRef(performance.now());
+  
+  useEffect(() => {
+    const renderTime = performance.now() - startTime.current;
+    performanceMonitor.trackComponentRender(componentName, renderTime);
+    startTime.current = performance.now();
+  });
+}
+
+/**
+ * Track user interactions for performance analysis
+ */
+export function trackUserInteraction(action: string, data?: Record<string, any>) {
+  if (!performanceMonitor['isEnabled']) return;
+
+  const interaction = {
+    action,
+    timestamp: performance.now(),
+    data: data || {}
+  };
+
+  // Store in localStorage for analysis
+  const interactions = JSON.parse(localStorage.getItem('circles-user-interactions') || '[]');
+  interactions.push(interaction);
+  
+  // Keep only last 100 interactions
+  if (interactions.length > 100) {
+    interactions.splice(0, interactions.length - 100);
+  }
+  
+  localStorage.setItem('circles-user-interactions', JSON.stringify(interactions));
+}
+
+/**
+ * Get bundle size information
+ */
+export function getBundleInfo() {
+  const bundles = performance.getEntriesByType('resource');
+  const jsBundles = bundles.filter(bundle => 
+    bundle.name.includes('.js') && bundle.name.includes('assets')
+  );
+
+  return jsBundles.map(bundle => ({
+    name: bundle.name.split('/').pop() || 'unknown',
+    size: (bundle as any).transferSize || 0,
+    loadTime: bundle.duration || 0
+  }));
+}
+
+// Auto-track bundle loading
+if (typeof window !== 'undefined') {
+  window.addEventListener('load', () => {
+    const bundleInfo = getBundleInfo();
+    bundleInfo.forEach(bundle => {
+      performanceMonitor.trackBundleLoad(bundle.name, bundle.size, bundle.loadTime);
+    });
+  });
+}
+
+export default performanceMonitor; 
