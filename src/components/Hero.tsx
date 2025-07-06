@@ -620,9 +620,6 @@ const Hero: React.FC<HeroProps> = ({ setCurrentView }) => {
           </div>
         </div>
       </div>
-      
-      {/* Beautiful Gradient Fade Transition to Next Section */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent via-black/80 to-black pointer-events-none"></div>
     </section>
   );
 };

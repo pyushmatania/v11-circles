@@ -1,19 +1,13 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-<<<<<<< Updated upstream
-import { Home, BarChart3, Film, Users, Bell, Search, User, LogIn, LogOut, LayoutDashboard, ShoppingBag, ChevronDown, ChevronUp, BarChart, GitCompareArrows as ArrowsCompare, Newspaper, MoreHorizontal, Sun, Moon, Heart, Bookmark, Wallet, HelpCircle, Music, Tv, TrendingUp } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
-=======
 import { Home, BarChart3, Film, Users, Bell, User, LogIn, LogOut, LayoutDashboard, ShoppingBag, ChevronDown, ChevronUp, BarChart, GitCompareArrows as ArrowsCompare, Newspaper, MoreHorizontal, Sun, Moon } from 'lucide-react';
 import { useTheme } from './ThemeContext';
->>>>>>> Stashed changes
 import { useAuth } from './auth/AuthProvider';
 import SearchBar from './SearchBar';
 import NotificationDropdown from './NotificationDropdown';
 import ProjectDetailModal from './ProjectDetailModal';
 import { Project } from '../types';
 import MobileBottomBar from './MobileBottomBar';
-import useIsMobile from '../hooks/useIsMobile';
 
 interface NavigationProps {
   currentView: 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search';
@@ -21,13 +15,8 @@ interface NavigationProps {
   onAuthRequired: (mode?: 'login' | 'register') => boolean;
 }
 
-<<<<<<< Updated upstream
-const Navigation: React.FC<NavigationProps> = React.memo(({ currentView, setCurrentView, onAuthRequired }) => {
-  const [scrollY, setScrollY] = useState(0);
-=======
 const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, onAuthRequired }) => {
 
->>>>>>> Stashed changes
   const [isScrolled, setIsScrolled] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -36,11 +25,6 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
   const [initialTab, setInitialTab] = useState<'overview' | 'invest'>('overview');
   const { theme, toggleTheme } = useTheme();
   const { user, isAuthenticated, logout } = useAuth();
-  const isMobile = useIsMobile();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const mainNavItems = [
     { id: 'home', label: 'Home', icon: Home, requiresAuth: false },
@@ -56,26 +40,6 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
     { id: 'news', label: 'News', icon: Newspaper }
   ];
 
-  // Memoized navigation items
-  const navigationItems = useMemo(() => [
-    { id: 'home', label: 'Home', icon: Home, href: '#home' },
-    { id: 'browse', label: 'Browse', icon: Film, href: '#browse' },
-    { id: 'portfolio', label: 'Portfolio', icon: BarChart, href: '#portfolio' },
-    { id: 'watchlist', label: 'Watchlist', icon: Heart, href: '#watchlist' },
-    { id: 'bookmarks', label: 'Bookmarks', icon: Bookmark, href: '#bookmarks' },
-    { id: 'wallet', label: 'Wallet', icon: Wallet, href: '#wallet' },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3, href: '#analytics' },
-    { id: 'help', label: 'Help', icon: HelpCircle, href: '#help' }
-  ], []);
-
-  // Memoized project categories
-  const projectCategories = useMemo(() => [
-    { id: 'films', label: 'Films', icon: Film, count: 156 },
-    { id: 'music', label: 'Music', icon: Music, count: 89 },
-    { id: 'webseries', label: 'Web Series', icon: Tv, count: 234 },
-    { id: 'trending', label: 'Trending', icon: TrendingUp, count: 45 }
-  ], []);
-
   // Handle scroll events
   useEffect(() => {
     const handleScroll = () => {
@@ -88,46 +52,6 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
     
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Optimized event handlers with useCallback
-  const handleMenuToggle = useCallback(() => {
-    setIsMenuOpen(!isMenuOpen);
-  }, [isMenuOpen]);
-
-  const handleSearchToggle = useCallback(() => {
-    setIsSearchOpen(!isSearchOpen);
-  }, [isSearchOpen]);
-
-  const handleNotificationsToggle = useCallback(() => {
-    setIsNotificationsOpen(!isNotificationsOpen);
-  }, [isNotificationsOpen]);
-
-  const handleProfileToggle = useCallback(() => {
-    setIsProfileOpen(!isProfileOpen);
-  }, [isProfileOpen]);
-
-  const handleThemeToggle = useCallback(() => {
-    toggleTheme();
-  }, [toggleTheme]);
-
-  const handleNavigationClick = useCallback((href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-    setIsMenuOpen(false);
-  }, []);
-
-  const handleCategoryClick = useCallback((categoryId: string) => {
-    // Handle category navigation
-    console.log(`Navigating to category: ${categoryId}`);
-    setIsMenuOpen(false);
-  }, []);
-
-  // Memoized theme icon
-  const themeIcon = useMemo(() => {
-    return theme === 'light' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />;
-  }, [theme]);
 
   const handleItemClick = (itemId: string) => {
     if (itemId === 'theme') {
@@ -809,6 +733,6 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
       />
     </>
   );
-});
+};
 
 export default Navigation;

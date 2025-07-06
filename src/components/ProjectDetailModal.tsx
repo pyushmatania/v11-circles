@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, 
@@ -22,11 +22,7 @@ import {
   TrendingUp,
   DollarSign,
   Shield,
-  CheckCircle,
-  BarChart3,
-  Pause,
-  Volume2,
-  VolumeX
+  CheckCircle
 } from 'lucide-react';
 import { Project } from '../types';
 import { useTheme } from './ThemeContext';
@@ -38,15 +34,13 @@ interface ProjectDetailModalProps {
   project: Project | null;
   isOpen: boolean;
   onClose: () => void;
-  initialTab?: 'overview' | 'invest';
+  initialTab?: 'overview' | 'script' | 'cast' | 'perks' | 'invest';
   onTrackInvestment?: () => void;
 }
 
-const ProjectDetailModal: React.FC<ProjectDetailModalProps> = React.memo(({ project, isOpen, onClose, initialTab = 'overview', onTrackInvestment: _onTrackInvestment }) => {
+const ProjectDetailModal: React.FC<ProjectDetailModalProps> = ({ project, isOpen, onClose, initialTab = 'overview', onTrackInvestment: _onTrackInvestment }) => {
   void _onTrackInvestment;
-  const { theme } = useTheme();
-  const isMobile = useIsMobile();
-  const [activeTab, setActiveTab] = useState(initialTab);
+  const [activeTab, setActiveTab] = useState<'overview' | 'script' | 'cast' | 'perks' | 'invest'>(initialTab);
   const [selectedPerkTier, setSelectedPerkTier] = useState<string>('supporter');
   const [investmentAmount, setInvestmentAmount] = useState<number>(25000);
   const [investStatus, setInvestStatus] = useState<'idle' | 'loading' | 'success'>('idle');
@@ -57,24 +51,65 @@ const ProjectDetailModal: React.FC<ProjectDetailModalProps> = React.memo(({ proj
   const [cardNumber, setCardNumber] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardCvv, setCardCvv] = useState('');
+  const { theme } = useTheme();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [showTrailer, setShowTrailer] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const videoIdMatch = (project?.trailer || '').match(/(?:watch\?v=|embed\/)([^&]+)/);
   const videoId = videoIdMatch ? videoIdMatch[1] : '';
 
-  // Memoized project details
-  const projectDetails = useMemo(() => {
-    if (!project) return null;
-    
-    return {
-      trailer: project.trailer
-        ? project.trailer.replace('watch?v=', 'embed/')
-        : 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-      script: `FADE IN:
+  const handleInvest = () => {
+    if (investStatus !== 'idle') return;
+    try {
+      navigator.vibrate?.(50);
+    } catch {
+      /* ignore */
+    }
+    setInvestStatus('loading');
+    setTimeout(() => {
+      setInvestStatus('success');
+      confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
+      try {
+        localStorage.setItem('lastInvestment', JSON.stringify({ project: project?.title, amount: investmentAmount }));
+      } catch {
+        /* ignore */
+      }
+      toast.success('Investment Confirmed', `You invested ₹${investmentAmount.toLocaleString()}`, 2500);
+      setTimeout(() => {
+        setInvestStatus('idle');
+        setShowMobileInvest(false);
+      }, 2500);
+    }, 2000);
+  };
+
+  // Prevent background scrolling and reset tab when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab(initialTab);
+      setShowTrailer(false);
+      setVideoLoaded(false);
+      document.body.classList.add('modal-open');
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, initialTab, project]);
+
+  if (!project) return null;
+
+  // Detailed data for the project
+  const projectDetails = {
+    trailer: project.trailer
+      ? project.trailer.replace('watch?v=', 'embed/')
+      : 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    script: `FADE IN:
 
 EXT. MUMBAI SKYLINE - NIGHT
 
@@ -111,265 +146,152 @@ Maya's eyes widen in terror as the walls begin to close in...
 FADE TO BLACK.
 
 TITLE CARD: "NEON NIGHTS"`,
-      
-      cast: [
-        {
-          name: "Rajkummar Rao",
-          role: "Arjun - Cyber Detective",
-          image: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=200",
-          bio: "National Award-winning actor known for versatile performances in Newton, Stree, and The White Tiger."
-        },
-        {
-          name: "Taapsee Pannu",
-          role: "Maya - Elite Hacker",
-          image: "https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=200",
-          bio: "Acclaimed actress from Pink, Thappad, and Haseen Dillruba, known for strong female characters."
-        },
-        {
-          name: "Nawazuddin Siddiqui",
-          role: "The Architect - AI Mastermind",
-          image: "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=200",
-          bio: "Internationally recognized actor from Sacred Games, Gangs of Wasseypur, and The Lunchbox."
-        },
-        {
-          name: "Radhika Apte",
-          role: "Dr. Priya - Neural Scientist",
-          image: "https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=200",
-          bio: "Versatile performer known for Andhadhun, Sacred Games, and international projects."
-        }
-      ],
-
-      crew: [
-        { name: "Arjun Menon", role: "Director", experience: "Tumhari Sulu, Helicopter Eela" },
-        { name: "Ritesh Shah", role: "Writer", experience: "Pink, Airlift, Raid" },
-        { name: "Amit Trivedi", role: "Music Director", experience: "Dev.D, Queen, Andhadhun" },
-        { name: "Anil Mehta", role: "Cinematographer", experience: "Lagaan, Taare Zameen Par" }
-      ],
-
-      productionDetails: {
-        budget: "₹50 Crores",
-        shootingLocations: ["Mumbai", "Pune", "Goa", "London"],
-        shootingSchedule: "March 2024 - August 2024",
-        postProduction: "September 2024 - December 2024",
-        releaseDate: "January 2025",
-        distributors: ["PVR Pictures", "Netflix India"],
-        certifications: ["U/A", "CBFC Approved"]
+    
+    cast: [
+      {
+        name: "Rajkummar Rao",
+        role: "Arjun - Cyber Detective",
+        image: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=200",
+        bio: "National Award-winning actor known for versatile performances in Newton, Stree, and The White Tiger."
       },
-
-      perkTiers: [
-        {
-          id: 'supporter',
-          name: 'Supporter',
-          minAmount: 10000,
-          color: 'from-gray-500 to-gray-600',
-          icon: <Star className="w-6 h-6" />,
-          perks: [
-            'Digital poster collection (5 exclusive designs)',
-            'Early access to trailer (2 weeks before public)',
-            'Behind-the-scenes photo gallery',
-            'Exclusive project updates via email',
-            'Digital certificate of investment',
-            'Access to investor-only community forum'
-          ],
-          estimatedValue: '₹2,500'
-        },
-        {
-          id: 'backer',
-          name: 'Backer',
-          minAmount: 25000,
-          color: 'from-blue-500 to-cyan-500',
-          icon: <Gift className="w-6 h-6" />,
-          perks: [
-            'All Supporter perks',
-            'Signed physical poster by lead actors',
-            'Behind-the-scenes video content (30 mins)',
-            'Digital soundtrack with bonus tracks',
-            'Virtual meet & greet with cast (1 hour)',
-            'Exclusive making-of documentary',
-            'Priority booking for premiere'
-          ],
-          estimatedValue: '₹8,000',
-          popular: true
-        },
-        {
-          id: 'producer',
-          name: 'Producer',
-          minAmount: 50000,
-          color: 'from-purple-500 to-pink-500',
-          icon: <Crown className="w-6 h-6" />,
-          perks: [
-            'All Backer perks',
-            'Name in end credits as Associate Producer',
-            'Premiere screening invite (2 tickets)',
-            'Set visit during filming (1 day)',
-            'Signed script copy by director',
-            'Exclusive merchandise package',
-            'Private screening for friends/family (up to 10 people)',
-            'Revenue sharing certificate'
-          ],
-          estimatedValue: '₹15,000'
-        },
-        {
-          id: 'executive',
-          name: 'Executive Producer',
-          minAmount: 100000,
-          color: 'from-yellow-500 to-orange-500',
-          icon: <Award className="w-6 h-6" />,
-          perks: [
-            'All Producer perks',
-            'Executive Producer credit in opening titles',
-            'Multiple set visits with cast interaction',
-            'Invitation to film festivals and award shows',
-            'Personalized video message from lead actors',
-            'Original costume piece or prop from the film',
-            'Dinner with cast and crew',
-            'Revenue sharing up to 15% of investment',
-            'Consultation on marketing strategy'
-          ],
-          estimatedValue: '₹35,000'
-        }
-      ],
-
-      investmentDetails: {
-        minimumInvestment: 10000,
-        maximumInvestment: 1000000,
-        expectedReturns: '12-18%',
-        paymentMethods: ['UPI', 'Net Banking', 'Credit Card', 'Debit Card'],
-        investmentProtection: 'SEBI Registered',
-        taxBenefits: 'Section 80C eligible',
-        lockInPeriod: '18 months'
+      {
+        name: "Taapsee Pannu",
+        role: "Maya - Elite Hacker",
+        image: "https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=200",
+        bio: "Acclaimed actress from Pink, Thappad, and Haseen Dillruba, known for strong female characters."
       },
+      {
+        name: "Nawazuddin Siddiqui",
+        role: "The Architect - AI Mastermind",
+        image: "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=200",
+        bio: "Internationally recognized actor from Sacred Games, Gangs of Wasseypur, and The Lunchbox."
+      },
+      {
+        name: "Radhika Apte",
+        role: "Dr. Priya - Neural Scientist",
+        image: "https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=200",
+        bio: "Versatile performer known for Andhadhun, Sacred Games, and international projects."
+      }
+    ],
 
-      riskFactors: [
-        'Film industry investments carry market risks',
-        'Returns depend on box office performance',
-        'Release dates may be subject to change',
-        'Regulatory approvals required'
-      ]
-    };
-  }, [project]);
+    crew: [
+      { name: "Arjun Menon", role: "Director", experience: "Tumhari Sulu, Helicopter Eela" },
+      { name: "Ritesh Shah", role: "Writer", experience: "Pink, Airlift, Raid" },
+      { name: "Amit Trivedi", role: "Music Director", experience: "Dev.D, Queen, Andhadhun" },
+      { name: "Anil Mehta", role: "Cinematographer", experience: "Lagaan, Taare Zameen Par" }
+    ],
 
-  // Memoized tabs configuration
-  const tabs = useMemo(() => [
+    productionDetails: {
+      budget: "₹50 Crores",
+      shootingLocations: ["Mumbai", "Pune", "Goa", "London"],
+      shootingSchedule: "March 2024 - August 2024",
+      postProduction: "September 2024 - December 2024",
+      releaseDate: "January 2025",
+      distributors: ["PVR Pictures", "Netflix India"],
+      certifications: ["U/A", "CBFC Approved"]
+    },
+
+    perkTiers: [
+      {
+        id: 'supporter',
+        name: 'Supporter',
+        minAmount: 10000,
+        color: 'from-gray-500 to-gray-600',
+        icon: <Star className="w-6 h-6" />,
+        perks: [
+          'Digital poster collection (5 exclusive designs)',
+          'Early access to trailer (2 weeks before public)',
+          'Behind-the-scenes photo gallery',
+          'Exclusive project updates via email',
+          'Digital certificate of investment',
+          'Access to investor-only community forum'
+        ],
+        estimatedValue: '₹2,500'
+      },
+      {
+        id: 'backer',
+        name: 'Backer',
+        minAmount: 25000,
+        color: 'from-blue-500 to-cyan-500',
+        icon: <Gift className="w-6 h-6" />,
+        perks: [
+          'All Supporter perks',
+          'Signed physical poster by lead actors',
+          'Behind-the-scenes video content (30 mins)',
+          'Digital soundtrack with bonus tracks',
+          'Virtual meet & greet with cast (1 hour)',
+          'Exclusive making-of documentary',
+          'Priority booking for premiere'
+        ],
+        estimatedValue: '₹8,000',
+        popular: true
+      },
+      {
+        id: 'producer',
+        name: 'Producer',
+        minAmount: 50000,
+        color: 'from-purple-500 to-pink-500',
+        icon: <Crown className="w-6 h-6" />,
+        perks: [
+          'All Backer perks',
+          'Name in end credits as Associate Producer',
+          'Premiere screening invite (2 tickets)',
+          'Set visit during filming (1 day)',
+          'Signed script copy by director',
+          'Exclusive merchandise package',
+          'Private screening for friends/family (up to 10 people)',
+          'Revenue sharing certificate'
+        ],
+        estimatedValue: '₹15,000'
+      },
+      {
+        id: 'executive',
+        name: 'Executive Producer',
+        minAmount: 100000,
+        color: 'from-yellow-500 to-orange-500',
+        icon: <Award className="w-6 h-6" />,
+        perks: [
+          'All Producer perks',
+          'Executive Producer credit in opening titles',
+          'Multiple set visits with cast interaction',
+          'Invitation to film festivals and award shows',
+          'Personalized video message from lead actors',
+          'Original costume piece or prop from the film',
+          'Dinner with cast and crew',
+          'Revenue sharing up to 15% of investment',
+          'Consultation on marketing strategy'
+        ],
+        estimatedValue: '₹35,000'
+      }
+    ],
+
+    investmentDetails: {
+      minimumInvestment: 10000,
+      maximumInvestment: 1000000,
+      expectedReturns: '12-18%',
+      paymentMethods: ['UPI', 'Net Banking', 'Credit Card', 'Debit Card'],
+      investmentProtection: 'SEBI Registered',
+      taxBenefits: 'Section 80C eligible',
+      lockInPeriod: '18 months'
+    },
+
+    riskFactors: [
+      'Film industry investments carry market risks',
+      'Returns depend on box office performance',
+      'Release dates may be subject to change',
+      'Regulatory approvals required'
+    ]
+  };
+
+  const tabs = [
     { id: 'overview', label: 'Overview', icon: Eye },
     { id: 'script', label: 'Script Preview', icon: Film },
     { id: 'cast', label: 'Cast & Crew', icon: Users },
     { id: 'perks', label: 'Perks & Rewards', icon: Gift },
     { id: 'invest', label: 'Investment', icon: TrendingUp }
-  ], []);
+  ];
 
-  // Memoized selected perk
-  const selectedPerk = useMemo(() => {
-    if (!projectDetails) return null;
-    return projectDetails.perkTiers.find(tier => tier.id === selectedPerkTier);
-  }, [projectDetails, selectedPerkTier]);
-
-  // Optimized event handlers with useCallback
-  const handleInvest = useCallback(() => {
-    if (investStatus !== 'idle') return;
-    try {
-      navigator.vibrate?.(50);
-    } catch {
-      /* ignore */
-    }
-    setInvestStatus('loading');
-    setTimeout(() => {
-      setInvestStatus('success');
-      confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
-      try {
-        localStorage.setItem('lastInvestment', JSON.stringify({ project: project?.title, amount: investmentAmount }));
-      } catch {
-        /* ignore */
-      }
-      toast.success('Investment Confirmed', `You invested ₹${investmentAmount.toLocaleString()}`, 2500);
-      setTimeout(() => {
-        setInvestStatus('idle');
-        setShowMobileInvest(false);
-      }, 2500);
-    }, 2000);
-  }, [project, investmentAmount, investStatus, toast]);
-
-  const handleClose = useCallback(() => {
-    onClose();
-  }, [onClose]);
-
-  const handleTabChange = useCallback((tabId: typeof activeTab) => {
-    setActiveTab(tabId);
-  }, []);
-
-  const handleMobileInvestClick = useCallback(() => {
-    try { 
-      navigator.vibrate?.(50); 
-    } catch {
-      /* ignore */
-    }
-    setShowMobileInvest(true);
-  }, []);
-
-  const handleMobileInvestClose = useCallback(() => {
-    setShowMobileInvest(false);
-  }, []);
-
-  const handleInvestmentAmountChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setInvestmentAmount(Number(e.target.value));
-  }, []);
-
-  const handlePaymentMethodChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    setPaymentMethod(e.target.value as 'upi' | 'netbanking' | 'card');
-  }, []);
-
-  const handleUpiIdChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setUpiId(e.target.value);
-  }, []);
-
-  const handleBankNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setBankName(e.target.value);
-  }, []);
-
-  const handleCardNumberChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setCardNumber(e.target.value);
-  }, []);
-
-  const handleCardExpiryChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setCardExpiry(e.target.value);
-  }, []);
-
-  const handleCardCvvChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setCardCvv(e.target.value);
-  }, []);
-
-  const handlePlayPause = useCallback(() => {
-    setIsPlaying(!isPlaying);
-  }, [isPlaying]);
-
-  const handleMuteToggle = useCallback(() => {
-    setIsMuted(!isMuted);
-  }, [isMuted]);
-
-  const handleIframeLoad = useCallback(() => {
-    setIsLoading(false);
-  }, []);
-
-  // Prevent background scrolling and reset tab when modal is open
-  useEffect(() => {
-    if (isOpen) {
-      setActiveTab(initialTab);
-      setShowTrailer(false);
-      setVideoLoaded(false);
-      document.body.classList.add('modal-open');
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.classList.remove('modal-open');
-      document.body.style.overflow = 'unset';
-    }
-
-    return () => {
-      document.body.classList.remove('modal-open');
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen, initialTab, project]);
-
-  if (!project) return null;
+  const selectedPerk = projectDetails.perkTiers.find(tier => tier.id === selectedPerkTier);
 
   return (
     <AnimatePresence>
@@ -380,7 +302,7 @@ TITLE CARD: "NEON NIGHTS"`,
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={handleClose}
+            onClick={onClose}
             className={`absolute inset-0 ${
               theme === 'light' 
                 ? 'bg-white/80 backdrop-blur-sm' 
@@ -419,7 +341,7 @@ TITLE CARD: "NEON NIGHTS"`,
               
               {/* Close Button */}
               <button
-                onClick={handleClose}
+                onClick={onClose}
                 className={`absolute top-4 right-4 p-2 rounded-full transition-colors z-10 ${
                   theme === 'light'
                     ? 'bg-white/50 text-gray-700 hover:bg-white/70'
@@ -468,7 +390,7 @@ TITLE CARD: "NEON NIGHTS"`,
 
                 {!isMobile && (
                   <button
-                    onClick={handleMobileInvestClick}
+                    onClick={handleInvest}
                     disabled={investStatus !== 'idle'}
                     className="mt-4 w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold hover:from-purple-500 hover:to-blue-500 disabled:opacity-50 transition-all"
                   >
@@ -516,7 +438,7 @@ TITLE CARD: "NEON NIGHTS"`,
                       {tabs.map((tab) => (
                         <button
                           key={tab.id}
-                          onClick={() => handleTabChange(tab.id as typeof activeTab)}
+                          onClick={() => setActiveTab(tab.id as typeof activeTab)}
                           className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 text-left ${
                             activeTab === tab.id
                               ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg'
@@ -600,7 +522,7 @@ TITLE CARD: "NEON NIGHTS"`,
                           </div>
                         ))}
                         <button
-                          onClick={() => handleTabChange('perks')}
+                          onClick={() => setActiveTab('perks')}
                           className="w-full mt-2 py-2 text-sm text-purple-400 hover:text-purple-300 transition-colors"
                         >
                           View All Tiers →
@@ -728,7 +650,7 @@ TITLE CARD: "NEON NIGHTS"`,
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             className={`absolute inset-0 w-full h-full transition-opacity ${videoLoaded ? "opacity-100" : "opacity-0"}`}
-            onLoad={handleIframeLoad}
+            onLoad={() => setVideoLoaded(true)}
           />
         )}
                     </div>
@@ -1050,7 +972,7 @@ TITLE CARD: "NEON NIGHTS"`,
                             <input
                               type="number"
                               value={investmentAmount}
-                              onChange={handleInvestmentAmountChange}
+                              onChange={(e) => setInvestmentAmount(Number(e.target.value))}
                               min={projectDetails.investmentDetails.minimumInvestment}
                               max={projectDetails.investmentDetails.maximumInvestment}
                               className={`w-full pl-8 pr-4 py-3 rounded-xl border focus:outline-none focus:border-purple-500/50 ${
@@ -1190,12 +1112,18 @@ TITLE CARD: "NEON NIGHTS"`,
             animate={{ y: 0 }}
             exit={{ y: 80 }}
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-            onClick={handleMobileInvestClick}
+            onClick={() => {
+              try { navigator.vibrate?.(50); } catch {
+                /* ignore */
+              }
+              setShowMobileInvest(true);
+            }}
             className="fixed bottom-4 left-4 right-4 z-[9998] px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold"
           >
             Invest Now
           </motion.button>
         )}
+
         {isMobile && showMobileInvest && (
           <AnimatePresence>
             <motion.div
@@ -1210,7 +1138,7 @@ TITLE CARD: "NEON NIGHTS"`,
                   <CheckCircle className="w-16 h-16 text-green-400" />
                   <p className="text-white text-lg">Investment Successful!</p>
                   <button
-                    onClick={handleMobileInvestClose}
+                    onClick={() => setShowMobileInvest(false)}
                     className="w-full h-12 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold text-lg"
                   >
                     Close
@@ -1219,7 +1147,7 @@ TITLE CARD: "NEON NIGHTS"`,
               ) : (
                 <div className="flex-1 flex flex-col">
                   <button
-                    onClick={handleMobileInvestClose}
+                    onClick={() => setShowMobileInvest(false)}
                     className="self-end text-white mb-4"
                   >
                     <X className="w-6 h-6" />
@@ -1229,13 +1157,13 @@ TITLE CARD: "NEON NIGHTS"`,
                     type="number"
                     min={500}
                     value={investmentAmount}
-                    onChange={handleInvestmentAmountChange}
+                    onChange={(e) => setInvestmentAmount(Number(e.target.value))}
                     className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white mb-6"
                   />
                   <h4 className="text-white text-lg font-semibold mb-2">Payment Method</h4>
                   <select
                     value={paymentMethod}
-                    onChange={handlePaymentMethodChange}
+                    onChange={(e) => setPaymentMethod(e.target.value as 'upi' | 'netbanking' | 'card')}
                     className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white mb-4"
                   >
                     <option value="upi">UPI</option>
@@ -1247,7 +1175,7 @@ TITLE CARD: "NEON NIGHTS"`,
                       type="text"
                       placeholder="UPI ID"
                       value={upiId}
-                      onChange={handleUpiIdChange}
+                      onChange={(e) => setUpiId(e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white mb-4"
                     />
                   ) : paymentMethod === 'netbanking' ? (
@@ -1255,7 +1183,7 @@ TITLE CARD: "NEON NIGHTS"`,
                       type="text"
                       placeholder="Bank Name"
                       value={bankName}
-                      onChange={handleBankNameChange}
+                      onChange={(e) => setBankName(e.target.value)}
                       className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white mb-4"
                     />
                   ) : (
@@ -1264,7 +1192,7 @@ TITLE CARD: "NEON NIGHTS"`,
                         type="text"
                         placeholder="Card Number"
                         value={cardNumber}
-                        onChange={handleCardNumberChange}
+                        onChange={(e) => setCardNumber(e.target.value)}
                         className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white"
                       />
                       <div className="flex gap-4">
@@ -1272,18 +1200,18 @@ TITLE CARD: "NEON NIGHTS"`,
                           type="text"
                           placeholder="MM/YY"
                           value={cardExpiry}
-                          onChange={handleCardExpiryChange}
+                          onChange={(e) => setCardExpiry(e.target.value)}
                           className="flex-1 px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white"
                         />
                         <input
                           type="text"
-                          placeholder="CVV"
-                          value={cardCvv}
-                          onChange={handleCardCvvChange}
-                          className="w-20 px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white"
-                        />
-                      </div>
+                        placeholder="CVV"
+                        value={cardCvv}
+                        onChange={(e) => setCardCvv(e.target.value)}
+                        className="w-20 px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white"
+                      />
                     </div>
+                  </div>
                   )}
                   <div className="mt-4 space-y-2 text-sm text-white/80">
                     <div className="flex justify-between">
@@ -1354,9 +1282,8 @@ TITLE CARD: "NEON NIGHTS"`,
             </motion.div>
           )}
         </AnimatePresence>
-        {'}'}
-    </AnimatePresence>
+      </AnimatePresence>
   );
-});
+};
 
 export default ProjectDetailModal;

@@ -7,11 +7,8 @@ import { extendedProjects } from '../data/extendedProjects';
 import ProjectDetailModal from './ProjectDetailModal';
 import { Project } from '../types';
 import useIsMobile from '../hooks/useIsMobile';
-import { useTheme } from './ThemeProvider';
 
 interface ProjectCatalogProps {
-  projects: Project[];
-  onProjectClick: (project: Project) => void;
   onTrackInvestment?: () => void;
 }
 
@@ -63,121 +60,16 @@ const FILTER_OPTIONS = {
   ]
 } as const;
 
-const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({ 
-  onProjectClick, 
-  onTrackInvestment: _onTrackInvestment 
-}) => {
-  const { theme } = useTheme();
-  const isMobile = useIsMobile();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedType, setSelectedType] = useState<string>('all');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) => {
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [initialTab, setInitialTab] = useState<'overview' | 'invest'>('overview');
+  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'cards'>('cards');
   const [showFilters, setShowFilters] = useState(false);
-  const [showAllProjects, setShowAllProjects] = useState(true);
-
-  // Memoized filtered projects
-  const filteredProjects = useMemo(() => {
-    return projects.filter(project => {
-      const matchesSearch = project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           project.genre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           project.director?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           project.artist?.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      const matchesCategory = selectedCategory === 'all' || project.category === selectedCategory;
-      const matchesType = selectedType === 'all' || project.type === selectedType;
-      
-      return matchesSearch && matchesCategory && matchesType;
-    });
-  }, [projects, searchQuery, selectedCategory, selectedType]);
-
-  // Memoized categories
-  const categories = useMemo(() => {
-    const uniqueCategories = [...new Set(projects.map(p => p.category))];
-    return [
-      { id: 'all', label: 'All Categories' },
-      ...uniqueCategories.map(cat => ({ id: cat, label: cat }))
-    ];
-  }, [projects]);
-
-  // Memoized types
-  const types = useMemo(() => {
-    const uniqueTypes = [...new Set(projects.map(p => p.type))];
-    return [
-      { id: 'all', label: 'All Types' },
-      ...uniqueTypes.map(type => ({ id: type, label: type }))
-    ];
-  }, [projects]);
-
-  // Memoized project groups by category
-  const projectGroups = useMemo(() => {
-    if (!showAllProjects && searchQuery) {
-      return { 'Search Results': filteredProjects };
-    }
-
-    const groups: Record<string, Project[]> = {};
-    projects.forEach(project => {
-      if (!groups[project.category]) {
-        groups[project.category] = [];
-      }
-      groups[project.category].push(project);
-    });
-    return groups;
-  }, [projects, showAllProjects, searchQuery, filteredProjects]);
-
-  // Optimized event handlers with useCallback
-  const handleSearchChange = useCallback((query: string) => {
-    setSearchQuery(query);
-    setShowAllProjects(!query);
-  }, []);
-
-  const handleCategoryChange = useCallback((category: string) => {
-    setSelectedCategory(category);
-  }, []);
-
-  const handleTypeChange = useCallback((type: string) => {
-    setSelectedType(type);
-  }, []);
-
-  const handleViewModeChange = useCallback((mode: 'grid' | 'list') => {
-    setViewMode(mode);
-  }, []);
-
-  const handleFiltersToggle = useCallback(() => {
-    setShowFilters(!showFilters);
-  }, [showFilters]);
-
-  // Modal handlers
-  const openModal = useCallback((project: Project, tab: 'overview' | 'script' | 'cast' | 'perks' | 'invest' = 'overview') => {
-    setSelectedProject(project);
-    setInitialTab(tab);
-    setIsModalOpen(true);
-  }, []);
-
-  const closeModal = useCallback(() => {
-    setIsModalOpen(false);
-    setSelectedProject(null);
-  }, []);
-
-  const handleProjectClick = useCallback((project: Project) => {
-    openModal(project);
-  }, [openModal]);
-
-  const handleSectionClick = useCallback((category: string) => {
-    if (isMobile) {
-      // Scroll to section on mobile
-      const element = document.getElementById(`section-${category}`);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else {
-      // Filter by category on desktop
-      setSelectedCategory(category);
-      setShowAllProjects(false);
-    }
-  }, [isMobile]);
-
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const isMobile = useIsMobile();
+  
   // Auto-sliding hero carousel state
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
@@ -186,17 +78,14 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
   const [touchStartX, setTouchStartX] = useState(0);
   
   // Filter states
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedLanguage, setSelectedLanguage] = useState<string>('all');
   const [selectedGenre, setSelectedGenre] = useState<string>('all');
   const [fundingRange, setFundingRange] = useState<[number, number]>([0, 100]);
   const [sortBy, setSortBy] = useState<string>('trending');
+  const [showAllProjects, setShowAllProjects] = useState<string | null>(null);
 
-<<<<<<< Updated upstream
-  // Modal state
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [initialTab, setInitialTab] = useState<'overview' | 'script' | 'cast' | 'perks' | 'invest'>('overview');
-=======
   // Memoized callback functions to prevent unnecessary re-renders
   const handleProjectClick = useCallback((project: Project, tab: 'overview' | 'invest' = 'overview') => {
     setSelectedProject(project);
@@ -322,7 +211,6 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
       featuredProjects
     };
   }, []);
->>>>>>> Stashed changes
 
   // Memoized callback functions for carousel controls
   const handleSlideChange = useCallback((index: number) => {
@@ -330,17 +218,12 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
   }, []);
 
   const nextSlide = useCallback(() => {
-<<<<<<< Updated upstream
-    setCurrentSlide(prev => (prev + 1) % featuredProjects.length);
-  }, []);
-=======
     setCurrentSlide((prev) => (prev + 1) % categorizedProjects.featuredProjects.length);
   }, [categorizedProjects.featuredProjects.length]);
->>>>>>> Stashed changes
 
   const prevSlide = useCallback(() => {
-    setCurrentSlide(prev => prev === 0 ? featuredProjects.length - 1 : prev - 1);
-  }, []);
+    setCurrentSlide(prev => prev === 0 ? categorizedProjects.featuredProjects.length - 1 : prev - 1);
+  }, [categorizedProjects.featuredProjects.length]);
 
   const clearFilters = useCallback(() => {
     setSelectedCategory('all');
@@ -349,61 +232,100 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
     setSelectedGenre('all');
     setFundingRange([0, 100]);
     setSortBy('trending');
-    setSearchQuery('');
-    setShowAllProjects(true);
+    setSearchTerm('');
+    setShowAllProjects(null);
   }, []);
 
+  const handleSectionClick = useCallback((sectionType: string) => {
+    setShowAllProjects(sectionType);
+    setSearchTerm('');
+    setShowFilters(false);
+
+    // Set appropriate filters based on section
+    switch (sectionType) {
+      case 'trending':
+        setSortBy('trending');
+        setSelectedCategory('all');
+        setSelectedType('all');
+        break;
+      case 'ending-soon':
+        setSortBy('ending-soon');
+        setSelectedCategory('all');
+        setSelectedType('all');
+        break;
+      case 'bollywood':
+        setSelectedCategory('bollywood');
+        setSelectedType('film');
+        break;
+      case 'music':
+        setSelectedType('music');
+        setSelectedCategory('all');
+        break;
+      case 'webseries':
+        setSelectedType('webseries');
+        setSelectedCategory('all');
+        break;
+      case 'regional':
+        setSelectedCategory('regional');
+        setSelectedType('all');
+        break;
+      case 'hollywood':
+        setSelectedCategory('hollywood');
+        setSelectedType('film');
+        break;
+      case 'high-rated':
+        setSortBy('rating');
+        setSelectedCategory('all');
+        setSelectedType('all');
+        break;
+      case 'new-releases':
+        setSortBy('newest');
+        setSelectedCategory('all');
+        setSelectedType('all');
+        break;
+      default:
+        break;
+    }
+  }, []);
+
+  // Auto-slide functionality
+  React.useEffect(() => {
+    if (isAutoPlaying && !isPaused) {
+      autoSlideRef.current = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % categorizedProjects.featuredProjects.length);
+      }, 2500);
+    }
+
+    return () => {
+      if (autoSlideRef.current) {
+        clearInterval(autoSlideRef.current);
+      }
+    };
+  }, [isAutoPlaying, isPaused, categorizedProjects.featuredProjects.length]);
+
   // Filter options
-  const languageOptions = FILTER_OPTIONS.languages;
-  const genreOptions = FILTER_OPTIONS.genres;
+  const categories = FILTER_OPTIONS.categories;
+  const types = FILTER_OPTIONS.types;
+  const languages = FILTER_OPTIONS.languages;
+  const genres = FILTER_OPTIONS.genres;
   const sortOptions = FILTER_OPTIONS.sortOptions;
 
   // Organize projects by categories for Netflix-style layout
-  const trendingProjects = extendedProjects
-    .filter(p => p.fundedPercentage > 70)
-    .sort((a, b) => b.fundedPercentage - a.fundedPercentage)
-    .slice(0, 10);
-
-  const bollywoodFilms = extendedProjects
-    .filter(p => p.type === 'film' && p.category === 'Bollywood')
-    .slice(0, 10);
-
-  const regionalContent = extendedProjects
-    .filter(p => p.category === 'Regional')
-    .slice(0, 10);
-
-  const musicProjects = extendedProjects
-    .filter(p => p.type === 'music')
-    .slice(0, 10);
-
-  const webSeries = extendedProjects
-    .filter(p => p.type === 'webseries')
-    .slice(0, 10);
-
-  const hollywoodProjects = extendedProjects
-    .filter(p => p.category === 'Hollywood')
-    .slice(0, 10);
-
-  const newReleases = extendedProjects
-    .filter(p => p.timeLeft && parseInt(p.timeLeft) < 15)
-    .slice(0, 10);
-
-  const highRatedProjects = extendedProjects
-    .filter(p => p.rating && p.rating >= 4.5)
-    .slice(0, 10);
-
-  const endingSoon = extendedProjects
-    .filter(p => p.timeLeft && parseInt(p.timeLeft) <= 7)
-    .slice(0, 10);
-
-  const featuredProjects = extendedProjects
-    .sort((a, b) => b.fundedPercentage - a.fundedPercentage)
-    .slice(0, 7);
+  const trendingProjects = categorizedProjects.trendingProjects;
+  const bollywoodFilms = categorizedProjects.bollywoodFilms;
+  const regionalContent = categorizedProjects.regionalContent;
+  const musicProjects = categorizedProjects.musicProjects;
+  const webSeries = categorizedProjects.webSeries;
+  const hollywoodProjects = categorizedProjects.hollywoodProjects;
+  const newReleases = categorizedProjects.newReleases;
+  const highRatedProjects = categorizedProjects.highRatedProjects;
+  const endingSoon = categorizedProjects.endingSoon;
+  const featuredProjects = categorizedProjects.featuredProjects;
 
   return (
     <div className="min-h-screen bg-black pb-[100px]">
       {/* Mobile Hero Carousel */}
-      {!searchQuery && !showAllProjects && (
+      {!searchTerm && !showAllProjects && (
         <div
           className="md:hidden relative h-72 overflow-hidden"
           onTouchStart={(e) => setTouchStartX(e.touches[0].clientX)}
@@ -454,7 +376,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
         </div>
       )}
       {/* Full-Screen Auto-Sliding Hero Carousel */}
-      {!searchQuery && !showAllProjects && (
+      {!searchTerm && !showAllProjects && (
         <div className="hidden md:block relative h-screen overflow-hidden">
           <AnimatePresence mode="wait">
             <motion.div
@@ -541,7 +463,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
 
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
                     <button
-                      onClick={() => confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } })}
+                      onClick={() => handleInvestClick(featuredProjects[currentSlide])}
                       className="flex items-center gap-3 px-8 py-4 bg-white text-black rounded-lg font-semibold text-lg hover:bg-gray-200 transition-all duration-300 hover:scale-105"
                     >
                       <Play className="w-6 h-6 fill-current" />
@@ -619,17 +541,17 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
           {isMobile && (
             <div className="flex justify-between md:hidden">
               <button
-                onClick={() => setShowFilters(!showFilters)}
+                onClick={() => setShowMobileSearch(!showMobileSearch)}
                 className="p-2 rounded-lg bg-gray-900 text-white"
               >
-                <Filter className="w-6 h-6" />
+                <Search className="w-6 h-6" />
               </button>
               <button
                 onClick={() => setShowFilters(!showFilters)}
                 className="relative p-2 rounded-lg bg-gray-900 text-white"
               >
                 <Filter className="w-6 h-6" />
-                {(selectedCategory !== 'all' || selectedType !== 'all') && (
+                {(selectedCategory !== 'all' || selectedType !== 'all' || selectedLanguage !== 'all' || selectedGenre !== 'all') && (
                   <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
                 )}
               </button>
@@ -637,14 +559,15 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
           )}
 
           {/* Search Bar */}
-          <div className={`relative flex-1 ${isMobile ? 'block' : 'hidden md:block'}`}>
+          <div className={`relative flex-1 ${isMobile ? (showMobileSearch ? 'block' : 'hidden') : 'hidden md:block'}`}>
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
             <input
               type="text"
               placeholder="Search for films, music, web series, directors, artists..."
-              value={searchQuery}
+              value={searchTerm}
               onChange={(e) => {
-                handleSearchChange(e.target.value);
+                setSearchTerm(e.target.value);
+                setShowAllProjects(null);
               }}
               className="w-full pl-14 pr-4 py-4 bg-gray-900 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-gray-800 transition-all duration-300 text-lg"
             />
@@ -652,6 +575,14 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
 
           {/* View Mode Toggle */}
           <div className={`flex items-center gap-2 bg-gray-900 rounded-xl p-2 ${isMobile ? 'hidden' : ''}`}>
+            <button
+              onClick={() => setViewMode('cards')}
+              className={`p-2 rounded-lg transition-all duration-300 ${
+                viewMode === 'cards' ? 'bg-red-600 text-white' : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              <Grid3X3 className="w-6 h-6 md:w-5 md:h-5" />
+            </button>
             <button
               onClick={() => setViewMode('grid')}
               className={`p-2 rounded-lg transition-all duration-300 ${
@@ -672,12 +603,15 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
 
           {/* Filter Toggle */}
           <button
-            onClick={handleFiltersToggle}
+            onClick={() => {
+              setShowFilters(!showFilters);
+              setShowAllProjects(null);
+            }}
             className={`flex items-center gap-2 px-6 py-4 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all duration-300 ${isMobile ? 'hidden' : ''}`}
           >
             <Filter className="w-5 h-5" />
             Filters
-            {(selectedCategory !== 'all' || selectedType !== 'all') && (
+            {(selectedCategory !== 'all' || selectedType !== 'all' || selectedLanguage !== 'all' || selectedGenre !== 'all') && (
               <span className="w-2 h-2 bg-red-500 rounded-full"></span>
             )}
           </button>
@@ -717,7 +651,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
                   <label className="block text-white font-medium mb-2">Category</label>
                   <select
                     value={selectedCategory}
-                    onChange={(e) => handleCategoryChange(e.target.value)}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
                     className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-red-500"
                   >
                     {categories.map((category) => (
@@ -733,7 +667,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
                   <label className="block text-white font-medium mb-2">Type</label>
                   <select
                     value={selectedType}
-                    onChange={(e) => handleTypeChange(e.target.value)}
+                    onChange={(e) => setSelectedType(e.target.value)}
                     className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-red-500"
                   >
                     {types.map((type) => (
@@ -752,7 +686,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
                     onChange={(e) => setSelectedLanguage(e.target.value)}
                     className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-red-500"
                   >
-                    {languageOptions.map((language) => (
+                    {languages.map((language) => (
                       <option key={language.id} value={language.id}>
                         {language.label}
                       </option>
@@ -768,7 +702,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
                     onChange={(e) => setSelectedGenre(e.target.value)}
                     className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-red-500"
                   >
-                    {genreOptions.map((genre) => (
+                    {genres.map((genre) => (
                       <option key={genre.id} value={genre.id}>
                         {genre.label}
                       </option>
@@ -824,21 +758,21 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
         </AnimatePresence>
 
         {/* Search Results or Netflix-style Sections */}
-        {searchQuery || showFilters || !showAllProjects ? (
+        {searchTerm || showFilters || showAllProjects ? (
           <div>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-white">
-                {showAllProjects ? 'All Projects' :
-                 searchQuery ? `Search Results for "${searchQuery}"` : 'Filtered Results'}
+                {showAllProjects ? `${showAllProjects.charAt(0).toUpperCase() + showAllProjects.slice(1).replace('-', ' ')} Projects` :
+                 searchTerm ? `Search Results for "${searchTerm}"` : 'Filtered Results'}
                 <span className="text-gray-400 text-lg ml-2">({filteredProjects.length})</span>
               </h2>
               {showAllProjects && (
                 <button
-                  onClick={() => setShowAllProjects(true)}
+                  onClick={() => setShowAllProjects(null)}
                   className="flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
                 >
                   <ArrowRight className="w-4 h-4 rotate-180" />
-                  Back to All Projects
+                  Back to Browse
                 </button>
               )}
             </div>
@@ -855,12 +789,14 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
                       key={project.id} 
                       project={project} 
                       onClick={() => handleProjectClick(project)}
+                      onInvestClick={handleInvestClick}
                     />
                   ) : (
                     <ProjectCard 
                       key={project.id} 
                       project={project} 
                       onClick={() => handleProjectClick(project)}
+                      onInvestClick={handleInvestClick}
                       compact={viewMode === 'grid'}
                     />
                   )
@@ -886,6 +822,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
               title="🔥 Trending Now"
               projects={trendingProjects}
               onProjectClick={handleProjectClick}
+              onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('trending')}
             />
             {endingSoon.length > 0 && (
@@ -893,6 +830,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
                 title="⏰ Ending Soon - Last Chance!"
                 projects={endingSoon}
                 onProjectClick={handleProjectClick}
+                onInvestClick={handleInvestClick}
                 onHeaderClick={() => handleSectionClick('ending-soon')}
                 urgent
               />
@@ -901,36 +839,42 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
               title="🎬 Bollywood Blockbusters"
               projects={bollywoodFilms}
               onProjectClick={handleProjectClick}
+              onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('bollywood')}
             />
             <ProjectRow
               title="🎵 Music & Albums"
               projects={musicProjects}
               onProjectClick={handleProjectClick}
+              onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('music')}
             />
             <ProjectRow
               title="📺 Binge-Worthy Web Series"
               projects={webSeries}
               onProjectClick={handleProjectClick}
+              onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('webseries')}
             />
             <ProjectRow
               title="🌍 Regional Cinema Gems"
               projects={regionalContent}
               onProjectClick={handleProjectClick}
+              onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('regional')}
             />
             <ProjectRow
               title="🏆 Highly Rated Projects"
               projects={highRatedProjects}
               onProjectClick={handleProjectClick}
+              onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('high-rated')}
             />
             <ProjectRow
               title="🆕 Fresh Releases"
               projects={newReleases}
               onProjectClick={handleProjectClick}
+              onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('new-releases')}
             />
             {hollywoodProjects.length > 0 && (
@@ -938,6 +882,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
                 title="🌟 Hollywood International"
                 projects={hollywoodProjects}
                 onProjectClick={handleProjectClick}
+                onInvestClick={handleInvestClick}
                 onHeaderClick={() => handleSectionClick('hollywood')}
               />
             )}
@@ -947,31 +892,28 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
 
       {/* Project Detail Modal */}
       <ProjectDetailModal
-        project={extendedProjects.find(p => p.id === selectedProject?.id) || extendedProjects[0]}
+        project={selectedProject}
         isOpen={isModalOpen}
         onClose={closeModal}
         initialTab={initialTab}
-        onTrackInvestment={_onTrackInvestment}
+        onTrackInvestment={onTrackInvestment}
       />
     </div>
   );
-});
+};
 
 // Project Row Component (Netflix-style) with Clickable Headers
 interface ProjectRowProps {
   title: string;
   projects: Project[];
-  onProjectClick: (project: Project) => void;
+  onProjectClick: (project: Project, tab?: 'overview' | 'invest') => void;
+  onInvestClick: (project: Project) => void;
   onHeaderClick?: () => void;
   featured?: boolean;
   urgent?: boolean;
 }
 
-<<<<<<< Updated upstream
-const ProjectRow = React.memo<ProjectRowProps>(({ title, projects, onProjectClick, onHeaderClick, featured, urgent, id }) => {
-=======
 const ProjectRow = React.memo<ProjectRowProps>(({ title, projects, onProjectClick, onInvestClick, onHeaderClick, featured, urgent }) => {
->>>>>>> Stashed changes
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: 'left' | 'right') => {
@@ -1032,6 +974,7 @@ const ProjectRow = React.memo<ProjectRowProps>(({ title, projects, onProjectClic
             key={project.id} 
             project={project} 
             onClick={() => onProjectClick(project)}
+            onInvestClick={onInvestClick}
             urgent={urgent}
           />
         ))}
@@ -1044,15 +987,17 @@ const ProjectRow = React.memo<ProjectRowProps>(({ title, projects, onProjectClic
 interface ProjectCardProps {
   project: Project;
   onClick: () => void;
+  onInvestClick: (project: Project) => void;
+  featured?: boolean;
   urgent?: boolean;
   compact?: boolean;
 }
 
-const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, urgent, compact }) => {
+const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestClick, featured, urgent, compact }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const cardWidth = compact ? 'w-48' : 'w-72';
-  const aspectRatio = compact ? 'aspect-[2/3]' : 'aspect-[16/10]';
+  const cardWidth = featured ? 'w-96' : compact ? 'w-48' : 'w-72';
+  const aspectRatio = featured ? 'aspect-[16/10]' : 'aspect-[2/3]';
 
   return (
     <PixelCard variant="pink" className={`relative flex-shrink-0 ${cardWidth}`}> 
@@ -1096,6 +1041,13 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, urgent, co
             {!compact && project.type.toUpperCase()}
           </div>
           
+          {featured && (
+            <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 text-black text-xs font-bold shadow-lg">
+              <TrendingUp className="w-3 h-3" />
+              {!compact && 'TRENDING'}
+            </div>
+          )}
+          
           {urgent && (
             <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold shadow-lg animate-pulse">
               <Clock className="w-3 h-3" />
@@ -1120,7 +1072,7 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, urgent, co
             {/* Title and Basic Info */}
             <div>
               <h3 className={`text-white font-bold leading-tight ${
-                compact ? 'text-sm' : 'text-lg'
+                compact ? 'text-sm' : featured ? 'text-xl' : 'text-lg'
               }`}>
                 {project.title}
               </h3>
@@ -1223,11 +1175,7 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, urgent, co
                 {/* Action Buttons */}
                 <div className="flex items-center gap-2 pt-2">
                   <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
-                      onClick();
-                    }}
+                    onClick={() => onInvestClick(project)}
                     className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-white text-black rounded-lg font-semibold text-sm hover:bg-gray-200 transition-colors shadow-lg"
                   >
                     <Play className="w-4 h-4 fill-current" />
@@ -1267,9 +1215,10 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, urgent, co
 interface ListProjectCardProps {
   project: Project;
   onClick: () => void;
+  onInvestClick: (project: Project) => void;
 }
 
-const ListProjectCard: React.FC<ListProjectCardProps> = ({ project, onClick }) => {
+const ListProjectCard: React.FC<ListProjectCardProps> = ({ project, onClick, onInvestClick }) => {
   return (
     <motion.div
       whileHover={{ scale: 1.02 }}
@@ -1337,11 +1286,7 @@ const ListProjectCard: React.FC<ListProjectCardProps> = ({ project, onClick }) =
           </div>
           
           <button
-            onClick={(e) => {
-              e.stopPropagation();
-              confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
-              onClick();
-            }}
+            onClick={() => onInvestClick(project)}
             className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:from-purple-500 hover:to-blue-500 transition-all duration-300"
           >
             Invest Now
