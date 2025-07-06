@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
 
 interface User {
   id: string;
@@ -53,7 +53,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Mock user data for demonstration
-  const mockUser: User = {
+  const mockUser: User = useMemo(() => ({
     id: '1',
     email: 'rahul.investor@gmail.com',
     name: 'Rahul Krishnan',
@@ -73,7 +73,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       newsletter: true,
       twoFactor: false
     }
-  };
+  }), []);
 
   useEffect(() => {
     // Simulate checking for existing session
@@ -81,7 +81,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsLoading(true);
       try {
         const token = localStorage.getItem('circles_token');
-        const rememberMe = localStorage.getItem('circles_remember');
         
         if (token) {
           // In a real app, validate token with backend
@@ -96,16 +95,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     checkAuth();
-  }, []);
+  }, [mockUser]);
 
-  const login = async (email: string, password: string, rememberMe = false) => {
+  const login = async (_email: string, _password: string, rememberMe = false) => {
     setIsLoading(true);
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Mock validation
-      if (email === 'demo@circles.com' && password === 'password123') {
+      if (_email === 'demo@circles.com' && _password === 'password123') {
         const token = 'mock_jwt_token_' + Date.now();
         localStorage.setItem('circles_token', token);
         
@@ -168,13 +167,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const resetPassword = async (email: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const resetPassword = async (_email: string) => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
     // In real app, send reset email
   };
 
-  const changePassword = async (currentPassword: string, newPassword: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const changePassword = async (_currentPassword: string, _newPassword: string) => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     // In real app, validate current password and update

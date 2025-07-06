@@ -13,7 +13,7 @@ import {
   CircleUser,
   ArrowLeft
 } from 'lucide-react';
-import { useTheme } from '../ThemeProvider';
+import { useTheme } from '../ThemeContext';
 import { useAdminAuth } from '../../hooks/useAdminAuth';
 import type { AdminPanel } from './AdminDashboard';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Medal, Box, Gem, Badge, Camera, Music, Ticket, Users, Crown, CheckCircle } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 import Typewriter from './Typewriter';
 import ProfileCard from './Components/ProfileCard/ProfileCard';
 
@@ -101,8 +101,7 @@ const Rewards: React.FC = () => {
     return 'center';
   };
 
-  // Ticket-style font (Google Fonts or fallback)
-  const ticketFont = 'font-["Oswald","Arial Narrow",sans-serif]';
+
 
   return (
     <section className={`py-24 ${

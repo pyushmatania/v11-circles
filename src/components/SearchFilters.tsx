@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Film, Music, Tv, Globe, Tag, RotateCcw } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 
 interface SearchFiltersProps {
   activeFilter: string;

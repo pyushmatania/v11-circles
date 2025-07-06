@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, 
@@ -12,7 +12,7 @@ import {
   Star, 
   TrendingUp
 } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 import { extendedProjects } from '../data/extendedProjects';
 import { Project } from '../types';
 import { useDebounce } from '../hooks/useDebounce';

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Lock, User, AlertCircle, Loader, Shield, ArrowLeft } from 'lucide-react';
-import { useTheme } from '../ThemeProvider';
+import { useTheme } from '../ThemeContext';
 import { useAdminAuth } from '../../hooks/useAdminAuth';
 
 const LoginScreen: React.FC = () => {

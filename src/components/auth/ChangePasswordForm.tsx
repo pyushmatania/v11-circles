@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, Lock, AlertCircle, CheckCircle, Loader, Check, X } from 'lucide-react';
+import { Eye, EyeOff, Lock, AlertCircle, Loader, Check, X } from 'lucide-react';
 import { useAuth } from './AuthProvider';
-import { useTheme } from '../ThemeProvider';
+import { useTheme } from '../ThemeContext';
 
 interface ChangePasswordFormProps {
   onSuccess: () => void;
@@ -72,7 +72,7 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ onSuccess, onCa
     try {
       await changePassword(formData.currentPassword, formData.newPassword);
       onSuccess();
-    } catch (error) {
+    } catch {
       setErrors({ submit: 'Failed to change password. Please check your current password and try again.' });
     } finally {
       setIsSubmitting(false);

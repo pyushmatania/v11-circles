@@ -29,7 +29,7 @@ import {
   VolumeX
 } from 'lucide-react';
 import { Project } from '../types';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 import useIsMobile from '../hooks/useIsMobile';
 import { useToast } from '../hooks/useToast';
 import confetti from 'canvas-confetti';

@@ -1,7 +1,12 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+<<<<<<< Updated upstream
 import { Home, BarChart3, Film, Users, Bell, Search, User, LogIn, LogOut, LayoutDashboard, ShoppingBag, ChevronDown, ChevronUp, BarChart, GitCompareArrows as ArrowsCompare, Newspaper, MoreHorizontal, Sun, Moon, Heart, Bookmark, Wallet, HelpCircle, Music, Tv, TrendingUp } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
+=======
+import { Home, BarChart3, Film, Users, Bell, User, LogIn, LogOut, LayoutDashboard, ShoppingBag, ChevronDown, ChevronUp, BarChart, GitCompareArrows as ArrowsCompare, Newspaper, MoreHorizontal, Sun, Moon } from 'lucide-react';
+import { useTheme } from './ThemeContext';
+>>>>>>> Stashed changes
 import { useAuth } from './auth/AuthProvider';
 import SearchBar from './SearchBar';
 import NotificationDropdown from './NotificationDropdown';
@@ -16,8 +21,13 @@ interface NavigationProps {
   onAuthRequired: (mode?: 'login' | 'register') => boolean;
 }
 
+<<<<<<< Updated upstream
 const Navigation: React.FC<NavigationProps> = React.memo(({ currentView, setCurrentView, onAuthRequired }) => {
   const [scrollY, setScrollY] = useState(0);
+=======
+const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, onAuthRequired }) => {
+
+>>>>>>> Stashed changes
   const [isScrolled, setIsScrolled] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -33,10 +43,10 @@ const Navigation: React.FC<NavigationProps> = React.memo(({ currentView, setCurr
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const mainNavItems = [
-    { id: 'home', label: 'Home', icon: Home },
-    { id: 'projects', label: 'Browse', icon: Film },
-    { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-    { id: 'community', label: 'Community', icon: Users }
+    { id: 'home', label: 'Home', icon: Home, requiresAuth: false },
+    { id: 'projects', label: 'Browse', icon: Film, requiresAuth: false },
+    { id: 'dashboard', label: 'Dashboard', icon: BarChart3, requiresAuth: false },
+    { id: 'community', label: 'Community', icon: Users, requiresAuth: false }
   ];
 
   const moreNavItems = [
@@ -70,7 +80,6 @@ const Navigation: React.FC<NavigationProps> = React.memo(({ currentView, setCurr
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      setScrollY(currentScrollY);
       setIsScrolled(currentScrollY > 50);
     };
 
@@ -129,7 +138,7 @@ const Navigation: React.FC<NavigationProps> = React.memo(({ currentView, setCurr
         onAuthRequired('login');
         return;
       }
-      setCurrentView(itemId as any);
+      setCurrentView(itemId as 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search');
       setShowMoreMenu(false);
     }
   };
@@ -163,7 +172,12 @@ const Navigation: React.FC<NavigationProps> = React.memo(({ currentView, setCurr
             <div className="max-w-7xl mx-auto px-8 py-6">
               <div className="relative flex items-center justify-between">
                 {/* Logo - Much bigger size, no animations */}
-                <div className="hidden md:flex items-center gap-4">
+                <motion.button 
+                  onClick={() => setCurrentView('home')}
+                  className="hidden md:flex items-center gap-0 cursor-pointer"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
                   <div className="w-24 h-24 flex items-center justify-center">
                     <img 
                       src="/Improved Logo-01.png" 
@@ -180,14 +194,14 @@ const Navigation: React.FC<NavigationProps> = React.memo(({ currentView, setCurr
                       C
                     </span>
                   </div>
-                  <span className={`font-bold text-4xl drop-shadow-lg transition-all duration-[3000ms] ${
+                  <span className={`font-bold text-4xl drop-shadow-lg transition-all duration-[3000ms] -ml-4 ${
                     theme === 'light' 
                       ? 'text-gray-900'
                       : 'text-white'
                   }`}>
                     Circles
                   </span>
-                </div>
+                </motion.button>
 
                 {/* Navigation Items - Clean buttons */}
                 <div className="hidden md:flex items-center gap-12">
@@ -491,24 +505,6 @@ const Navigation: React.FC<NavigationProps> = React.memo(({ currentView, setCurr
             {/* Sidebar Container - Clean icon column only */}
             <div className="flex flex-col items-center space-y-6 w-16 py-8 group">
               
-              {/* Logo - Much bigger size, no animations */}
-              <div className="w-24 h-24 flex items-center justify-center mb-4 relative">
-                <img 
-                  src="/Improved Logo-01.png" 
-                  alt="Circles Logo" 
-                  className="w-24 h-24 object-contain drop-shadow-lg"
-                  onError={(e) => {
-                    const target = e.currentTarget as HTMLImageElement;
-                    target.style.display = 'none';
-                    const fallback = target.nextElementSibling as HTMLElement;
-                    if (fallback) fallback.style.display = 'block';
-                  }}
-                />
-                <span className={`font-bold text-2xl hidden drop-shadow-lg ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
-                  C
-                </span>
-              </div>
-
               {/* Main Navigation Icons */}
               <div className="flex flex-col items-center space-y-3">
                 {mainNavItems.map((item, index) => (

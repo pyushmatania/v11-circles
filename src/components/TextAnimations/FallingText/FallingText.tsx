@@ -202,11 +202,14 @@ const FallingText: React.FC<FallingTextProps> = ({
     };
     updateLoop();
 
+    const refValue = canvasContainerRef.current;
     return () => {
       Render.stop(render);
       Runner.stop(runner);
-      if (render.canvas && canvasContainerRef.current) {
-        canvasContainerRef.current.removeChild(render.canvas);
+      if (refValue) {
+        if (render.canvas) {
+          refValue.removeChild(render.canvas);
+        }
       }
       World.clear(engine.world, false);
       Engine.clear(engine);

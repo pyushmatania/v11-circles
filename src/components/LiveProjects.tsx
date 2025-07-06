@@ -6,7 +6,7 @@ import AnimatedNumber from './AnimatedNumber';
 import { extendedProjects } from '../data/extendedProjects';
 import ProjectDetailModal from './ProjectDetailModal';
 import { Project } from '../types';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 import Typewriter from './Typewriter';
 
 

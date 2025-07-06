@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BookmarkCheck, Bookmark, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 import { useAuth } from './auth/AuthProvider';
 
 interface WatchlistButtonProps {

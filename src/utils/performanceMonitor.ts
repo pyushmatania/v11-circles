@@ -9,7 +9,7 @@ interface PerformanceMetrics {
   componentName: string;
   renderTime: number;
   timestamp: number;
-  props: Record<string, any>;
+  props: Record<string, unknown>;
 }
 
 interface BundleMetrics {
@@ -30,7 +30,7 @@ class PerformanceMonitor {
   /**
    * Track component render performance
    */
-  trackComponentRender(componentName: string, renderTime: number, props?: Record<string, any>) {
+  trackComponentRender(componentName: string, renderTime: number, props?: Record<string, unknown>) {
     if (!this.isEnabled) return;
 
     this.metrics.push({
@@ -130,7 +130,7 @@ export function withPerformanceTracking<P extends object>(
     const result = React.createElement(WrappedComponent, props);
     
     const renderTime = performance.now() - startTime;
-    performanceMonitor.trackComponentRender(displayName, renderTime, props);
+    performanceMonitor.trackComponentRender(displayName, renderTime, props as unknown as Record<string, unknown>);
     
     return result;
   });
@@ -156,7 +156,7 @@ export function usePerformanceTracking(componentName: string) {
 /**
  * Track user interactions for performance analysis
  */
-export function trackUserInteraction(action: string, data?: Record<string, any>) {
+export function trackUserInteraction(action: string, data?: Record<string, unknown>) {
   if (!performanceMonitor['isEnabled']) return;
 
   const interaction = {
@@ -166,7 +166,7 @@ export function trackUserInteraction(action: string, data?: Record<string, any>)
   };
 
   // Store in localStorage for analysis
-  const interactions = JSON.parse(localStorage.getItem('circles-user-interactions') || '[]');
+  const interactions: Record<string, unknown>[] = JSON.parse(localStorage.getItem('circles-user-interactions') || '[]');
   interactions.push(interaction);
   
   // Keep only last 100 interactions
@@ -188,7 +188,7 @@ export function getBundleInfo() {
 
   return jsBundles.map(bundle => ({
     name: bundle.name.split('/').pop() || 'unknown',
-    size: (bundle as any).transferSize || 0,
+    size: (bundle as { transferSize?: number }).transferSize || 0,
     loadTime: bundle.duration || 0
   }));
 }

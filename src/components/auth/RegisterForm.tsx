@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, AlertCircle, CheckCircle, Loader, Check, X, ArrowLeft } from 'lucide-react';
 import { useAuth } from './AuthProvider';
-import { useTheme } from '../ThemeProvider';
+import { useTheme } from '../ThemeContext';
 
 interface RegisterFormProps {
   onSwitchToLogin: () => void;
@@ -89,7 +89,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin, onClose })
       setTimeout(() => {
         onClose();
       }, 2000);
-    } catch (error) {
+    } catch {
       setErrors({ submit: 'Registration failed. Please try again.' });
     } finally {
       setIsSubmitting(false);

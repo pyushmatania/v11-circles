@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, AlertCircle, CheckCircle, Loader, ArrowLeft } from 'lucide-react';
 import { useAuth } from './AuthProvider';
-import { useTheme } from '../ThemeProvider';
+import { useTheme } from '../ThemeContext';
 
 interface PasswordResetFormProps {
   onBack: () => void;
@@ -37,7 +37,7 @@ const PasswordResetForm: React.FC<PasswordResetFormProps> = ({ onBack }) => {
     try {
       await resetPassword(email);
       setIsSubmitted(true);
-    } catch (error) {
+    } catch {
       setError('Failed to send reset email. Please try again.');
     } finally {
       setIsSubmitting(false);

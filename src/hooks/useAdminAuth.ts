@@ -42,7 +42,7 @@ export const useAdminAuth = () => {
     };
 
     checkAuth();
-  }, []);
+  }, [mockAdminUser]);
 
   const login = async (username: string, password: string) => {
     setIsLoading(true);

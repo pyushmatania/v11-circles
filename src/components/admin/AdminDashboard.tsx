@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTheme } from '../ThemeProvider';
+import { useTheme } from '../ThemeContext';
 import AdminSidebar from './AdminSidebar';
 import AdminHeader from './AdminHeader';
 import ProjectsPanel from './panels/ProjectsPanel';

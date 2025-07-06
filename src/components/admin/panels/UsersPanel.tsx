@@ -13,8 +13,9 @@ import {
   XCircle,
   AlertCircle
 } from 'lucide-react';
-import { useTheme } from '../../ThemeProvider';
-import { useAdmin, User } from '../AdminContext';
+import { useTheme } from '../../ThemeContext';
+import { useAdmin } from '../useAdmin';
+import type { User } from '../AdminContextTypes';
 import ConfirmDialog from '../shared/ConfirmDialog';
 import DataTable from '../shared/DataTable';
 
@@ -70,11 +71,11 @@ const UsersPanel: React.FC = () => {
       });
   }, [users, searchTerm, filterStatus, filterRole, sortField, sortDirection]);
 
-  const handleSort = (field: keyof User) => {
+  const handleSort = (field: string) => {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
-      setSortField(field);
+      setSortField(field as keyof User);
       setSortDirection('asc');
     }
   };
@@ -117,7 +118,7 @@ const UsersPanel: React.FC = () => {
     {
       Header: 'User',
       accessor: 'name',
-      Cell: ({ row }: any) => (
+      Cell: ({ row }: { row: { original: User } }) => (
         <div>
           <p className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
             {row.original.name}
@@ -134,7 +135,7 @@ const UsersPanel: React.FC = () => {
     {
       Header: 'Role',
       accessor: 'role',
-      Cell: ({ value }: any) => (
+      Cell: ({ value }: { value: string }) => (
         <span className={`capitalize px-2 py-1 rounded-full text-xs ${
           value === 'admin' 
             ? theme === 'light' ? 'bg-purple-100 text-purple-700' : 'bg-purple-900/30 text-purple-400'
@@ -147,7 +148,7 @@ const UsersPanel: React.FC = () => {
     {
       Header: 'Status',
       accessor: 'status',
-      Cell: ({ value }: any) => (
+      Cell: ({ value }: { value: string }) => (
         <div className="flex items-center gap-2">
           {getStatusIcon(value)}
           <span className={`capitalize ${
@@ -163,7 +164,7 @@ const UsersPanel: React.FC = () => {
     {
       Header: 'Investments',
       accessor: 'investmentCount',
-      Cell: ({ row }: any) => (
+      Cell: ({ row }: { row: { original: User } }) => (
         <div>
           <div className="flex items-center gap-2">
             <TrendingUp className={`w-4 h-4 ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`} />
@@ -183,7 +184,7 @@ const UsersPanel: React.FC = () => {
     {
       Header: 'Joined',
       accessor: 'createdAt',
-      Cell: ({ value }: any) => (
+      Cell: ({ value }: { value: string }) => (
         <div className="flex items-center gap-2">
           <Calendar className={`w-4 h-4 ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`} />
           <span className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
@@ -194,7 +195,7 @@ const UsersPanel: React.FC = () => {
     },
     {
       Header: 'Actions',
-      Cell: ({ row }: any) => (
+      Cell: ({ row }: { row: { original: User } }) => (
         <div className="flex items-center gap-2">
           {row.original.status !== 'active' && (
             <button

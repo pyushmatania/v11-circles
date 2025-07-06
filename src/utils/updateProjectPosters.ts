@@ -1,5 +1,4 @@
 import { extendedProjects } from '../data/extendedProjects';
-import { realProjectImages } from '../data/realProjectImages';
 
 // High-quality official movie posters and album covers
 const officialPosters = {
@@ -51,7 +50,7 @@ const officialPosters = {
 
 // Function to update project with official poster
 export function updateProjectPoster(projectTitle: string): string {
-  return officialPosters[projectTitle] || 'https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&w=400';
+  return (officialPosters as Record<string, string>)[projectTitle] || 'https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&w=400';
 }
 
 // Update all projects with official posters

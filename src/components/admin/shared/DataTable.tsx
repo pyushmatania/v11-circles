@@ -1,23 +1,23 @@
 import React from 'react';
-import { useTable, usePagination, useSortBy } from 'react-table';
+import { useTable, usePagination, useSortBy, Row, Cell } from 'react-table';
 import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
-import { useTheme } from '../../ThemeProvider';
+import { useTheme } from '../../ThemeContext';
 
-interface DataTableProps {
-  columns: any[];
-  data: any[];
+interface DataTableProps<T extends object> {
+  columns: unknown[]; // Using unknown[] to avoid strict typing issues
+  data: T[];
   onSort?: (field: string) => void;
   sortField?: string;
   sortDirection?: 'asc' | 'desc';
 }
 
-const DataTable: React.FC<DataTableProps> = ({ 
+const DataTable = <T extends object>({ 
   columns, 
   data,
   onSort,
   sortField,
   sortDirection
-}) => {
+}: DataTableProps<T>) => {
   const { theme } = useTheme();
   
   const {
@@ -28,12 +28,10 @@ const DataTable: React.FC<DataTableProps> = ({
     page,
     canPreviousPage,
     canNextPage,
-    pageOptions,
     pageCount,
     gotoPage,
     nextPage,
     previousPage,
-    setPageSize,
     state: { pageIndex, pageSize }
   } = useTable(
     {
@@ -47,7 +45,7 @@ const DataTable: React.FC<DataTableProps> = ({
     usePagination
   );
 
-  const handleSort = (column: any) => {
+  const handleSort = (column: { id?: string }) => {
     if (onSort && column.id) {
       onSort(column.id);
     }
@@ -93,7 +91,7 @@ const DataTable: React.FC<DataTableProps> = ({
               theme === 'light' ? 'bg-white divide-y divide-gray-200' : 'divide-y divide-gray-700'
             }`}
           >
-            {page.map((row, i) => {
+            {page.map((row: Row<T>) => {
               prepareRow(row);
               return (
                 <tr 
@@ -104,16 +102,14 @@ const DataTable: React.FC<DataTableProps> = ({
                       : 'hover:bg-gray-700'
                   }`}
                 >
-                  {row.cells.map(cell => {
-                    return (
-                      <td
-                        {...cell.getCellProps()}
-                        className="px-6 py-4 whitespace-nowrap"
-                      >
-                        {cell.render('Cell')}
-                      </td>
-                    );
-                  })}
+                  {row.cells.map((cell: Cell<T>) => (
+                    <td
+                      {...cell.getCellProps()}
+                      className="px-6 py-4 whitespace-nowrap"
+                    >
+                      {cell.render('Cell')}
+                    </td>
+                  ))}
                 </tr>
               );
             })}
@@ -187,8 +183,8 @@ const DataTable: React.FC<DataTableProps> = ({
               </button>
               
               {/* Page Numbers */}
-              {[...Array(Math.min(5, pageCount))].map((_, i) => {
-                const pageNum = pageIndex - 2 + i;
+              {[...Array(Math.min(5, pageCount))].map((_, index) => {
+                const pageNum = pageIndex - 2 + index;
                 if (pageNum >= 0 && pageNum < pageCount) {
                   return (
                     <button
@@ -198,7 +194,7 @@ const DataTable: React.FC<DataTableProps> = ({
                         pageNum === pageIndex
                           ? theme === 'light'
                             ? 'z-10 bg-purple-50 border-purple-500 text-purple-600'
-                            : 'z-10 bg-purple-900/30 border-purple-500 text-purple-300'
+                            : 'z-10 bg-purple-900 border-purple-500 text-purple-300'
                           : theme === 'light'
                             ? 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
                             : 'bg-gray-700 border-gray-600 text-gray-300 hover:bg-gray-600'

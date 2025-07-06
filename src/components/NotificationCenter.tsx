@@ -1,28 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
+  ArrowRight,
   Bell,
   Calendar,
   Check,
   CheckCircle,
   ChevronDown,
-  Clock, 
   DollarSign, 
   Film, 
   Gift, 
   Info, 
-  LayoutDashboard, 
   MessageCircle,
   Music,
-  SettingsIcon,
-  Ticket,
-  Trash2,
+  Settings,
   TrendingUp,
+  Trash2,
   Tv,
-  User,
-  X
+  User
 } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 
 // Mock notification data
 const mockNotifications = [
@@ -108,7 +105,7 @@ interface NotificationCenterProps {
   onClose?: () => void;
 }
 
-const NotificationCenter: React.FC<NotificationCenterProps> = ({ onClose }) => {
+const NotificationCenter: React.FC<NotificationCenterProps> = () => {
   const { theme } = useTheme();
   const [notifications, setNotifications] = useState(mockNotifications);
   const [activeFilter, setActiveFilter] = useState<string>('all');
@@ -165,7 +162,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ onClose }) => {
   };
 
   // Get icon component for notification type
-  const getNotificationIcon = (notification: any) => {
+  const getNotificationIcon = (notification: { icon?: React.ComponentType<{ className?: string }>; type: string }) => {
     // Use the icon directly from the notification if available
     if (notification.icon) {
       const IconComponent = notification.icon;
@@ -485,7 +482,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ onClose }) => {
         >
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <SettingsIcon className={`w-6 h-6 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`} />
+                              <Settings className={`w-6 h-6 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`} />
               <h3 className={`font-bold text-xl ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                 Notification Preferences
               </h3>

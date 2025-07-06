@@ -28,7 +28,7 @@ const useMedia = (
       queries.forEach((q) =>
         matchMedia(q).removeEventListener("change", handler),
       );
-  }, [queries]);
+  }, [queries, get]);
 
   return value;
 };
@@ -107,7 +107,7 @@ const Masonry: React.FC<MasonryProps> = ({
   const [containerRef, { width }] = useMeasure<HTMLDivElement>();
   const [imagesReady, setImagesReady] = useState(false);
 
-  const getInitialPosition = (item: any) => {
+  const getInitialPosition = (item: Item & { x: number; y: number; w: number; h: number }) => {
     const containerRect = containerRef.current?.getBoundingClientRect();
     if (!containerRect) return { x: item.x, y: item.y };
 

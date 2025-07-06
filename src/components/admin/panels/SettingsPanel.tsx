@@ -1,21 +1,16 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { 
   Save, 
   Database, 
-  Shield, 
   Mail, 
-  Server, 
   Download, 
   Upload, 
   RefreshCw,
-  Clock,
   CheckCircle,
-  AlertCircle,
   Loader
 } from 'lucide-react';
-import { useTheme } from '../../ThemeProvider';
-import { useAdmin, BackupData } from '../AdminContext';
+import { useTheme } from '../../ThemeContext';
+import { useAdmin } from '../useAdmin';
 import ConfirmDialog from '../shared/ConfirmDialog';
 
 const SettingsPanel: React.FC = () => {
@@ -35,7 +30,7 @@ const SettingsPanel: React.FC = () => {
     debugMode: false
   });
 
-  const handleSettingChange = (setting: string, value: any) => {
+  const handleSettingChange = (setting: string, value: string | boolean) => {
     setSettings(prev => ({ ...prev, [setting]: value }));
   };
 

@@ -7,14 +7,12 @@ import {
   Tv,
   Star, 
   Clock, 
-  Users, 
   Play, 
   Plus, 
   Bookmark, 
   Heart,
   TrendingUp,
-  ArrowRight,
-  Award
+  ArrowRight
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { Project } from '../types';
@@ -33,8 +31,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   onClick, 
   featured, 
   urgent, 
-  compact,
-  layout = 'netflix'
+  compact
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);

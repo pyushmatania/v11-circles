@@ -1,7 +1,7 @@
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PixelCard from './PixelCard';
-import { Film, Music, Tv, Search, Star, Clock, Users, TrendingUp, ChevronLeft, ChevronRight, Play, Plus, Info, Siren as Fire, Award, Globe, Filter, Grid3X3, List, SlidersHorizontal, X, Calendar, DollarSign, MapPin, Heart, Share2, Bookmark, ArrowRight, Eye } from 'lucide-react';
+import { Film, Music, Tv, Search, Star, Clock, TrendingUp, ChevronLeft, ChevronRight, Play, Plus, Info, Siren as Fire, Filter, Grid3X3, List, X, Heart, Share2, Bookmark, ArrowRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { extendedProjects } from '../data/extendedProjects';
 import ProjectDetailModal from './ProjectDetailModal';
@@ -183,7 +183,6 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const autoSlideRef = useRef<number | null>(null);
-  const pauseTimeoutRef = useRef<number | null>(null);
   const [touchStartX, setTouchStartX] = useState(0);
   
   // Filter states
@@ -192,10 +191,138 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
   const [fundingRange, setFundingRange] = useState<[number, number]>([0, 100]);
   const [sortBy, setSortBy] = useState<string>('trending');
 
+<<<<<<< Updated upstream
   // Modal state
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [initialTab, setInitialTab] = useState<'overview' | 'script' | 'cast' | 'perks' | 'invest'>('overview');
+=======
+  // Memoized callback functions to prevent unnecessary re-renders
+  const handleProjectClick = useCallback((project: Project, tab: 'overview' | 'invest' = 'overview') => {
+    setSelectedProject(project);
+    setInitialTab(tab);
+    setIsModalOpen(true);
+  }, []);
+
+  const handleInvestClick = useCallback((project: Project) => {
+    confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
+    handleProjectClick(project, 'invest');
+  }, [handleProjectClick]);
+
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+    setSelectedProject(null);
+    setInitialTab('overview');
+  }, []);
+
+  // Memoized filtered and sorted projects
+  const filteredProjects = useMemo(() => {
+    return extendedProjects.filter(project => {
+      const matchesSearch = searchTerm === '' || 
+        project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (project.director && project.director.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (project.artist && project.artist.toLowerCase().includes(searchTerm.toLowerCase()));
+
+      const matchesCategory = selectedCategory === 'all' || 
+        project.category.toLowerCase().includes(selectedCategory);
+      
+      const matchesType = selectedType === 'all' || project.type === selectedType;
+      
+      const matchesLanguage = selectedLanguage === 'all' || 
+        project.language.toLowerCase() === selectedLanguage;
+      
+      const matchesGenre = selectedGenre === 'all' || 
+        project.genre.toLowerCase().includes(selectedGenre) ||
+        project.tags.some((tag: string) => tag.toLowerCase().includes(selectedGenre));
+      
+      const matchesFunding = project.fundedPercentage >= fundingRange[0] && 
+        project.fundedPercentage <= fundingRange[1];
+
+      return matchesSearch && matchesCategory && matchesType && 
+             matchesLanguage && matchesGenre && matchesFunding;
+    }).sort((a, b) => {
+      switch (sortBy) {
+        case 'funding-high':
+          return b.fundedPercentage - a.fundedPercentage;
+        case 'funding-low':
+          return a.fundedPercentage - b.fundedPercentage;
+        case 'ending-soon': {
+          const aTime = a.timeLeft ? parseInt(a.timeLeft) : 999;
+          const bTime = b.timeLeft ? parseInt(b.timeLeft) : 999;
+          return aTime - bTime;
+        }
+        case 'rating':
+          return (b.rating || 0) - (a.rating || 0);
+        case 'amount-high':
+          return b.targetAmount - a.targetAmount;
+        case 'amount-low':
+          return a.targetAmount - b.targetAmount;
+        case 'newest':
+          return b.id.localeCompare(a.id);
+        default: // trending
+          return b.fundedPercentage - a.fundedPercentage;
+      }
+    });
+  }, [searchTerm, selectedCategory, selectedType, selectedLanguage, selectedGenre, fundingRange, sortBy]);
+
+  // Memoized categorized projects for Netflix-style layout
+  const categorizedProjects = useMemo(() => {
+    const trendingProjects = extendedProjects
+      .filter(p => p.fundedPercentage > 70)
+      .sort((a, b) => b.fundedPercentage - a.fundedPercentage)
+      .slice(0, 10);
+
+    const bollywoodFilms = extendedProjects
+      .filter(p => p.type === 'film' && p.category === 'Bollywood')
+      .slice(0, 10);
+
+    const regionalContent = extendedProjects
+      .filter(p => p.category === 'Regional')
+      .slice(0, 10);
+
+    const musicProjects = extendedProjects
+      .filter(p => p.type === 'music')
+      .slice(0, 10);
+
+    const webSeries = extendedProjects
+      .filter(p => p.type === 'webseries')
+      .slice(0, 10);
+
+    const hollywoodProjects = extendedProjects
+      .filter(p => p.category === 'Hollywood')
+      .slice(0, 10);
+
+    const newReleases = extendedProjects
+      .filter(p => p.timeLeft && parseInt(p.timeLeft) < 15)
+      .slice(0, 10);
+
+    const highRatedProjects = extendedProjects
+      .filter(p => p.rating && p.rating >= 4.5)
+      .slice(0, 10);
+
+    const endingSoon = extendedProjects
+      .filter(p => p.timeLeft && parseInt(p.timeLeft) <= 7)
+      .slice(0, 10);
+
+    const featuredProjects = extendedProjects
+      .sort((a, b) => b.fundedPercentage - a.fundedPercentage)
+      .slice(0, 7);
+
+    return {
+      trendingProjects,
+      bollywoodFilms,
+      regionalContent,
+      musicProjects,
+      webSeries,
+      hollywoodProjects,
+      newReleases,
+      highRatedProjects,
+      endingSoon,
+      featuredProjects
+    };
+  }, []);
+>>>>>>> Stashed changes
 
   // Memoized callback functions for carousel controls
   const handleSlideChange = useCallback((index: number) => {
@@ -203,8 +330,13 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
   }, []);
 
   const nextSlide = useCallback(() => {
+<<<<<<< Updated upstream
     setCurrentSlide(prev => (prev + 1) % featuredProjects.length);
   }, []);
+=======
+    setCurrentSlide((prev) => (prev + 1) % categorizedProjects.featuredProjects.length);
+  }, [categorizedProjects.featuredProjects.length]);
+>>>>>>> Stashed changes
 
   const prevSlide = useCallback(() => {
     setCurrentSlide(prev => prev === 0 ? featuredProjects.length - 1 : prev - 1);
@@ -277,7 +409,13 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
           onTouchStart={(e) => setTouchStartX(e.touches[0].clientX)}
           onTouchEnd={(e) => {
             const diff = e.changedTouches[0].clientX - touchStartX;
-            if (Math.abs(diff) > 50) diff > 0 ? prevSlide() : nextSlide();
+            if (Math.abs(diff) > 50) {
+              if (diff > 0) {
+                prevSlide();
+              } else {
+                nextSlide();
+              }
+            }
           }}
           onClick={() => handleProjectClick(featuredProjects[currentSlide])}
         >
@@ -745,7 +883,6 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
         ) : (
           <div className="space-y-12">
             <ProjectRow
-              id="row-trending"
               title="🔥 Trending Now"
               projects={trendingProjects}
               onProjectClick={handleProjectClick}
@@ -753,7 +890,6 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
             />
             {endingSoon.length > 0 && (
               <ProjectRow
-                id="row-ending-soon"
                 title="⏰ Ending Soon - Last Chance!"
                 projects={endingSoon}
                 onProjectClick={handleProjectClick}
@@ -762,42 +898,36 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
               />
             )}
             <ProjectRow
-              id="row-bollywood"
               title="🎬 Bollywood Blockbusters"
               projects={bollywoodFilms}
               onProjectClick={handleProjectClick}
               onHeaderClick={() => handleSectionClick('bollywood')}
             />
             <ProjectRow
-              id="row-music"
               title="🎵 Music & Albums"
               projects={musicProjects}
               onProjectClick={handleProjectClick}
               onHeaderClick={() => handleSectionClick('music')}
             />
             <ProjectRow
-              id="row-webseries"
               title="📺 Binge-Worthy Web Series"
               projects={webSeries}
               onProjectClick={handleProjectClick}
               onHeaderClick={() => handleSectionClick('webseries')}
             />
             <ProjectRow
-              id="row-regional"
               title="🌍 Regional Cinema Gems"
               projects={regionalContent}
               onProjectClick={handleProjectClick}
               onHeaderClick={() => handleSectionClick('regional')}
             />
             <ProjectRow
-              id="row-high-rated"
               title="🏆 Highly Rated Projects"
               projects={highRatedProjects}
               onProjectClick={handleProjectClick}
               onHeaderClick={() => handleSectionClick('high-rated')}
             />
             <ProjectRow
-              id="row-new-releases"
               title="🆕 Fresh Releases"
               projects={newReleases}
               onProjectClick={handleProjectClick}
@@ -805,7 +935,6 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({
             />
             {hollywoodProjects.length > 0 && (
               <ProjectRow
-                id="row-hollywood"
                 title="🌟 Hollywood International"
                 projects={hollywoodProjects}
                 onProjectClick={handleProjectClick}
@@ -836,10 +965,13 @@ interface ProjectRowProps {
   onHeaderClick?: () => void;
   featured?: boolean;
   urgent?: boolean;
-  id: string;
 }
 
+<<<<<<< Updated upstream
 const ProjectRow = React.memo<ProjectRowProps>(({ title, projects, onProjectClick, onHeaderClick, featured, urgent, id }) => {
+=======
+const ProjectRow = React.memo<ProjectRowProps>(({ title, projects, onProjectClick, onInvestClick, onHeaderClick, featured, urgent }) => {
+>>>>>>> Stashed changes
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: 'left' | 'right') => {

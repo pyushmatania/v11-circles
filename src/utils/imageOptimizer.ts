@@ -44,8 +44,7 @@ export const preloadImages = (urls: string[]): Promise<void[]> => {
  * Get optimized image URL with quality parameters
  */
 export const getOptimizedImageUrl = (
-  originalUrl: string,
-  options: ImageOptimizationOptions = {}
+  originalUrl: string
 ): string => {
   // For external URLs, return as-is to preserve quality
   if (originalUrl.startsWith('http')) {
@@ -89,7 +88,7 @@ export const optimizeImageLoading = (
   src: string,
   options: ImageOptimizationOptions = {}
 ): string => {
-  const { loading = 'lazy', quality } = options;
+  const { loading = 'lazy' } = options;
   
   // Add loading attribute for better performance
   if (loading === 'lazy') {

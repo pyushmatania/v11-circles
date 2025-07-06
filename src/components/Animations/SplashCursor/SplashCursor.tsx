@@ -78,9 +78,9 @@ export default function SplashCursor({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    let pointers: Pointer[] = [pointerPrototype()];
+    const pointers: Pointer[] = [pointerPrototype()];
 
-    let config = {
+    const config = {
       SIM_RESOLUTION: SIM_RESOLUTION!,
       DYE_RESOLUTION: DYE_RESOLUTION!,
       CAPTURE_RESOLUTION: CAPTURE_RESOLUTION!,
@@ -135,7 +135,7 @@ export default function SplashCursor({
       const isWebGL2 = "drawBuffers" in gl;
 
       let supportLinearFiltering = false;
-      let halfFloat = null;
+      let halfFloat: unknown = null;
 
       if (isWebGL2) {
         (gl as WebGL2RenderingContext).getExtension("EXT_color_buffer_float");
@@ -153,35 +153,35 @@ export default function SplashCursor({
 
       const halfFloatTexType = isWebGL2
         ? (gl as WebGL2RenderingContext).HALF_FLOAT
-        : (halfFloat && (halfFloat as any).HALF_FLOAT_OES) || 0;
+        : (halfFloat && (halfFloat as { HALF_FLOAT_OES: number }).HALF_FLOAT_OES !== undefined ? (halfFloat as { HALF_FLOAT_OES: number }).HALF_FLOAT_OES : 0);
 
-      let formatRGBA: any;
-      let formatRG: any;
-      let formatR: any;
+      let formatRGBA: { internalFormat: number; format: number } | null;
+      let formatRG: { internalFormat: number; format: number } | null;
+      let formatR: { internalFormat: number; format: number } | null;
 
       if (isWebGL2) {
         formatRGBA = getSupportedFormat(
           gl,
-          (gl as WebGL2RenderingContext).RGBA16F,
-          gl.RGBA,
+          Number((gl as WebGL2RenderingContext).RGBA16F),
+          Number((gl as WebGL2RenderingContext).RGBA),
           halfFloatTexType,
         );
         formatRG = getSupportedFormat(
           gl,
-          (gl as WebGL2RenderingContext).RG16F,
-          (gl as WebGL2RenderingContext).RG,
+          Number((gl as WebGL2RenderingContext).RG16F),
+          Number((gl as WebGL2RenderingContext).RG),
           halfFloatTexType,
         );
         formatR = getSupportedFormat(
           gl,
-          (gl as WebGL2RenderingContext).R16F,
-          (gl as WebGL2RenderingContext).RED,
+          Number((gl as WebGL2RenderingContext).R16F),
+          Number((gl as WebGL2RenderingContext).RED),
           halfFloatTexType,
         );
       } else {
-        formatRGBA = getSupportedFormat(gl, gl.RGBA, gl.RGBA, halfFloatTexType);
-        formatRG = getSupportedFormat(gl, gl.RGBA, gl.RGBA, halfFloatTexType);
-        formatR = getSupportedFormat(gl, gl.RGBA, gl.RGBA, halfFloatTexType);
+        formatRGBA = getSupportedFormat(gl, Number((gl as WebGLRenderingContext).RGBA), Number((gl as WebGLRenderingContext).RGBA), halfFloatTexType);
+        formatRG = getSupportedFormat(gl, Number((gl as WebGLRenderingContext).RGBA), Number((gl as WebGLRenderingContext).RGBA), halfFloatTexType);
+        formatR = getSupportedFormat(gl, Number((gl as WebGLRenderingContext).RGBA), Number((gl as WebGLRenderingContext).RGBA), halfFloatTexType);
       }
 
       return {
@@ -312,7 +312,7 @@ export default function SplashCursor({
     }
 
     function getUniforms(program: WebGLProgram) {
-      let uniforms: Record<string, WebGLUniformLocation | null> = {};
+      const uniforms: { [key: string]: WebGLUniformLocation | null } = {};
       const uniformCount = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
       for (let i = 0; i < uniformCount; i++) {
         const uniformInfo = gl.getActiveUniform(program, i);
@@ -896,6 +896,10 @@ export default function SplashCursor({
       const filtering = ext.supportLinearFiltering ? gl.LINEAR : gl.NEAREST;
       gl.disable(gl.BLEND);
 
+      if (!rgba || !rg || !r) {
+        throw new Error('Framebuffer formats could not be determined.');
+      }
+
       if (!dye) {
         dye = createDoubleFBO(
           dyeRes.width,
@@ -962,6 +966,10 @@ export default function SplashCursor({
         texType,
         gl.NEAREST,
       );
+
+      if (!rgba || !rg || !r) {
+        throw new Error('Framebuffer formats could not be determined.');
+      }
     }
 
     function updateKeywords() {
@@ -974,9 +982,8 @@ export default function SplashCursor({
       const w = gl.drawingBufferWidth;
       const h = gl.drawingBufferHeight;
       const aspectRatio = w / h;
-      let aspect = aspectRatio < 1 ? 1 / aspectRatio : aspectRatio;
       const min = Math.round(resolution);
-      const max = Math.round(resolution * aspect);
+      const max = Math.round(resolution * aspectRatio);
       if (w > h) {
         return { width: max, height: min };
       }

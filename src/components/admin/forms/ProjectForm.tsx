@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X, Upload, Loader } from 'lucide-react';
-import { useTheme } from '../../ThemeProvider';
-import { useAdmin, Project } from '../AdminContext';
+import { useTheme } from '../../ThemeContext';
+import { useAdmin } from '../useAdmin';
+import type { Project } from '../AdminContextTypes';
 
 interface ProjectFormProps {
   project: Project | null;
@@ -12,7 +13,7 @@ interface ProjectFormProps {
 
 const ProjectForm: React.FC<ProjectFormProps> = ({ project, isOpen, onClose }) => {
   const { theme } = useTheme();
-  const { addProject, updateProject, projects } = useAdmin();
+  const { addProject, updateProject } = useAdmin();
   
   const [formData, setFormData] = useState<Omit<Project, 'id' | 'createdAt' | 'updatedAt'>>({
     title: '',
@@ -49,7 +50,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, isOpen, onClose }) =
     }
   }, [project]);
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Clear error for this field

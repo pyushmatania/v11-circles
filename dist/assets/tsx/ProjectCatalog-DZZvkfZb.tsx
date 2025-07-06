@@ -67,7 +67,6 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
   const [initialTab, setInitialTab] = useState<'overview' | 'invest'>('overview');
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'cards'>('cards');
   const [showFilters, setShowFilters] = useState(false);
-  const [showAllProjects, setShowAllProjects] = useState<string | null>(null);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
   const isMobile = useIsMobile();
   
@@ -86,6 +85,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
   const [selectedGenre, setSelectedGenre] = useState<string>('all');
   const [fundingRange, setFundingRange] = useState<[number, number]>([0, 100]);
   const [sortBy, setSortBy] = useState<string>('trending');
+  const [showAllProjects, setShowAllProjects] = useState<string | null>(null);
 
   // Memoized callback functions to prevent unnecessary re-renders
   const handleProjectClick = useCallback((project: Project, tab: 'overview' | 'invest' = 'overview') => {
@@ -233,6 +233,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
     setFundingRange([0, 100]);
     setSortBy('trending');
     setSearchTerm('');
+    setShowAllProjects(null);
   }, []);
 
   const handleSectionClick = useCallback((sectionType: string) => {
@@ -558,7 +559,10 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
               type="text"
               placeholder="Search for films, music, web series, directors, artists..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setShowAllProjects(null);
+              }}
               className="w-full pl-14 pr-4 py-4 bg-gray-900 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-gray-800 transition-all duration-300 text-lg"
             />
           </div>
@@ -593,7 +597,10 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
 
           {/* Filter Toggle */}
           <button
-            onClick={() => setShowFilters(!showFilters)}
+            onClick={() => {
+              setShowFilters(!showFilters);
+              setShowAllProjects(null);
+            }}
             className={`flex items-center gap-2 px-6 py-4 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all duration-300 ${isMobile ? 'hidden' : ''}`}
           >
             <Filter className="w-5 h-5" />
@@ -805,78 +812,78 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
           </div>
         ) : (
           <div className="space-y-12">
-            {/* Netflix-style Sections with Clickable Headers */}
             <ProjectRow
+              id="row-trending"
               title="🔥 Trending Now"
               projects={trendingProjects}
               onProjectClick={handleProjectClick}
               onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('trending')}
             />
-            
             {endingSoon.length > 0 && (
-              <ProjectRow 
-                title="⏰ Ending Soon - Last Chance!" 
-                projects={endingSoon} 
+              <ProjectRow
+                id="row-ending-soon"
+                title="⏰ Ending Soon - Last Chance!"
+                projects={endingSoon}
                 onProjectClick={handleProjectClick}
                 onInvestClick={handleInvestClick}
                 onHeaderClick={() => handleSectionClick('ending-soon')}
                 urgent
               />
             )}
-            
-            <ProjectRow 
-              title="🎬 Bollywood Blockbusters" 
-              projects={bollywoodFilms} 
+            <ProjectRow
+              id="row-bollywood"
+              title="🎬 Bollywood Blockbusters"
+              projects={bollywoodFilms}
               onProjectClick={handleProjectClick}
               onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('bollywood')}
             />
-            
-            <ProjectRow 
-              title="🎵 Music & Albums" 
-              projects={musicProjects} 
+            <ProjectRow
+              id="row-music"
+              title="🎵 Music & Albums"
+              projects={musicProjects}
               onProjectClick={handleProjectClick}
               onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('music')}
             />
-            
-            <ProjectRow 
-              title="📺 Binge-Worthy Web Series" 
-              projects={webSeries} 
+            <ProjectRow
+              id="row-webseries"
+              title="📺 Binge-Worthy Web Series"
+              projects={webSeries}
               onProjectClick={handleProjectClick}
               onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('webseries')}
             />
-            
-            <ProjectRow 
-              title="🌍 Regional Cinema Gems" 
-              projects={regionalContent} 
+            <ProjectRow
+              id="row-regional"
+              title="🌍 Regional Cinema Gems"
+              projects={regionalContent}
               onProjectClick={handleProjectClick}
               onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('regional')}
             />
-            
-            <ProjectRow 
-              title="🏆 Highly Rated Projects" 
-              projects={highRatedProjects} 
+            <ProjectRow
+              id="row-high-rated"
+              title="🏆 Highly Rated Projects"
+              projects={highRatedProjects}
               onProjectClick={handleProjectClick}
               onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('high-rated')}
             />
-            
-            <ProjectRow 
-              title="🆕 Fresh Releases" 
-              projects={newReleases} 
+            <ProjectRow
+              id="row-new-releases"
+              title="🆕 Fresh Releases"
+              projects={newReleases}
               onProjectClick={handleProjectClick}
               onInvestClick={handleInvestClick}
               onHeaderClick={() => handleSectionClick('new-releases')}
             />
-            
             {hollywoodProjects.length > 0 && (
-              <ProjectRow 
-                title="🌟 Hollywood International" 
-                projects={hollywoodProjects} 
+              <ProjectRow
+                id="row-hollywood"
+                title="🌟 Hollywood International"
+                projects={hollywoodProjects}
                 onProjectClick={handleProjectClick}
                 onInvestClick={handleInvestClick}
                 onHeaderClick={() => handleSectionClick('hollywood')}
@@ -907,9 +914,10 @@ interface ProjectRowProps {
   onHeaderClick?: () => void;
   featured?: boolean;
   urgent?: boolean;
+  id: string;
 }
 
-const ProjectRow: React.FC<ProjectRowProps> = ({ title, projects, onProjectClick, onInvestClick, onHeaderClick, featured, urgent }) => {
+const ProjectRow = React.memo<ProjectRowProps>(({ title, projects, onProjectClick, onInvestClick, onHeaderClick, featured, urgent, id }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: 'left' | 'right') => {
@@ -965,20 +973,19 @@ const ProjectRow: React.FC<ProjectRowProps> = ({ title, projects, onProjectClick
         className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {projects.map((project, index) => (
+        {projects.map((project) => (
           <ProjectCard
             key={project.id} 
             project={project} 
             onClick={() => onProjectClick(project)}
             onInvestClick={onInvestClick}
-            featured={featured && index === 0}
             urgent={urgent}
           />
         ))}
       </div>
     </div>
   );
-};
+});
 
 // Enhanced Project Card Component with Blur Background on Hover
 interface ProjectCardProps {
@@ -990,7 +997,7 @@ interface ProjectCardProps {
   compact?: boolean;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, onInvestClick, featured, urgent, compact }) => {
+const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestClick, featured, urgent, compact }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const cardWidth = featured ? 'w-96' : compact ? 'w-48' : 'w-72';
@@ -1206,7 +1213,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, onClick, onInvestCli
     </motion.div>
     </PixelCard>
   );
-};
+});
 
 // List View Project Card
 interface ListProjectCardProps {

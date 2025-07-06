@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Film, TrendingUp, Users, DollarSign, Sparkles, Globe, Calendar, Coins } from 'lucide-react';
 import Typewriter from './Typewriter';
 import AnimatedNumber from './AnimatedNumber';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 
 interface HeroProps {
   setCurrentView?: (view: 'home' | 'dashboard' | 'projects' | 'community') => void;
@@ -575,9 +575,10 @@ const Hero: React.FC<HeroProps> = ({ setCurrentView }) => {
                     />
                   </div>
                   <div className="text-xs text-gray-300 mb-2">{stat.description}</div>
-                  <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-400 backdrop-blur-sm">
-                    <TrendingUp className="w-3 h-3" />
-                    {stat.growth}
+                  <div className="text-center">
+                    <span className="text-green-400 font-medium">
+                      {stat.growth}
+                    </span>
                   </div>
                 </div>
               </motion.div>
@@ -619,6 +620,9 @@ const Hero: React.FC<HeroProps> = ({ setCurrentView }) => {
           </div>
         </div>
       </div>
+      
+      {/* Beautiful Gradient Fade Transition to Next Section */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent via-black/80 to-black pointer-events-none"></div>
     </section>
   );
 };

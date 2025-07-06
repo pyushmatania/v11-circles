@@ -6,13 +6,12 @@ import {
   Sun, 
   Moon, 
   Menu, 
-  X,
   ChevronDown,
   CircleUser,
   Settings,
   LogOut
 } from 'lucide-react';
-import { useTheme } from '../ThemeProvider';
+import { useTheme } from '../ThemeContext';
 import { useAdminAuth } from '../../hooks/useAdminAuth';
 import type { AdminPanel } from './AdminDashboard';
 
@@ -229,10 +228,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ activePanel, onMenuClick }) =
                   </div>
                   <div className="p-2">
                     <button
-                      onClick={() => {
-                        setActivePanel('settings');
-                        setShowUserMenu(false);
-                      }}
+                      onClick={() => setShowUserMenu(false)}
                       className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left ${
                         theme === 'light' 
                           ? 'hover:bg-gray-100 text-gray-700' 

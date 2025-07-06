@@ -17,10 +17,11 @@ import {
   SlidersHorizontal, 
   Star, 
   Tags, 
+  TrendingUp,
   Tv, 
   X 
 } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 import { extendedProjects } from '../data/extendedProjects';
 import { Project } from '../types';
 
@@ -156,12 +157,13 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({ onSelectProject }) => {
         case 'rating':
           compareResult = (a.rating || 0) - (b.rating || 0);
           break;
-        case 'timeLeft':
+        case 'timeLeft': {
           // Convert "X days" to number
           const aDays = a.timeLeft ? parseInt(a.timeLeft.split(' ')[0]) : Infinity;
           const bDays = b.timeLeft ? parseInt(b.timeLeft.split(' ')[0]) : Infinity;
           compareResult = aDays - bDays;
           break;
+        }
         default: // relevance - keep original order
           return 0;
       }
@@ -204,7 +206,7 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({ onSelectProject }) => {
     if (isSearching) {
       handleSearch();
     }
-  }, [activeCategory, activeType, activeLanguage, activeGenre, fundingRange, sortBy, sortOrder]);
+  }, [activeCategory, activeType, activeLanguage, activeGenre, fundingRange, sortBy, sortOrder, isSearching, handleSearch]);
 
   return (
     <div className={`min-h-screen pt-20 pb-[100px] transition-all duration-[3000ms] ${

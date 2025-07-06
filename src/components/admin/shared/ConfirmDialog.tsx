@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, X, Loader } from 'lucide-react';
-import { useTheme } from '../../ThemeProvider';
+import { useTheme } from '../../ThemeContext';
 
 interface ConfirmDialogProps {
   isOpen: boolean;

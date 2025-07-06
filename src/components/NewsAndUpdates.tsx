@@ -16,13 +16,13 @@ import {
   Bookmark, 
   ExternalLink 
 } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 
 // Mock news data
 const newsData = [
   {
     id: '1',
-    title: 'Shah Rukh Khan\'s "Pathaan 2\" Breaks Funding Records on Circles',
+    title: 'Shah Rukh Khan\'s "Pathaan 2" Breaks Funding Records on Circles',
     summary: 'The upcoming sequel to the blockbuster hit has raised ₹12.75 crores from fans in just 3 days, becoming the fastest-funded project on the platform.',
     category: 'Film',
     image: 'https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&w=400',
@@ -128,7 +128,7 @@ const industryUpdates = [
   }
 ];
 
-interface NewsAndUpdatesProps {}
+type NewsAndUpdatesProps = object;
 
 const NewsAndUpdates: React.FC<NewsAndUpdatesProps> = () => {
   const { theme } = useTheme();

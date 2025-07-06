@@ -4,10 +4,6 @@ import {
   Search, 
   Edit, 
   Trash2, 
-  Gift,
-  Star,
-  Crown,
-  Award,
   Film,
   Music,
   Tv,
@@ -18,8 +14,9 @@ import {
   Gem,
   Badge
 } from 'lucide-react';
-import { useTheme } from '../../ThemeProvider';
-import { useAdmin, Perk } from '../AdminContext';
+import { useTheme } from '../../ThemeContext';
+import { useAdmin } from '../useAdmin';
+import type { Perk } from '../AdminContextTypes';
 import PerkForm from '../forms/PerkForm';
 import ConfirmDialog from '../shared/ConfirmDialog';
 import DataTable from '../shared/DataTable';
@@ -76,11 +73,11 @@ const PerksPanel: React.FC = () => {
       });
   }, [perks, searchTerm, filterTier, filterProject, sortField, sortDirection]);
 
-  const handleSort = (field: keyof Perk) => {
+  const handleSort = (field: string) => {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
-      setSortField(field);
+      setSortField(field as keyof Perk);
       setSortDirection('asc');
     }
   };
@@ -129,7 +126,7 @@ const PerksPanel: React.FC = () => {
     {
       Header: 'Perk',
       accessor: 'title',
-      Cell: ({ row }: any) => (
+      Cell: ({ row }: { row: { original: Perk } }) => (
         <div>
           <p className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
             {row.original.title}
@@ -143,7 +140,7 @@ const PerksPanel: React.FC = () => {
     {
       Header: 'Project',
       accessor: 'projectTitle',
-      Cell: ({ row }: any) => (
+      Cell: ({ row }: { row: { original: Perk } }) => (
         <div className="flex items-center gap-2">
           {getProjectTypeIcon(row.original.projectId)}
           <span className={theme === 'light' ? 'text-gray-900' : 'text-white'}>
@@ -155,7 +152,7 @@ const PerksPanel: React.FC = () => {
     {
       Header: 'Tier',
       accessor: 'tier',
-      Cell: ({ row }: any) => (
+      Cell: ({ row }: { row: { original: Perk } }) => (
         <div className="flex items-center gap-2">
           {getTierIcon(row.original.tier)}
           <span className={`capitalize ${
@@ -172,7 +169,7 @@ const PerksPanel: React.FC = () => {
     {
       Header: 'Min. Amount',
       accessor: 'minAmount',
-      Cell: ({ value }: any) => (
+      Cell: ({ value }: { value: number }) => (
         <span className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
           ₹{value.toLocaleString()}
         </span>
@@ -181,7 +178,7 @@ const PerksPanel: React.FC = () => {
     {
       Header: 'Created',
       accessor: 'createdAt',
-      Cell: ({ value }: any) => (
+      Cell: ({ value }: { value: string }) => (
         <span className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
           {new Date(value).toLocaleDateString()}
         </span>
@@ -189,7 +186,7 @@ const PerksPanel: React.FC = () => {
     },
     {
       Header: 'Actions',
-      Cell: ({ row }: any) => (
+      Cell: ({ row }: { row: { original: Perk } }) => (
         <div className="flex items-center gap-2">
           <button
             onClick={() => setEditingPerk(row.original)}

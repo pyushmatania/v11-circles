@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { handleImageError, getOptimizedImageUrl } from '../utils/imageOptimizer';
+import { handleImageError } from '../utils/imageOptimizer';
 
 interface OptimizedImageProps {
   src: string;
@@ -30,10 +30,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   const [hasError, setHasError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const optimizedSrc = getOptimizedImageUrl(src, {
-    loading: priority ? 'eager' : loading,
-    fallback
-  });
+
 
   const handleLoad = useCallback(() => {
     setIsLoaded(true);
