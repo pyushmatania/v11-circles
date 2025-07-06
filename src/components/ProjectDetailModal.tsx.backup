@@ -38,7 +38,7 @@ interface ProjectDetailModalProps {
   project: Project | null;
   isOpen: boolean;
   onClose: () => void;
-  initialTab?: 'overview' | 'invest';
+  initialTab?: 'overview' | 'script' | 'cast' | 'perks' | 'invest';
   onTrackInvestment?: () => void;
 }
 
@@ -1183,178 +1183,185 @@ TITLE CARD: "NEON NIGHTS"`,
             </div>
           </motion.div>
         </div>
-        )}
-        {isMobile && (
-          <motion.button
-            initial={{ y: 80 }}
+      </div>
+      
+      {/* Mobile Investment Button */}
+      {isMobile && (
+        <motion.button
+          initial={{ y: 80 }}
+          animate={{ y: 0 }}
+          exit={{ y: 80 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          onClick={handleMobileInvestClick}
+          className="fixed bottom-4 left-4 right-4 z-[9998] px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold"
+        >
+          Invest Now
+        </motion.button>
+      )}
+      
+      {/* Mobile Investment Modal */}
+      {isMobile && showMobileInvest && (
+        <AnimatePresence>
+          <motion.div
+            initial={{ y: '100%' }}
             animate={{ y: 0 }}
-            exit={{ y: 80 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-            onClick={handleMobileInvestClick}
-            className="fixed bottom-4 left-4 right-4 z-[9998] px-6 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold"
+            exit={{ y: '100%' }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm p-4 flex flex-col"
           >
-            Invest Now
-          </motion.button>
-        )}
-        {isMobile && showMobileInvest && (
-          <AnimatePresence>
-            <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm p-4 flex flex-col"
-            >
-              {investStatus === 'success' ? (
-                <div className="flex-1 flex flex-col items-center justify-center gap-4">
-                  <CheckCircle className="w-16 h-16 text-green-400" />
-                  <p className="text-white text-lg">Investment Successful!</p>
-                  <button
-                    onClick={handleMobileInvestClose}
-                    className="w-full h-12 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold text-lg"
-                  >
-                    Close
-                  </button>
-                </div>
-              ) : (
-                <div className="flex-1 flex flex-col">
-                  <button
-                    onClick={handleMobileInvestClose}
-                    className="self-end text-white mb-4"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
-                  <h3 className="text-white text-lg font-semibold mb-4">Enter Amount</h3>
+            {investStatus === 'success' ? (
+              <div className="flex-1 flex flex-col items-center justify-center gap-4">
+                <CheckCircle className="w-16 h-16 text-green-400" />
+                <p className="text-white text-lg">Investment Successful!</p>
+                <button
+                  onClick={handleMobileInvestClose}
+                  className="w-full h-12 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold text-lg"
+                >
+                  Close
+                </button>
+              </div>
+            ) : (
+              <div className="flex-1 flex flex-col">
+                <button
+                  onClick={handleMobileInvestClose}
+                  className="self-end text-white mb-4"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+                <h3 className="text-white text-lg font-semibold mb-4">Enter Amount</h3>
+                <input
+                  type="number"
+                  min={500}
+                  value={investmentAmount}
+                  onChange={handleInvestmentAmountChange}
+                  className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white mb-6"
+                />
+                <h4 className="text-white text-lg font-semibold mb-2">Payment Method</h4>
+                <select
+                  value={paymentMethod}
+                  onChange={handlePaymentMethodChange}
+                  className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white mb-4"
+                >
+                  <option value="upi">UPI</option>
+                  <option value="netbanking">Net Banking</option>
+                  <option value="card">Credit/Debit Card</option>
+                </select>
+                {paymentMethod === 'upi' ? (
                   <input
-                    type="number"
-                    min={500}
-                    value={investmentAmount}
-                    onChange={handleInvestmentAmountChange}
-                    className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white mb-6"
-                  />
-                  <h4 className="text-white text-lg font-semibold mb-2">Payment Method</h4>
-                  <select
-                    value={paymentMethod}
-                    onChange={handlePaymentMethodChange}
+                    type="text"
+                    placeholder="UPI ID"
+                    value={upiId}
+                    onChange={handleUpiIdChange}
                     className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white mb-4"
-                  >
-                    <option value="upi">UPI</option>
-                    <option value="netbanking">Net Banking</option>
-                    <option value="card">Credit/Debit Card</option>
-                  </select>
-                  {paymentMethod === 'upi' ? (
+                  />
+                ) : paymentMethod === 'netbanking' ? (
+                  <input
+                    type="text"
+                    placeholder="Bank Name"
+                    value={bankName}
+                    onChange={handleBankNameChange}
+                    className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white mb-4"
+                  />
+                ) : (
+                  <div className="space-y-4">
                     <input
                       type="text"
-                      placeholder="UPI ID"
-                      value={upiId}
-                      onChange={handleUpiIdChange}
-                      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white mb-4"
+                      placeholder="Card Number"
+                      value={cardNumber}
+                      onChange={handleCardNumberChange}
+                      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white"
                     />
-                  ) : paymentMethod === 'netbanking' ? (
-                    <input
-                      type="text"
-                      placeholder="Bank Name"
-                      value={bankName}
-                      onChange={handleBankNameChange}
-                      className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white mb-4"
-                    />
-                  ) : (
-                    <div className="space-y-4">
+                    <div className="flex gap-4">
                       <input
                         type="text"
-                        placeholder="Card Number"
-                        value={cardNumber}
-                        onChange={handleCardNumberChange}
-                        className="w-full px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white"
+                        placeholder="MM/YY"
+                        value={cardExpiry}
+                        onChange={handleCardExpiryChange}
+                        className="flex-1 px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white"
                       />
-                      <div className="flex gap-4">
-                        <input
-                          type="text"
-                          placeholder="MM/YY"
-                          value={cardExpiry}
-                          onChange={handleCardExpiryChange}
-                          className="flex-1 px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white"
-                        />
-                        <input
-                          type="text"
-                          placeholder="CVV"
-                          value={cardCvv}
-                          onChange={handleCardCvvChange}
-                          className="w-20 px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white"
-                        />
-                      </div>
-                    </div>
-                  )}
-                  <div className="mt-4 space-y-2 text-sm text-white/80">
-                    <div className="flex justify-between">
-                      <span>Estimated Returns (15%):</span>
-                      <span className="text-green-400 font-semibold">₹{(investmentAmount * 0.15).toLocaleString()}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Shield className="w-4 h-4 text-green-400" />
-                      <span>SEBI Registered</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-400" />
-                      <span>Section 80C eligible</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-yellow-400" />
-                      <span>Lock-in: {projectDetails.investmentDetails.lockInPeriod}</span>
-                    </div>
-                    <div className="p-3 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-300">
-                      {projectDetails.riskFactors[0]}
+                      <input
+                        type="text"
+                        placeholder="CVV"
+                        value={cardCvv}
+                        onChange={handleCardCvvChange}
+                        className="w-20 px-4 py-3 rounded-xl border border-white/20 bg-white/10 text-white"
+                      />
                     </div>
                   </div>
-                  <button
-                    onClick={handleInvest}
-                    disabled={investStatus === 'loading'}
-                    className="mt-auto w-full h-12 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold text-lg"
-                  >
-                    Pay
-                  </button>
+                )}
+                <div className="mt-4 space-y-2 text-sm text-white/80">
+                  <div className="flex justify-between">
+                    <span>Estimated Returns (15%):</span>
+                    <span className="text-green-400 font-semibold">₹{(investmentAmount * 0.15).toLocaleString()}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-green-400" />
+                    <span>SEBI Registered</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-400" />
+                    <span>Section 80C eligible</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-yellow-400" />
+                    <span>Lock-in: {projectDetails.investmentDetails.lockInPeriod}</span>
+                  </div>
+                  <div className="p-3 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-300">
+                    {projectDetails.riskFactors[0]}
+                  </div>
                 </div>
-              )}
+                <button
+                  onClick={handleInvest}
+                  disabled={investStatus === 'loading'}
+                  className="mt-auto w-full h-12 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold text-lg"
+                >
+                  Pay
+                </button>
+              </div>
+            )}
 
-              {investStatus === 'loading' && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
+            {investStatus === 'loading' && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      )}
+      
+      {/* Loading Toast */}
+      <AnimatePresence>
+        {investStatus === 'loading' && (
+          <motion.div
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[9999] px-4 py-3 rounded-xl bg-gray-900 text-white flex items-center gap-3"
+          >
+            <div className="w-6 h-6 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+            <span>Processing...</span>
+          </motion.div>
         )}
-        <AnimatePresence>
-          {investStatus === 'loading' && (
-            <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[9999] px-4 py-3 rounded-xl bg-gray-900 text-white flex items-center gap-3"
-            >
-              <div className="w-6 h-6 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
-              <span>Processing...</span>
+      </AnimatePresence>
+      
+      {/* Success Toast */}
+      <AnimatePresence>
+        {investStatus === 'success' && (
+          <motion.div
+            initial={{ y: 50, opacity: 0, scale: 0.9 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[9999] px-4 py-3 rounded-xl bg-gray-900 text-white flex items-center gap-2"
+          >
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 20 }}>
+              <CheckCircle className="w-6 h-6 text-green-400" />
             </motion.div>
-          )}
-        </AnimatePresence>
-        <AnimatePresence>
-          {investStatus === 'success' && (
-            <motion.div
-              initial={{ y: 50, opacity: 0, scale: 0.9 }}
-              animate={{ y: 0, opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[9999] px-4 py-3 rounded-xl bg-gray-900 text-white flex items-center gap-2"
-            >
-              <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 20 }}>
-                <CheckCircle className="w-6 h-6 text-green-400" />
-              </motion.div>
-              <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
-                Your investment is confirmed!
-              </motion.span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        {'}'}
+            <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+              Your investment is confirmed!
+            </motion.span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </AnimatePresence>
   );
 });

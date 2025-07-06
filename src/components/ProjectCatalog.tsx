@@ -64,7 +64,6 @@ const FILTER_OPTIONS = {
 } as const;
 
 const ProjectCatalog: React.FC<ProjectCatalogProps> = React.memo(({ 
-  projects, 
   onProjectClick, 
   onTrackInvestment: _onTrackInvestment 
 }) => {

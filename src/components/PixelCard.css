@@ -34,7 +34,9 @@
   transition: opacity 800ms cubic-bezier(0.5, 1, 0.89, 1);
 }
 
+
 .pixel-card:hover::before,
 .pixel-card:focus-within::before {
   opacity: 1;
 }
+
