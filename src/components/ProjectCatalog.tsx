@@ -321,8 +321,10 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
   const endingSoon = categorizedProjects.endingSoon;
   const featuredProjects = categorizedProjects.featuredProjects;
 
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   return (
-    <div className="min-h-screen bg-black pb-[100px] mt-28 md:mt-32">
+    <div className="min-h-screen bg-black pb-[100px]">
       {/* Mobile Hero Carousel */}
       {!searchTerm && !showAllProjects && (
         <div
@@ -349,9 +351,16 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -150, opacity: 0 }}
               transition={{ duration: 0.6, ease: 'easeInOut' }}
-              className="absolute inset-0 w-full h-full object-cover"
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              loading="lazy"
+              onLoad={() => setImageLoaded(true)}
             />
           </AnimatePresence>
+          {!imageLoaded && (
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse flex items-center justify-center">
+              <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+            </div>
+          )}
           <div className="absolute bottom-12 left-0 w-full p-3 text-center flex flex-col items-center bg-gradient-to-t from-black/70 via-black/40 to-transparent">
             <h3 className="text-white text-base font-semibold">
               {featuredProjects[currentSlide]?.title}
@@ -391,8 +400,23 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
               <img 
                 src={featuredProjects[currentSlide]?.poster} 
                 alt={featuredProjects[currentSlide]?.title}
-                className="w-full h-full object-cover"
+                className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-700 blur-lg scale-105 ${imageLoaded ? 'opacity-0' : 'opacity-100'}`}
+                aria-hidden="true"
+                loading="lazy"
+                style={{ filter: 'blur(20px)', pointerEvents: 'none' }}
               />
+              <img
+                src={featuredProjects[currentSlide]?.poster}
+                alt={featuredProjects[currentSlide]?.title}
+                className={`w-full h-full object-cover transition-opacity duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                loading="lazy"
+                onLoad={() => setImageLoaded(true)}
+              />
+              {!imageLoaded && (
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse flex items-center justify-center">
+                  <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+                </div>
+              )}
               <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent" />
             </motion.div>
           </AnimatePresence>

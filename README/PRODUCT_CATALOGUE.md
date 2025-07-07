@@ -1,103 +1,11 @@
-# EnterCircles
-
-This project contains the landing page for the **Circles** application.
-
-## Setup
-
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-2. Copy `.env.example` to `.env` and add your API keys.
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-Detailed environment configuration and optional scripts are documented in
-[docs/SETUP_INSTRUCTIONS.md](docs/SETUP_INSTRUCTIONS.md).
-
-## Scripts
-
-- `npm run dev` – start Vite in development mode
-- `npm run build` – create a production build
-- `npm run preview` – preview the production build
-- `npm run lint` – run ESLint
-- `npm run test` – run unit tests with Vitest
-
-# Circles: Ultra-Detailed DevOps Copilot Optimization
-
-## 🧠 Circles Optimization + Code Quality Audit
-
-This project uses a world-class optimization and audit workflow:
-
-- **No unused or duplicate files/components**
-- **All code is performant, clean, and modular**
-- **All UI/animation/visuals are preserved**
-- **All scrolling and transitions are buttery smooth**
-- **All features work as intended on all screen sizes**
-
-### 🛠️ Automated Build Optimizations
-
-- **Manual chunking** for React, animation, UI, admin, and project code
-- **CSS code splitting** and optimized asset naming
-- **Console/debugger removal** in production
-- **Modern browser targeting**
-- **Pre-bundling and dependency optimization**
-- **Brotli and gzip compression** for production builds
-- **Bundle analyzer** for visualizing and optimizing bundle size
-
-### 🚀 How to Use
-
-1. **Build the project:**
-   ```sh
-   npm run build
-   ```
-   This will generate compressed `.br` and `.gz` assets in `dist/`.
-
-2. **Analyze the bundle:**
-   ```sh
-   npm run build
-   # Then open dist/bundle-analysis.html in your browser
-   ```
-   The analyzer will show a visual breakdown of your bundle.
-
-3. **Audit/optimize:**
-   - Run `npm run lint` for code quality
-   - Use the audit prompt in this README to guide further improvements
-
----
-
-## 🔍 Ultra-Detailed DevOps Copilot Prompt
-
-```
-[Paste your full prompt here for future automation]
-```
-
----
-
-## Golden Rule
-
-> **Do NOT downgrade or remove any of the following:**
-> Gradients, Poster quality, Canvas/3D effects, Glitch text, Floating orbs, Confetti, cube effects, animated numbers, Typewriter effects, Dark/light themes
-
-The goal is to **optimize, not sterilize.**
-
-# Project Catalog Data Format & Mock Data
+# Product Catalogue Data Format & API Integration
 
 ## Overview
-The Project Catalog in this app displays a list of projects (films, music, webseries, etc.) with rich metadata. The data is currently mocked in `src/data/projects.ts`, but in production, it should be fetched from an API.
+This document describes the data structure, metadata, and integration points for the product (project) catalogue in this app. It covers both mock data and real API usage, including YouTube trailer and poster image APIs.
 
 ---
 
-## Data Source
-- **Mock Data:** `src/data/projects.ts`
-- **Type Definition:** `src/types/index.ts` (interface `Project`)
-- **Production:** Replace mock data with API response in the same format.
-
----
-
-## Project Data Format
+## Data Format (Project)
 
 | Field            | Type                | Required | Description                                                      |
 |------------------|---------------------|----------|------------------------------------------------------------------|
@@ -119,7 +27,7 @@ The Project Catalog in this app displays a list of projects (films, music, webse
 | perks            | string[]            | Yes      | List of perks for investors                                      |
 | rating           | number (optional)   | No       | Project rating (1-5 scale)                                       |
 | investorCount    | number (optional)   | No       | Number of investors                                              |
-| trailer          | string (optional)   | No       | Trailer video URL                                                |
+| trailer          | string (optional)   | No       | Trailer video URL (YouTube)                                      |
 | imageValidated   | boolean (optional)  | No       | Whether the image is validated                                   |
 | imageSource      | string (optional)   | No       | Source of the image (e.g., 'verified')                           |
 
@@ -145,27 +53,44 @@ The Project Catalog in this app displays a list of projects (films, music, webse
   "perks": ["VFX Studio Tour", "Concept Art", "Digital Assets", "Premiere"],
   "rating": 4.7,
   "imageValidated": true,
-  "imageSource": "verified"
+  "imageSource": "verified",
+  "trailer": "https://www.youtube.com/watch?v=example"
 }
 ```
 
 ---
 
+## API Integration
+
+### 1. Fetching Real Project Data
+- Replace the mock data import with an API call that returns an array of objects in the above format.
+- Example endpoint: `GET /api/projects`
+- Response: `[{...project}, {...project}, ...]`
+
+### 2. YouTube Trailer API
+- Each project can have a `trailer` field with a YouTube video URL.
+- To fetch trailer data dynamically, use the [YouTube Data API v3](https://developers.google.com/youtube/v3/docs/search/list):
+  - Endpoint: `https://www.googleapis.com/youtube/v3/search?part=snippet&q=<project title> trailer&type=video&key=YOUR_API_KEY`
+  - Use the first result's `videoId` to construct the trailer URL: `https://www.youtube.com/watch?v=<videoId>`
+- Store the resulting URL in the `trailer` field for each project.
+
+### 3. Poster Image API
+- Poster images should be served from a CDN or image optimization service for best performance.
+- Example: [TMDB API](https://developers.themoviedb.org/3/getting-started/images)
+  - Endpoint: `https://api.themoviedb.org/3/search/movie?api_key=YOUR_API_KEY&query=<project title>`
+  - Use the `poster_path` from the first result and prepend with the TMDB image base URL (e.g., `https://image.tmdb.org/t/p/w500/<poster_path>`)
+- Store the resulting URL in the `poster` field for each project.
+
+---
+
 ## Feeding Real Data
-- **API Integration:**
-  - Replace the mock data import in your code with an API call that returns an array of objects in the above format.
-  - All required fields must be present; optional fields can be omitted or set to `null`/`undefined`.
-- **Validation:**
-  - Ensure your backend or API returns data matching the `Project` interface.
-  - Images should be optimized for web (ideally via CDN).
+- All required fields must be present; optional fields can be omitted or set to `null`/`undefined`.
+- Validate that your backend or API returns data matching the `Project` interface.
+- Images and trailers should be optimized for web and mobile.
 
 ---
 
 ## Notes
 - The UI expects all fields to be present for best results, but will gracefully handle missing optional fields.
-- Perks, tags, and images are displayed prominently in the UI.
 - For best performance, use `loading="lazy"` and serve images in modern formats (WebP, AVIF).
-
----
-
-For more details, see `src/types/index.ts` and `src/data/projects.ts`.
+- See also: `src/types/index.ts` and `src/data/projects.ts` for more details. 
