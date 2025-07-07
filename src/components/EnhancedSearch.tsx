@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowDown, 
@@ -22,7 +22,7 @@ import {
   X 
 } from 'lucide-react';
 import { useTheme } from './ThemeContext';
-import { extendedProjects } from '../data/extendedProjects';
+import { projects } from '../data/projects';
 import { Project } from '../types';
 
 interface EnhancedSearchProps {
@@ -46,10 +46,10 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({ onSelectProject }) => {
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
   // Get unique values for filters
-  const categories = ['all', ...Array.from(new Set(extendedProjects.map(p => p.category.toLowerCase())))];
-  const types = ['all', ...Array.from(new Set(extendedProjects.map(p => p.type)))];
-  const languages = ['all', ...Array.from(new Set(extendedProjects.map(p => p.language.toLowerCase())))];
-  const genres = ['all', ...Array.from(new Set(extendedProjects.map(p => {
+  const categories = ['all', ...Array.from(new Set(projects.map(p => p.category.toLowerCase())))];
+  const types = ['all', ...Array.from(new Set(projects.map(p => p.type)))];
+  const languages = ['all', ...Array.from(new Set(projects.map(p => p.language.toLowerCase())))];
+  const genres = ['all', ...Array.from(new Set(projects.map(p => {
     const genres = [];
     if (p.genre) genres.push(p.genre.toLowerCase());
     return genres;
@@ -64,7 +64,7 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({ onSelectProject }) => {
   }, []);
 
   // Save recent searches to localStorage
-  const saveRecentSearch = (term: string) => {
+  const saveRecentSearch = useCallback((term: string) => {
     if (!term.trim()) return;
     
     const updatedSearches = [
@@ -74,7 +74,7 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({ onSelectProject }) => {
     
     setRecentSearches(updatedSearches);
     localStorage.setItem('circles_recent_searches', JSON.stringify(updatedSearches));
-  };
+  }, [recentSearches]);
 
   // Clear recent searches
   const clearRecentSearches = () => {
@@ -83,7 +83,7 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({ onSelectProject }) => {
   };
 
   // Handle search
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     if (!searchTerm.trim() && activeCategory === 'all' && activeType === 'all' && 
         activeLanguage === 'all' && activeGenre === 'all' && 
         fundingRange[0] === 0 && fundingRange[1] === 100) {
@@ -100,7 +100,7 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({ onSelectProject }) => {
     }
     
     // Filter projects based on criteria
-    let results = extendedProjects.filter(project => {
+    let results = projects.filter(project => {
       // Search term filter
       const matchesTerm = !searchTerm.trim() || 
         project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -137,7 +137,7 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({ onSelectProject }) => {
     results = sortResults(results, sortBy, sortOrder);
     
     setSearchResults(results);
-  };
+  }, [searchTerm, activeCategory, activeType, activeLanguage, activeGenre, fundingRange, sortBy, sortOrder, saveRecentSearch]);
 
   // Sort results based on criteria
   const sortResults = (results: Project[], sortField: string, order: 'asc' | 'desc') => {

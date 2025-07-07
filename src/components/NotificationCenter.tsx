@@ -17,7 +17,8 @@ import {
   TrendingUp,
   Trash2,
   Tv,
-  User
+  User,
+  ArrowLeft
 } from 'lucide-react';
 import { useTheme } from './ThemeContext';
 
@@ -103,9 +104,10 @@ const mockNotifications = [
 
 interface NotificationCenterProps {
   onClose?: () => void;
+  setCurrentView?: (view: 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search') => void;
 }
 
-const NotificationCenter: React.FC<NotificationCenterProps> = () => {
+const NotificationCenter: React.FC<NotificationCenterProps> = ({ onClose, setCurrentView }) => {
   const { theme } = useTheme();
   const [notifications, setNotifications] = useState(mockNotifications);
   const [activeFilter, setActiveFilter] = useState<string>('all');
@@ -214,6 +216,15 @@ const NotificationCenter: React.FC<NotificationCenterProps> = () => {
     }
   };
 
+  // Handle back navigation
+  const handleBack = () => {
+    if (setCurrentView) {
+      setCurrentView('home');
+    } else if (onClose) {
+      onClose();
+    }
+  };
+
   return (
     <div className={`min-h-screen pt-20 pb-[100px] transition-all duration-[3000ms] ${
       theme === 'light'
@@ -221,63 +232,96 @@ const NotificationCenter: React.FC<NotificationCenterProps> = () => {
         : 'bg-gradient-to-br from-black via-gray-900 to-purple-900'
     }`}>
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Header */}
+        {/* Header with Back Button */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4"
+          className="mb-8"
         >
-          <div>
-            <h1 className={`text-4xl md:text-5xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'} mb-4`}>
-              Notifications
-            </h1>
-            <p className={`text-lg ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'}`}>
-              Stay updated with your investments, perks, and events
-            </p>
+          {/* Back Button - Mobile */}
+          <div className="md:hidden mb-4">
+            <button
+              onClick={handleBack}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                theme === 'light'
+                  ? 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  : 'bg-gray-800 text-gray-300 border border-gray-700 hover:bg-gray-700'
+              }`}
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span>Back</span>
+            </button>
           </div>
-          
-          <div className="flex gap-3">
-            <button
-              onClick={markAllAsRead}
-              disabled={unreadCount === 0}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                theme === 'light'
-                  ? unreadCount > 0
+
+          {/* Header Content */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              {/* Back Button - Desktop */}
+              <button
+                onClick={handleBack}
+                className={`hidden md:flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                  theme === 'light'
                     ? 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                    : 'bg-white text-gray-400 border border-gray-300 cursor-not-allowed'
-                  : unreadCount > 0
-                    ? 'bg-gray-800 text-gray-300 border border-gray-700 hover:bg-gray-700'
-                    : 'bg-gray-800 text-gray-500 border border-gray-700 cursor-not-allowed'
-              }`}
-            >
-              <Check className="w-5 h-5" />
-              <span>Mark All Read</span>
-              {unreadCount > 0 && (
-                <div className={`w-5 h-5 rounded-full flex items-center justify-center text-xs ${
-                  theme === 'light' ? 'bg-purple-100 text-purple-700' : 'bg-purple-900/30 text-purple-400'
-                }`}>
-                  {unreadCount}
-                </div>
-              )}
-            </button>
+                    : 'bg-gray-800 text-gray-300 border border-gray-700 hover:bg-gray-700'
+                }`}
+              >
+                <ArrowLeft className="w-5 h-5" />
+                <span>Back</span>
+              </button>
+              
+              <div>
+                <h1 className={`text-4xl md:text-5xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'} mb-4`}>
+                  Notifications
+                </h1>
+                <p className={`text-lg ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'}`}>
+                  Stay updated with your investments, perks, and events
+                </p>
+              </div>
+            </div>
             
-            <button
-              onClick={clearAllNotifications}
-              disabled={notifications.length === 0}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                theme === 'light'
-                  ? notifications.length > 0
-                    ? 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-                    : 'bg-white text-gray-400 border border-gray-300 cursor-not-allowed'
-                  : notifications.length > 0
-                    ? 'bg-gray-800 text-gray-300 border border-gray-700 hover:bg-gray-700'
-                    : 'bg-gray-800 text-gray-500 border border-gray-700 cursor-not-allowed'
-              }`}
-            >
-              <Trash2 className="w-5 h-5" />
-              <span>Clear All</span>
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={markAllAsRead}
+                disabled={unreadCount === 0}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                  theme === 'light'
+                    ? unreadCount > 0
+                      ? 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                      : 'bg-white text-gray-400 border border-gray-300 cursor-not-allowed'
+                    : unreadCount > 0
+                      ? 'bg-gray-800 text-gray-300 border border-gray-700 hover:bg-gray-700'
+                      : 'bg-gray-800 text-gray-500 border border-gray-700 cursor-not-allowed'
+                }`}
+              >
+                <Check className="w-5 h-5" />
+                <span>Mark All Read</span>
+                {unreadCount > 0 && (
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center text-xs ${
+                    theme === 'light' ? 'bg-purple-100 text-purple-700' : 'bg-purple-900/30 text-purple-400'
+                  }`}>
+                    {unreadCount}
+                  </div>
+                )}
+              </button>
+              
+              <button
+                onClick={clearAllNotifications}
+                disabled={notifications.length === 0}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+                  theme === 'light'
+                    ? notifications.length > 0
+                      ? 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                      : 'bg-white text-gray-400 border border-gray-300 cursor-not-allowed'
+                    : notifications.length > 0
+                      ? 'bg-gray-800 text-gray-300 border border-gray-700 hover:bg-gray-700'
+                      : 'bg-gray-800 text-gray-500 border border-gray-700 cursor-not-allowed'
+                }`}
+              >
+                <Trash2 className="w-5 h-5" />
+                <span>Clear All</span>
+              </button>
+            </div>
           </div>
         </motion.div>
 

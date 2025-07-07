@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, BarChart3, Film, Users, Bell, User, LogIn, LogOut, LayoutDashboard, ShoppingBag, ChevronDown, ChevronUp, BarChart, GitCompareArrows as ArrowsCompare, Newspaper, MoreHorizontal, Sun, Moon } from 'lucide-react';
+import { Home, BarChart3, Film, Users, LayoutDashboard, ShoppingBag, ChevronDown, ChevronUp, BarChart, GitCompareArrows as ArrowsCompare, Newspaper, MoreHorizontal, Sun, Moon, User } from 'lucide-react';
 import { useTheme } from './ThemeContext';
-import { useAuth } from './auth/AuthProvider';
+import { useAuth } from './auth/useAuth';
 import SearchBar from './SearchBar';
 import NotificationDropdown from './NotificationDropdown';
 import ProjectDetailModal from './ProjectDetailModal';
@@ -16,44 +16,42 @@ interface NavigationProps {
 }
 
 const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, onAuthRequired }) => {
-
   const [isScrolled, setIsScrolled] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
   const [initialTab, setInitialTab] = useState<'overview' | 'invest'>('overview');
   const { theme, toggleTheme } = useTheme();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
-  const mainNavItems = [
+  const mainNavItems = useMemo(() => [
     { id: 'home', label: 'Home', icon: Home, requiresAuth: false },
     { id: 'projects', label: 'Browse', icon: Film, requiresAuth: false },
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3, requiresAuth: false },
     { id: 'community', label: 'Community', icon: Users, requiresAuth: false }
-  ];
+  ], []);
 
-  const moreNavItems = [
+  const moreNavItems = useMemo(() => [
     { id: 'merch', label: 'Merch', icon: ShoppingBag },
     { id: 'portfolio', label: 'Portfolio', icon: BarChart, requiresAuth: true },
     { id: 'compare', label: 'Compare', icon: ArrowsCompare },
-    { id: 'news', label: 'News', icon: Newspaper }
-  ];
+    { id: 'news', label: 'News', icon: Newspaper },
+    { id: 'admin', label: 'Admin', icon: LayoutDashboard }
+  ], []);
 
-  // Handle scroll events
+  const handleScroll = useCallback(() => {
+    const currentScrollY = window.scrollY;
+    setIsScrolled(currentScrollY > 50);
+  }, []);
+
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setIsScrolled(currentScrollY > 50);
-    };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [handleScroll]);
 
-  const handleItemClick = (itemId: string) => {
+  const handleItemClick = useCallback((itemId: string) => {
     if (itemId === 'theme') {
       toggleTheme();
     } else if (['home', 'projects', 'dashboard', 'community', 'merch', 'profile', 'admin', 'portfolio', 'compare', 'news', 'notifications', 'search'].includes(itemId)) {
@@ -65,26 +63,17 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
       setCurrentView(itemId as 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search');
       setShowMoreMenu(false);
     }
-  };
+  }, [toggleTheme, mainNavItems, moreNavItems, isAuthenticated, onAuthRequired, setCurrentView]);
 
-  const handleAuthClick = (mode: 'login' | 'register') => {
-    onAuthRequired(mode);
-  };
-
-  const handleLogout = () => {
-    logout();
-    setShowUserMenu(false);
-  };
-
-  const handleProjectSelect = (project: Project, tab: 'overview' | 'invest' = 'overview') => {
+  const handleProjectSelect = useCallback((project: Project, tab: 'overview' | 'invest' = 'overview') => {
     setSelectedProject(project);
     setInitialTab(tab);
     setIsProjectModalOpen(true);
-  };
+  }, []);
 
   return (
     <>
-      {/* Top Navigation - Clean floating buttons */}
+      {/* Top Navigation Bar - Only shown when not scrolled */}
       <AnimatePresence>
         {!isScrolled && (
           <motion.nav
@@ -95,7 +84,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
           >
             <div className="max-w-7xl mx-auto px-8 py-6">
               <div className="relative flex items-center justify-between">
-                {/* Logo - Much bigger size, no animations */}
+                {/* Logo */}
                 <motion.button 
                   onClick={() => setCurrentView('home')}
                   className="hidden md:flex items-center gap-0 cursor-pointer"
@@ -127,7 +116,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                   </span>
                 </motion.button>
 
-                {/* Navigation Items - Clean buttons */}
+                {/* Navigation Items */}
                 <div className="hidden md:flex items-center gap-12">
                   {mainNavItems.map((item, index) => (
                     <motion.button
@@ -156,7 +145,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                       )}
                     </motion.button>
                   ))}
-                  
+
                   {/* More Menu Dropdown */}
                   <div className="relative hidden md:block">
                     <motion.button
@@ -240,6 +229,43 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                     onViewAll={() => setCurrentView('notifications')}
                   />
 
+                  {/* Profile Icon */}
+                  <div className="relative">
+                    <motion.button
+                      onClick={() => {
+                        if (!isAuthenticated) {
+                          onAuthRequired('login');
+                        } else {
+                          setCurrentView('profile');
+                        }
+                      }}
+                      className={`flex items-center justify-center transition-all duration-[3000ms] ${
+                        theme === 'light'
+                          ? 'text-gray-600 hover:text-purple-600'
+                          : 'text-gray-300 hover:text-cyan-400'
+                      }`}
+                      whileHover={{ scale: 1.08 }}
+                      whileTap={{ scale: 0.95 }}
+                      aria-label={isAuthenticated ? "Profile" : "Sign In"}
+                    >
+                      {isAuthenticated && user?.avatar ? (
+                        <img 
+                          src={user.avatar} 
+                          alt={user.name}
+                          className="w-6 h-6 rounded-full object-cover"
+                          onError={(e) => {
+                            const target = e.currentTarget as HTMLImageElement;
+                            target.style.display = 'none';
+                            const fallback = target.nextElementSibling as HTMLElement;
+                            if (fallback) fallback.style.display = 'block';
+                          }}
+                        />
+                      ) : (
+                        <User className="w-6 h-6 drop-shadow-lg" />
+                      )}
+                    </motion.button>
+                  </div>
+
                   {/* Theme Toggle Button */}
                   <motion.button
                     onClick={toggleTheme}
@@ -253,88 +279,9 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                       <Sun className="w-5 h-5 drop-shadow-lg" />
                     )}
                   </motion.button>
-
-                  {/* Admin Button */}
-                  <motion.button 
-                    onClick={() => setCurrentView('admin')}
-                    className={`p-2 rounded-lg transition-all duration-[3000ms] ${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <LayoutDashboard className="w-5 h-5 drop-shadow-lg" />
-                  </motion.button>
-
-                  {/* User Menu */}
-                  {isAuthenticated ? (
-                    <div className="relative">
-                      <motion.button 
-                        onClick={() => setShowUserMenu(!showUserMenu)}
-                        className={`flex items-center gap-2 p-2 rounded-lg transition-all duration-[3000ms] ${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <img 
-                          src={user?.avatar} 
-                          alt={user?.name}
-                          className="w-8 h-8 rounded-full object-cover border-2 border-purple-500/30"
-                        />
-                      </motion.button>
-
-                      <AnimatePresence>
-                        {showUserMenu && (
-                          <motion.div
-                            initial={{ opacity: 0, scale: 0.9, y: -10 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.9, y: -10 }}
-                            className={`absolute right-0 top-12 w-48 rounded-xl border backdrop-blur-xl shadow-2xl z-50 ${
-                              theme === 'light'
-                                ? 'bg-white/90 border-gray-200'
-                                : 'bg-gray-900/90 border-white/20'
-                            }`}
-                          >
-                            <div className="p-2">
-                              <button
-                                onClick={() => {
-                                  setCurrentView('profile');
-                                  setShowUserMenu(false);
-                                }}
-                                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                                  theme === 'light' ? 'hover:bg-gray-100 text-gray-700' : 'hover:bg-white/10 text-gray-300'
-                                }`}
-                              >
-                                <User className="w-4 h-4" />
-                                Profile
-                              </button>
-                              <button
-                                onClick={handleLogout}
-                                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                                  theme === 'light' ? 'hover:bg-gray-100 text-gray-700' : 'hover:bg-white/10 text-gray-300'
-                                }`}
-                              >
-                                <LogOut className="w-4 h-4" />
-                                Sign Out
-                              </button>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-3">
-                      <motion.button 
-                        onClick={() => handleAuthClick('login')}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-[3000ms] ${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <LogIn className="w-4 h-4 drop-shadow-lg" />
-                        <span className="font-medium drop-shadow-lg">Sign In</span>
-                      </motion.button>
-                    </div>
-                  )}
                 </div>
 
-                {/* Mobile Menu */}
+                {/* Mobile Navigation */}
                 <div className="md:hidden flex items-center gap-4 absolute left-1/2 -translate-x-1/2">
                   {mainNavItems.map((item, index) => (
                     <motion.button
@@ -357,66 +304,14 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                       )}
                     </motion.button>
                   ))}
-                  
-                {/* Mobile Admin Button */}
-                <motion.button
-                  onClick={() => setCurrentView('admin')}
-                  className={`p-2 rounded-lg transition-all duration-[3000ms] ${
-                    currentView === 'admin'
-                      ? 'text-cyan-400'
-                      : `${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`
-                  }`}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <LayoutDashboard className="w-5 h-5 drop-shadow-lg" />
-                </motion.button>
-
-                {/* Notifications */}
-                <div className="relative">
-                  <NotificationDropdown
-                    onViewAll={() => setCurrentView('notifications')}
-                    maxItems={3}
-                  />
                 </div>
-
-                {/* Theme Toggle */}
-                <motion.button
-                  onClick={toggleTheme}
-                  className={`p-2 rounded-lg transition-all duration-[3000ms] ${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <AnimatePresence mode="wait" initial={false}>
-                    {theme === 'light' ? (
-                      <motion.span
-                        key="moon"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                      >
-                        <Moon className="w-5 h-5 drop-shadow-lg" />
-                      </motion.span>
-                    ) : (
-                      <motion.span
-                        key="sun"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                      >
-                        <Sun className="w-5 h-5 drop-shadow-lg" />
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                </motion.button>
-              </div>
               </div>
             </div>
           </motion.nav>
         )}
       </AnimatePresence>
 
-      {/* Sidebar - Clean icon column only */}
+      {/* Scroll-Triggered Sidebar - Only shown when scrolled */}
       <AnimatePresence>
         {isScrolled && (
           <motion.div
@@ -428,7 +323,6 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
           >
             {/* Sidebar Container - Clean icon column only */}
             <div className="flex flex-col items-center space-y-6 w-16 py-8 group">
-              
               {/* Main Navigation Icons */}
               <div className="flex flex-col items-center space-y-3">
                 {mainNavItems.map((item, index) => (
@@ -437,12 +331,12 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                       onClick={() => handleItemClick(item.id)}
                       className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-[3000ms] ${
                         currentView === item.id
-                          ? `${theme === 'light' 
-                              ? 'text-purple-600 bg-purple-100/50 shadow-lg shadow-purple-400/25' 
+                          ? `${theme === 'light'
+                              ? 'text-purple-600 bg-purple-100/50 shadow-lg shadow-purple-400/25'
                               : 'text-cyan-400 bg-cyan-400/10 shadow-lg shadow-cyan-400/25'
                             }`
-                          : `${theme === 'light' 
-                              ? 'text-gray-700 hover:text-gray-900 hover:bg-white/50' 
+                          : `${theme === 'light'
+                              ? 'text-gray-700 hover:text-gray-900 hover:bg-white/50'
                               : 'text-gray-400 hover:text-white hover:bg-white/10'
                             }`
                       }`}
@@ -456,13 +350,12 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                       {item.requiresAuth && !isAuthenticated && (
                         <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-400 rounded-full animate-pulse" />
                       )}
-
                       {/* Active Indicator */}
                       {currentView === item.id && (
                         <motion.div
                           layoutId="activeIndicator"
                           className={`absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-8 rounded-r-full transition-all duration-[3000ms] ${
-                            theme === 'light' 
+                            theme === 'light'
                               ? 'bg-gradient-to-b from-purple-400 to-purple-500'
                               : 'bg-gradient-to-b from-cyan-400 to-blue-500'
                           }`}
@@ -470,7 +363,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                         />
                       )}
                     </motion.button>
-                    
+
                     {/* Hover Text */}
                     <span className={`absolute left-16 top-1/2 transform -translate-y-1/2 whitespace-nowrap px-2 py-1 text-sm font-light opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out pointer-events-none select-none group-hover:translate-x-0 translate-x-[-10px] ${
                       currentView === item.id
@@ -487,17 +380,17 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                 ))}
 
                 {/* More Menu Button */}
-                <div className="relative hidden md:block">
+                <div className="relative">
                   <motion.button
                     onClick={() => setShowMoreMenu(!showMoreMenu)}
                     className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-[3000ms] ${
                       moreNavItems.some(item => item.id === currentView)
-                        ? `${theme === 'light' 
-                            ? 'text-purple-600 bg-purple-100/50 shadow-lg shadow-purple-400/25' 
+                        ? `${theme === 'light'
+                            ? 'text-purple-600 bg-purple-100/50 shadow-lg shadow-purple-400/25'
                             : 'text-cyan-400 bg-cyan-400/10 shadow-lg shadow-cyan-400/25'
                           }`
-                        : `${theme === 'light' 
-                            ? 'text-gray-700 hover:text-gray-900 hover:bg-white/50' 
+                        : `${theme === 'light'
+                            ? 'text-gray-700 hover:text-gray-900 hover:bg-white/50'
                             : 'text-gray-400 hover:text-white hover:bg-white/10'
                           }`
                     }`}
@@ -505,46 +398,20 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                     whileTap={{ scale: 0.95 }}
                   >
                     <MoreHorizontal className="w-6 h-6" />
-                    
-                    {/* Active Indicator for any "more" item */}
-                    {moreNavItems.some(item => item.id === currentView) && (
-                      <motion.div
-                        layoutId="activeIndicator"
-                        className={`absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-8 rounded-r-full transition-all duration-[3000ms] ${
-                          theme === 'light' 
-                            ? 'bg-gradient-to-b from-purple-400 to-purple-500'
-                            : 'bg-gradient-to-b from-cyan-400 to-blue-500'
-                        }`}
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                      />
-                    )}
                   </motion.button>
-                  
-                  {/* Hover Text */}
-                  <span className={`absolute left-16 top-1/2 transform -translate-y-1/2 whitespace-nowrap px-2 py-1 text-sm font-light opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out pointer-events-none select-none group-hover:translate-x-0 translate-x-[-10px] ${
-                    moreNavItems.some(item => item.id === currentView)
-                      ? theme === 'light'
-                        ? 'text-purple-600'
-                        : 'text-cyan-400'
-                      : theme === 'light'
-                        ? 'text-gray-700'
-                        : 'text-gray-400'
-                  }`}>
-                    More
-                  </span>
-                  
+
                   {/* More Menu Dropdown */}
                   <AnimatePresence>
                     {showMoreMenu && (
                       <motion.div
-                        initial={{ opacity: 0, scale: 0.9, x: 20 }}
-                        animate={{ opacity: 1, scale: 1, x: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, x: 20 }}
+                        initial={{ opacity: 0, x: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, x: 0, scale: 1 }}
+                        exit={{ opacity: 0, x: 10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className={`absolute left-16 top-0 w-48 rounded-xl border backdrop-blur-xl shadow-xl z-50 ${
+                        className={`absolute left-16 top-0 w-48 rounded-xl border overflow-hidden z-50 ${
                           theme === 'light'
-                            ? 'bg-white/90 border-gray-200'
-                            : 'bg-gray-900/90 border-white/20'
+                            ? 'bg-white border-gray-200 shadow-lg'
+                            : 'bg-gray-900 border-white/20 shadow-lg shadow-black/20'
                         }`}
                       >
                         <div className="py-2">
@@ -573,148 +440,57 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </div>
 
-                {/* Notification Button */}
-                <div className="relative hidden md:block">
-                  <motion.button
-                      onClick={() => setCurrentView('notifications')}
-                      className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-[3000ms] ${
-                        currentView === 'notifications'
-                          ? `${theme === 'light'
-                              ? 'text-purple-600 bg-purple-100/50 shadow-lg shadow-purple-400/25'
-                              : 'text-cyan-400 bg-cyan-400/10 shadow-lg shadow-cyan-400/25'
-                            }`
-                          : `${theme === 'light'
-                              ? 'text-gray-700 hover:text-gray-900 hover:bg-white/50'
-                              : 'text-gray-400 hover:text-white hover:bg-white/10'
-                            }`
-                      }`}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Bell className="w-6 h-6" />
-                      <motion.div 
-                        className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border border-current"
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ duration: 1, repeat: Infinity }}
-                      />
-
-                      {/* Active Indicator */}
-                      {currentView === 'notifications' && (
-                        <motion.div
-                          layoutId="activeIndicator"
-                          className={`absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-8 rounded-r-full transition-all duration-[3000ms] ${
-                            theme === 'light' 
-                              ? 'bg-gradient-to-b from-purple-400 to-purple-500'
-                              : 'bg-gradient-to-b from-cyan-400 to-blue-500'
-                          }`}
-                          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                        />
-                      )}
-                    </motion.button>
-                    
-                    {/* Hover Text */}
-                    <span className={`absolute left-16 top-1/2 transform -translate-y-1/2 whitespace-nowrap px-2 py-1 text-sm font-light opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out pointer-events-none select-none group-hover:translate-x-0 translate-x-[-10px] ${
-                      currentView === 'notifications'
-                        ? theme === 'light'
-                          ? 'text-purple-600'
-                          : 'text-cyan-400'
-                        : theme === 'light'
-                          ? 'text-gray-700'
-                          : 'text-gray-400'
-                    }`}>
-                      Notifications
-                    </span>
-                </div>
-
-                {/* Profile Button */}
-                {isAuthenticated && (
-                  <div className="relative">
-                    <motion.button
-                      onClick={() => handleItemClick('profile')}
-                      className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-[3000ms] ${
-                        currentView === 'profile'
-                          ? `${theme === 'light' 
-                              ? 'text-purple-600 bg-purple-100/50 shadow-lg shadow-purple-400/25' 
-                              : 'text-cyan-400 bg-cyan-400/10 shadow-lg shadow-cyan-400/25'
-                            }`
-                          : `${theme === 'light' 
-                              ? 'text-gray-700 hover:text-gray-900 hover:bg-white/50' 
-                              : 'text-gray-400 hover:text-white hover:bg-white/10'
-                            }`
-                      }`}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <div className="w-6 h-6 rounded-full overflow-hidden">
-                        <img 
-                          src={user?.avatar} 
-                          alt={user?.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-
-                      {/* Active Indicator */}
-                      {currentView === 'profile' && (
-                        <motion.div
-                          layoutId="activeIndicator"
-                          className={`absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-8 rounded-r-full transition-all duration-[3000ms] ${
-                            theme === 'light' 
-                              ? 'bg-gradient-to-b from-purple-400 to-purple-500'
-                              : 'bg-gradient-to-b from-cyan-400 to-blue-500'
-                          }`}
-                          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                        />
-                      )}
-                    </motion.button>
-                    
-                    {/* Hover Text */}
-                    <span className={`absolute left-16 top-1/2 transform -translate-y-1/2 whitespace-nowrap px-2 py-1 text-sm font-light opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out pointer-events-none select-none group-hover:translate-x-0 translate-x-[-10px] ${
-                      currentView === 'profile'
-                        ? theme === 'light'
-                          ? 'text-purple-600'
-                          : 'text-cyan-400'
-                        : theme === 'light'
-                          ? 'text-gray-700'
-                          : 'text-gray-400'
-                    }`}>
-                      Profile
-                    </span>
-                  </div>
-                )}
-
-                {/* Auth Buttons for Sidebar */}
-                {!isAuthenticated && (
-                  <div className="relative">
-                    <motion.button
-                      onClick={() => onAuthRequired('login')}
-                      className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-[3000ms] ${
-                        theme === 'light' 
-                          ? 'text-gray-700 hover:text-gray-900 hover:bg-white/50' 
-                          : 'text-gray-400 hover:text-white hover:bg-white/10'
-                      }`}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <LogIn className="w-6 h-6" />
-                    </motion.button>
-                    
-                    {/* Hover Text */}
-                    <span className={`absolute left-16 top-1/2 transform -translate-y-1/2 whitespace-nowrap px-2 py-1 text-sm font-light opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out pointer-events-none select-none group-hover:translate-x-0 translate-x-[-10px] ${
-                      theme === 'light'
+                  {/* Hover Text for More */}
+                  <span className={`absolute left-16 top-1/2 transform -translate-y-1/2 whitespace-nowrap px-2 py-1 text-sm font-light opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out pointer-events-none select-none group-hover:translate-x-0 translate-x-[-10px] ${
+                    moreNavItems.some(item => item.id === currentView)
+                      ? theme === 'light'
+                        ? 'text-purple-600'
+                        : 'text-cyan-400'
+                      : theme === 'light'
                         ? 'text-gray-700'
                         : 'text-gray-400'
-                    }`}>
-                      Sign In
-                    </span>
-                  </div>
-                )}
+                  }`}>
+                    More
+                  </span>
+                </div>
+
+                {/* Theme Toggle */}
+                <div className="relative">
+                  <motion.button
+                    onClick={toggleTheme}
+                    className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-[3000ms] ${
+                      theme === 'light'
+                        ? 'text-gray-700 hover:text-gray-900 hover:bg-white/50'
+                        : 'text-gray-400 hover:text-white hover:bg-white/10'
+                    }`}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {theme === 'light' ? (
+                      <Moon className="w-6 h-6" />
+                    ) : (
+                      <Sun className="w-6 h-6" />
+                    )}
+                  </motion.button>
+
+                  {/* Hover Text for Theme */}
+                  <span className={`absolute left-16 top-1/2 transform -translate-y-1/2 whitespace-nowrap px-2 py-1 text-sm font-light opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out pointer-events-none select-none group-hover:translate-x-0 translate-x-[-10px] ${
+                    theme === 'light'
+                      ? 'text-gray-700'
+                      : 'text-gray-400'
+                  }`}>
+                    {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+                  </span>
+                </div>
+
+
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
       <ProjectDetailModal
         project={selectedProject}
         isOpen={isProjectModalOpen}

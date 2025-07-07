@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Lock, AlertCircle, Loader, Check, X } from 'lucide-react';
-import { useAuth } from './AuthProvider';
+import { useAuth } from './useAuth';
 import { useTheme } from '../ThemeContext';
 
 interface ChangePasswordFormProps {

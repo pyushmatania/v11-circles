@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User, AlertCircle, CheckCircle, Loader, Check, X, ArrowLeft } from 'lucide-react';
-import { useAuth } from './AuthProvider';
+import { useAuth } from './useAuth';
 import { useTheme } from '../ThemeContext';
 
 interface RegisterFormProps {

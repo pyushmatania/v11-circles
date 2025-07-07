@@ -1,58 +1,72 @@
 import React from 'react';
-import { Home, Film, Users, User, LogIn, BarChart3 } from 'lucide-react';
-import { useAuth } from './auth/AuthProvider';
+import { motion } from 'framer-motion';
+import { Home, BarChart3, Film, Users } from 'lucide-react';
+import { useTheme } from './ThemeContext';
+import { useAuth } from './auth/useAuth';
 
-interface Props {
+interface MobileBottomBarProps {
   currentView: 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search';
-  setCurrentView: (view: Props['currentView']) => void;
+  setCurrentView: (view: 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search') => void;
   onAuthRequired: (mode?: 'login' | 'register') => boolean;
 }
 
-const MobileBottomBar: React.FC<Props> = ({ currentView, setCurrentView, onAuthRequired }) => {
+const MobileBottomBar: React.FC<MobileBottomBarProps> = ({ currentView, setCurrentView, onAuthRequired }) => {
+  const { theme, toggleTheme } = useTheme();
   const { isAuthenticated } = useAuth();
 
-  const navItems = [
-    { id: 'home' as const, icon: Home, label: 'Home' },
-    { id: 'projects' as const, icon: Film, label: 'Browse' },
-    { id: 'dashboard' as const, icon: BarChart3, label: 'Dashboard' },
-    { id: 'community' as const, icon: Users, label: 'Community' },
-    { id: 'profile' as const, icon: User, label: 'Profile', requiresAuth: true }
+  const mainNavItems = [
+    { id: 'home', label: 'Home', icon: Home, requiresAuth: false },
+    { id: 'projects', label: 'Browse', icon: Film, requiresAuth: false },
+    { id: 'dashboard', label: 'Dashboard', icon: BarChart3, requiresAuth: false },
+    { id: 'community', label: 'Community', icon: Users, requiresAuth: false }
   ];
 
-  const handleClick = (id: Props['currentView'], requiresAuth?: boolean) => {
-    if (requiresAuth && !isAuthenticated) {
+  const handleItemClick = (itemId: string) => {
+    if (itemId === 'theme') {
+      toggleTheme();
+    } else if (['home', 'projects', 'dashboard', 'community', 'merch', 'profile', 'admin', 'portfolio', 'compare', 'news', 'notifications', 'search'].includes(itemId)) {
+      const item = mainNavItems.find(nav => nav.id === itemId);
+      if (item?.requiresAuth && !isAuthenticated) {
       onAuthRequired('login');
       return;
     }
-    setCurrentView(id);
+      setCurrentView(itemId as 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search');
+    }
   };
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-50 md:hidden backdrop-blur-lg bg-white/30 dark:bg-gray-900/40 border-t border-white/20 dark:border-white/10">
-      <div className="flex justify-around py-2">
-        {navItems.map((item) => (
-          <button
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
+      <div className={`flex items-center justify-between px-6 py-4 backdrop-blur-xl border-t ${
+        theme === 'light'
+          ? 'bg-white/90 border-gray-200'
+          : 'bg-gray-900/90 border-white/20'
+      }`}>
+        {mainNavItems.map((item) => (
+          <motion.button
             key={item.id}
-            onClick={() => handleClick(item.id, item.requiresAuth)}
-            className={`flex flex-col items-center text-xs px-2 py-2 min-h-[48px] ${
-              currentView === item.id ? 'text-cyan-400' : 'text-gray-300'
+            onClick={() => handleItemClick(item.id)}
+            className={`relative p-2 rounded-lg transition-all duration-[3000ms] ${
+              currentView === item.id
+                ? `${theme === 'light' 
+                    ? 'text-purple-600' 
+                    : 'text-cyan-400'
+                  }`
+                : `${theme === 'light' 
+                    ? 'text-gray-600 hover:text-gray-900' 
+                    : 'text-gray-300 hover:text-white'
+                  }`
             }`}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
           >
             <item.icon className="w-6 h-6" />
-            <span className="leading-none mt-1">{item.label}</span>
-          </button>
+            {item.requiresAuth && !isAuthenticated && (
+              <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-400 rounded-full animate-pulse" />
+            )}
+          </motion.button>
         ))}
-        {!isAuthenticated && (
-          <button
-            onClick={() => onAuthRequired('login')}
-            className="flex flex-col items-center text-xs px-2 py-2 text-gray-300 min-h-[48px]"
-          >
-            <LogIn className="w-6 h-6" />
-            <span className="leading-none mt-1">Sign In</span>
-          </button>
-        )}
       </div>
-    </nav>
+    </div>
   );
 };
 

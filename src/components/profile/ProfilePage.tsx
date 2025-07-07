@@ -22,7 +22,7 @@ import {
   Share2,
   Download
 } from 'lucide-react';
-import { useAuth } from '../auth/AuthProvider';
+import { useAuth } from '../auth/useAuth';
 import { useTheme } from '../ThemeContext';
 
 // If User type is not exported, define it here based on AuthProvider
@@ -56,7 +56,17 @@ const ProfilePage: React.FC = () => {
   const [editData, setEditData] = useState<User>(user || ({} as User));
   const [isUploading, setIsUploading] = useState(false);
 
-  if (!user) return null;
+  // Early return if no user - this prevents any rendering issues
+  if (!user) {
+    return (
+      <div className="min-h-screen pt-20 pb-[100px] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-500">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: User },

@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense, useCallback } from 'react';
+import React, { useState, lazy, Suspense, useCallback, memo, useEffect } from 'react';
 import Hero from './components/Hero';
 import ProblemSolution from './components/ProblemSolution';
 import HowItWorks from './components/HowItWorks';
@@ -12,7 +12,8 @@ import Navigation from './components/Navigation';
 import AuthModal from './components/auth/AuthModal';
 import ToastContainer from './components/auth/ToastNotification';
 import { ThemeProvider } from './components/ThemeProvider';
-import { AuthProvider, useAuth } from './components/auth/AuthProvider';
+import { AuthProvider } from './components/auth/AuthProvider';
+import { useAuth } from './components/auth/useAuth';
 import { useToast } from './hooks/useToast';
 
 // Lazy load heavy components for better performance
@@ -28,12 +29,12 @@ const NewsAndUpdates = lazy(() => import('./components/NewsAndUpdates'));
 const NotificationCenter = lazy(() => import('./components/NotificationCenter'));
 const EnhancedSearch = lazy(() => import('./components/EnhancedSearch'));
 
-// Loading component for lazy-loaded routes
-const LoadingSpinner = () => (
+// Optimized loading component for lazy-loaded routes
+const LoadingSpinner = memo(() => (
   <div className="min-h-screen flex items-center justify-center bg-black">
     <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
   </div>
-);
+));
 
 function AppContent() {
   const [currentView, setCurrentView] = useState<'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search'>('home');
@@ -41,6 +42,25 @@ function AppContent() {
   const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login');
   const { isAuthenticated } = useAuth();
   const { toasts, toast, removeToast } = useToast();
+
+  // Handle logout redirect
+  useEffect(() => {
+    const logoutTimestamp = localStorage.getItem('logout_timestamp');
+    if (logoutTimestamp && !isAuthenticated) {
+      // Redirect to home if on protected views
+      if (['profile', 'portfolio'].includes(currentView)) {
+        setCurrentView('home');
+      }
+      localStorage.removeItem('logout_timestamp');
+    }
+  }, [isAuthenticated, currentView]);
+
+  // Additional safety check for protected views
+  useEffect(() => {
+    if (!isAuthenticated && ['profile', 'portfolio'].includes(currentView)) {
+      setCurrentView('home');
+    }
+  }, [isAuthenticated, currentView]);
 
   const handleAuthRequired = useCallback((mode: 'login' | 'register' = 'login') => {
     if (!isAuthenticated) {
@@ -125,7 +145,7 @@ function AppContent() {
       case 'notifications':
         return (
           <Suspense fallback={<LoadingSpinner />}>
-            <NotificationCenter />
+            <NotificationCenter setCurrentView={handleViewChange} />
           </Suspense>
         );
       case 'search':

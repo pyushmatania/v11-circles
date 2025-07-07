@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PixelCard from './PixelCard';
 import {
@@ -36,10 +36,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  const handleInvestClick = () => {
+  const handleInvestClick = useCallback(() => {
     confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
     onClick();
-  };
+  }, [onClick]);
 
   const cardWidth = featured ? 'w-96' : compact ? 'w-48' : 'w-72';
   // Fixed: Use consistent aspect ratio for all cards

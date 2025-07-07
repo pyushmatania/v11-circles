@@ -18,6 +18,8 @@ export interface Project {
   rating?: number;
   investorCount?: number;
   trailer?: string;
+  imageValidated?: boolean;
+  imageSource?: string;
 }
 
 export interface Testimonial {

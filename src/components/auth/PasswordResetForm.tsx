@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, AlertCircle, CheckCircle, Loader, ArrowLeft } from 'lucide-react';
-import { useAuth } from './AuthProvider';
+import { useAuth } from './useAuth';
 import { useTheme } from '../ThemeContext';
 
 interface PasswordResetFormProps {

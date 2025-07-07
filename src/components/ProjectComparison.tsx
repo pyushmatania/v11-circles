@@ -18,7 +18,7 @@ import {
 import { useTheme } from './ThemeContext';
 import ProjectDetailModal from './ProjectDetailModal';
 import { Project } from '../types';
-import { extendedProjects } from '../data/extendedProjects';
+import { projects } from '../data/projects';
 import confetti from 'canvas-confetti';
 import { Heart } from 'lucide-react';
 
@@ -53,7 +53,7 @@ const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, 
     setSearchTerm(term);
     
     if (term.length > 2) {
-      const results = extendedProjects
+      const results = projects
         .filter(project => !compareProjects.some(p => p.id === project.id))
         .filter(project => 
           project.title.toLowerCase().includes(term.toLowerCase()) ||
@@ -104,9 +104,9 @@ const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, 
   // Function to pick random projects for comparison
   const pickRandomProjects = () => {
     const pick = (items: Project[]) => items[Math.floor(Math.random() * items.length)];
-    const films = extendedProjects.filter(p => p.type === 'film');
-    const musics = extendedProjects.filter(p => p.type === 'music');
-    const series = extendedProjects.filter(p => p.type === 'webseries');
+    const films = projects.filter(p => p.type === 'film');
+    const musics = projects.filter(p => p.type === 'music');
+    const series = projects.filter(p => p.type === 'webseries');
 
     const selections = [films, musics, series]
       .map(arr => (arr.length ? pick(arr) : null))
@@ -178,7 +178,7 @@ const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, 
       const types = ['film', 'music', 'webseries'];
       
       for (const type of types) {
-        const filteredProjects = extendedProjects.filter(p => p.type === type);
+        const filteredProjects = projects.filter(p => p.type === type);
         if (filteredProjects.length > 0) {
           const randomProject = filteredProjects[Math.floor(Math.random() * filteredProjects.length)];
           randomProjects.push(randomProject);
