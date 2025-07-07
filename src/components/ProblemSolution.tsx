@@ -1,10 +1,9 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle, TrendingDown, Users, ArrowRight, Zap, DollarSign, Award } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 import Typewriter from './Typewriter';
 import ShinyText from './TextAnimations/ShinyText/ShinyText';
-import GlitchText from './TextAnimations/GlitchText/GlitchText';
 
 interface ProblemSolutionProps {
   setCurrentView?: (view: 'home' | 'dashboard' | 'projects' | 'community') => void;
@@ -16,11 +15,6 @@ const ProblemSolution: React.FC<ProblemSolutionProps> = ({ setCurrentView }) => 
   const [arrowAnimating, setArrowAnimating] = useState(false);
   const [arrowX, setArrowX] = useState(0);
   const arrowRef = useRef<HTMLDivElement>(null);
-  const [phase, setPhase] = useState<'idle' | 'typing' | 'broken'>('idle');
-  const triggeredRef = React.useRef(false);
-  const [fallingDone, setFallingDone] = useState(false);
-  const [showTypewriter, setShowTypewriter] = useState(false);
-  const [typewriterDone, setTypewriterDone] = useState(false);
 
   const handleArrowClick = () => {
     if (arrowAnimating) return;

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X, Upload, Loader } from 'lucide-react';
-import { useTheme } from '../../ThemeProvider';
-import { useAdmin, Project } from '../AdminContext';
+import { useTheme } from '../../ThemeContext';
+import { useAdmin } from '../useAdmin';
+import type { Project } from '../../../types/index';
 
 interface ProjectFormProps {
   project: Project | null;
@@ -12,17 +13,39 @@ interface ProjectFormProps {
 
 const ProjectForm: React.FC<ProjectFormProps> = ({ project, isOpen, onClose }) => {
   const { theme } = useTheme();
-  const { addProject, updateProject, projects } = useAdmin();
+  const { addProject, updateProject } = useAdmin();
   
   const [formData, setFormData] = useState<Omit<Project, 'id' | 'createdAt' | 'updatedAt'>>({
     title: '',
     type: 'film',
     category: '',
-    status: 'active',
+    language: '',
+    poster: '',
     fundedPercentage: 0,
     targetAmount: 0,
     raisedAmount: 0,
-    poster: ''
+    timeLeft: '',
+    tags: [],
+    description: '',
+    director: '',
+    artist: '',
+    genre: '',
+    perks: [],
+    rating: undefined,
+    investorCount: undefined,
+    trailer: '',
+    imageValidated: undefined,
+    imageSource: '',
+    status: 'active',
+    movie: '',
+    keyPeople: [],
+    actor: '',
+    actress: '',
+    productionHouse: '',
+    targetAmountHuman: '',
+    raisedAmountHuman: '',
+    keyCommunityData: [],
+    disabled: false
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,11 +59,33 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, isOpen, onClose }) =
         title: project.title,
         type: project.type,
         category: project.category,
-        status: project.status,
+        language: project.language || '',
+        poster: project.poster || '',
         fundedPercentage: project.fundedPercentage,
         targetAmount: project.targetAmount,
         raisedAmount: project.raisedAmount,
-        poster: project.poster || ''
+        timeLeft: project.timeLeft || '',
+        tags: project.tags || [],
+        description: project.description || '',
+        director: project.director || '',
+        artist: project.artist || '',
+        genre: project.genre || '',
+        perks: project.perks || [],
+        rating: project.rating,
+        investorCount: project.investorCount,
+        trailer: project.trailer || '',
+        imageValidated: project.imageValidated,
+        imageSource: project.imageSource || '',
+        status: project.status || 'active',
+        movie: project.movie || '',
+        keyPeople: project.keyPeople || [],
+        actor: project.actor || '',
+        actress: project.actress || '',
+        productionHouse: project.productionHouse || '',
+        targetAmountHuman: project.targetAmountHuman || '',
+        raisedAmountHuman: project.raisedAmountHuman || '',
+        keyCommunityData: project.keyCommunityData || [],
+        disabled: project.disabled ?? false
       });
       
       if (project.poster) {
@@ -49,7 +94,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ project, isOpen, onClose }) =
     }
   }, [project]);
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Clear error for this field

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X, Upload, Loader } from 'lucide-react';
-import { useTheme } from '../../ThemeProvider';
-import { useAdmin, MerchandiseItem } from '../AdminContext';
+import { useTheme } from '../../ThemeContext';
+import { useAdmin } from '../useAdmin';
+import type { MerchandiseItem } from '../AdminContextTypes';
 
 interface MerchandiseFormProps {
   item: MerchandiseItem | null;
@@ -45,7 +46,7 @@ const MerchandiseForm: React.FC<MerchandiseFormProps> = ({ item, isOpen, onClose
     }
   }, [item]);
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: string | number | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Clear error for this field

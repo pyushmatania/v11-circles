@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Share2, X, Twitter, Facebook, Linkedin, Link as LinkIcon, Instagram } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 import { Project } from '../types';
 
 interface SocialShareButtonProps {

@@ -6,15 +6,15 @@ import {
   Trash2, 
   ShoppingBag,
   Tag,
-  Package,
   AlertTriangle,
   CheckCircle,
   XCircle,
   Download,
   RefreshCw
 } from 'lucide-react';
-import { useTheme } from '../../ThemeProvider';
-import { useAdmin, MerchandiseItem } from '../AdminContext';
+import { useTheme } from '../../ThemeContext';
+import { useAdmin } from '../useAdmin';
+import type { MerchandiseItem } from '../AdminContextTypes';
 import MerchandiseForm from '../forms/MerchandiseForm';
 import ConfirmDialog from '../shared/ConfirmDialog';
 import DataTable from '../shared/DataTable';
@@ -76,11 +76,11 @@ const MerchandisePanel: React.FC = () => {
     return Array.from(uniqueCategories);
   }, [merchandiseItems]);
 
-  const handleSort = (field: keyof MerchandiseItem) => {
+  const handleSort = (field: string) => {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
-      setSortField(field);
+      setSortField(field as keyof MerchandiseItem);
       setSortDirection('asc');
     }
   };
@@ -109,7 +109,7 @@ const MerchandisePanel: React.FC = () => {
     {
       Header: 'Item',
       accessor: 'title',
-      Cell: ({ row }: any) => (
+      Cell: ({ row }: { row: { original: MerchandiseItem } }) => (
         <div className="flex items-center gap-3">
           {row.original.image ? (
             <img 
@@ -143,7 +143,7 @@ const MerchandisePanel: React.FC = () => {
     {
       Header: 'Price',
       accessor: 'price',
-      Cell: ({ value }: any) => (
+      Cell: ({ value }: { value: number }) => (
         <span className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
           ₹{value.toLocaleString()}
         </span>
@@ -152,7 +152,7 @@ const MerchandisePanel: React.FC = () => {
     {
       Header: 'Stock',
       accessor: 'stockLevel',
-      Cell: ({ row }: any) => (
+      Cell: ({ row }: { row: { original: MerchandiseItem } }) => (
         <div className="flex items-center gap-2">
           {getStatusIcon(row.original.status)}
           <span className={`${
@@ -168,7 +168,7 @@ const MerchandisePanel: React.FC = () => {
     {
       Header: 'Status',
       accessor: 'status',
-      Cell: ({ value }: any) => (
+      Cell: ({ value }: { value: string }) => (
         <span className={`capitalize ${
           value === 'in-stock' ? 'text-green-500' :
           value === 'low-stock' ? 'text-yellow-500' :
@@ -181,7 +181,7 @@ const MerchandisePanel: React.FC = () => {
     {
       Header: 'Created',
       accessor: 'createdAt',
-      Cell: ({ value }: any) => (
+      Cell: ({ value }: { value: string }) => (
         <span className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
           {new Date(value).toLocaleDateString()}
         </span>
@@ -189,7 +189,7 @@ const MerchandisePanel: React.FC = () => {
     },
     {
       Header: 'Actions',
-      Cell: ({ row }: any) => (
+      Cell: ({ row }: { row: { original: MerchandiseItem } }) => (
         <div className="flex items-center gap-2">
           <button
             onClick={() => setEditingItem(row.original)}

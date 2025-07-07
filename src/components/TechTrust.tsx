@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Award, Users, CheckCircle, Star, Globe, Handshake, Building2, Lock, TrendingUp, MapPin } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { CheckCircle, Star, Handshake, Building2, Lock, TrendingUp, MapPin } from 'lucide-react';
+import { useTheme } from './ThemeContext';
 import Typewriter from './Typewriter';
 
 const TechTrust: React.FC = () => {

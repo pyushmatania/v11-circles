@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
-import { useTheme } from '../ThemeProvider';
+import { useTheme } from '../ThemeContext';
 
 interface AuthModalProps {
   isOpen: boolean;

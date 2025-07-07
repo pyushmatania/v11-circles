@@ -3,10 +3,10 @@ import { motion } from 'framer-motion';
 import { Film, Music, Clock, Users, TrendingUp, ArrowRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import AnimatedNumber from './AnimatedNumber';
-import { extendedProjects } from '../data/extendedProjects';
+import { projects } from '../data/projects';
 import ProjectDetailModal from './ProjectDetailModal';
 import { Project } from '../types';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 import Typewriter from './Typewriter';
 
 
@@ -22,7 +22,7 @@ const LiveProjects: React.FC<LiveProjectsProps> = ({ onViewAll, onTrackInvestmen
   const { theme } = useTheme();
   const [statsInView, setStatsInView] = useState<{ [key: number]: boolean }>({});
 
-  const sorted = [...extendedProjects].sort((a, b) => b.raisedAmount - a.raisedAmount);
+  const sorted = [...projects].sort((a, b) => b.raisedAmount - a.raisedAmount);
   const trendingProjects = sorted.slice(0, Math.min(Math.max(3, sorted.length), 6));
 
   const handleProjectClick = (project: Project, tab: 'overview' | 'invest' = 'overview') => {

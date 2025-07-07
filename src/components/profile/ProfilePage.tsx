@@ -9,37 +9,64 @@ import {
   Camera, 
   Settings, 
   TrendingUp, 
-  Award, 
-  Star,
+  Award,
   Twitter,
   Linkedin,
   Instagram,
   Bell,
   Shield,
-  Eye,
   Save,
   X,
-  Upload,
   DollarSign,
-  Film,
-  Music,
-  Tv,
   Heart,
   Share2,
   Download
 } from 'lucide-react';
-import { useAuth } from '../auth/AuthProvider';
-import { useTheme } from '../ThemeProvider';
+import { useAuth } from '../auth/useAuth';
+import { useTheme } from '../ThemeContext';
+
+// If User type is not exported, define it here based on AuthProvider
+type User = {
+  id: string;
+  email: string;
+  name: string;
+  avatar?: string;
+  bio?: string;
+  location?: string;
+  joinDate: string;
+  investmentCount: number;
+  totalInvested: number;
+  socialLinks?: {
+    twitter?: string;
+    linkedin?: string;
+    instagram?: string;
+  };
+  preferences: {
+    notifications: boolean;
+    newsletter: boolean;
+    twoFactor: boolean;
+  };
+};
 
 const ProfilePage: React.FC = () => {
   const { user, updateProfile, logout } = useAuth();
   const { theme } = useTheme();
   const [activeTab, setActiveTab] = useState<'overview' | 'investments' | 'settings'>('overview');
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState(user || {});
+  const [editData, setEditData] = useState<User>(user || ({} as User));
   const [isUploading, setIsUploading] = useState(false);
 
-  if (!user) return null;
+  // Early return if no user - this prevents any rendering issues
+  if (!user) {
+    return (
+      <div className="min-h-screen pt-20 pb-[100px] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-500">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: User },
@@ -253,7 +280,7 @@ const ProfilePage: React.FC = () => {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as 'overview' | 'investments' | 'settings')}
               className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
                 activeTab === tab.id
                   ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg'

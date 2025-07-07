@@ -1,9 +1,16 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import viteCompression from 'vite-plugin-compression';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    viteCompression({ algorithm: 'brotliCompress', ext: '.br' }),
+    viteCompression({ algorithm: 'gzip', ext: '.gz' }),
+    visualizer({ open: false, filename: 'dist/bundle-analysis.html' })
+  ],
   
   // Advanced dependency optimization
   optimizeDeps: {

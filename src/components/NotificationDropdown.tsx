@@ -3,25 +3,19 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bell,
   Calendar,
-  Check,
   CheckCircle,
-  ChevronDown,
-  Clock,
   DollarSign,
   Film,
   Gift,
   Info,
   MessageCircle,
+  Moon,
   Music,
-  Settings,
-  Tv,
-  TrendingUp,
-  User,
-  X,
   Sun,
-  Moon
+  Tv,
+  TrendingUp
 } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 
 // Mock notification data
 const mockNotifications = [
@@ -128,7 +122,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ onViewAll, 
   };
 
   // Get icon component for notification type
-  const getNotificationIcon = (notification: any) => {
+  const getNotificationIcon = (notification: { icon?: React.ComponentType<{ className?: string }>; type: string }) => {
     // Use the icon directly from the notification if available
     if (notification.icon) {
       const IconComponent = notification.icon;

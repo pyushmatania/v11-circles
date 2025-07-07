@@ -13,8 +13,9 @@ import {
   RefreshCw,
   Clock
 } from 'lucide-react';
-import { useTheme } from '../../ThemeProvider';
-import { useAdmin, ActivityLog } from '../AdminContext';
+import { useTheme } from '../../ThemeContext';
+import { useAdmin } from '../useAdmin';
+import type { ActivityLog } from '../AdminContextTypes';
 import DataTable from '../shared/DataTable';
 
 const ActivityLogPanel: React.FC = () => {
@@ -88,11 +89,11 @@ const ActivityLogPanel: React.FC = () => {
       });
   }, [activityLogs, searchTerm, filterResourceType, filterUser, dateRange, sortField, sortDirection]);
 
-  const handleSort = (field: keyof ActivityLog) => {
+  const handleSort = (field: string) => {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
-      setSortField(field);
+      setSortField(field as keyof ActivityLog);
       setSortDirection('asc');
     }
   };
@@ -131,7 +132,7 @@ const ActivityLogPanel: React.FC = () => {
     {
       Header: 'Action',
       accessor: 'action',
-      Cell: ({ row }: any) => (
+      Cell: ({ row }: { row: { original: ActivityLog } }) => (
         <div className="flex items-center gap-3">
           <div className={`p-2 rounded-lg ${
             theme === 'light' ? 'bg-gray-100' : 'bg-gray-700'
@@ -154,7 +155,7 @@ const ActivityLogPanel: React.FC = () => {
     {
       Header: 'User',
       accessor: 'userName',
-      Cell: ({ value }: any) => (
+      Cell: ({ value }: { value: string }) => (
         <div className="flex items-center gap-2">
           <User className={`w-4 h-4 ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`} />
           <span className={theme === 'light' ? 'text-gray-900' : 'text-white'}>
@@ -166,7 +167,7 @@ const ActivityLogPanel: React.FC = () => {
     {
       Header: 'Resource Type',
       accessor: 'resourceType',
-      Cell: ({ value }: any) => (
+      Cell: ({ value }: { value: string }) => (
         <div className="flex items-center gap-2">
           {getResourceTypeIcon(value)}
           <span className={`capitalize ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
@@ -178,7 +179,7 @@ const ActivityLogPanel: React.FC = () => {
     {
       Header: 'Timestamp',
       accessor: 'timestamp',
-      Cell: ({ value }: any) => (
+      Cell: ({ value }: { value: string }) => (
         <div className="flex items-center gap-2">
           <Clock className={`w-4 h-4 ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`} />
           <span className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>

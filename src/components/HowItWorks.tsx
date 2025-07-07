@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, CreditCard, TrendingUp, Users, Shield, Award } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 import DecryptedText from './TextAnimations/DecryptedText/DecryptedText';
 
 type ViewType = 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search';

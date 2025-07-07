@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, AlertCircle, CheckCircle, Loader, ArrowLeft } from 'lucide-react';
-import { useAuth } from './AuthProvider';
-import { useTheme } from '../ThemeProvider';
+import { useAuth } from './useAuth';
+import { useTheme } from '../ThemeContext';
 
 interface LoginFormProps {
   onSwitchToRegister: () => void;
@@ -54,7 +54,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToRegister, onClose }) =>
       setTimeout(() => {
         onClose();
       }, 1500);
-    } catch (error) {
+    } catch {
       setErrors({ submit: 'Invalid email or password. Try demo@circles.com / password123' });
     } finally {
       setIsSubmitting(false);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles, Film, Music, TrendingUp } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 import Typewriter from './Typewriter';
 
 interface CallToActionProps {

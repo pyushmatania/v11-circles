@@ -14,7 +14,7 @@ import {
   Download,
   Zap
 } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 
 // Mock data for portfolio analytics
 const mockPortfolioData = {
@@ -67,7 +67,7 @@ const mockPortfolioData = {
   }
 };
 
-interface PortfolioAnalyticsProps {}
+type PortfolioAnalyticsProps = object;
 
 const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
   const { theme } = useTheme();

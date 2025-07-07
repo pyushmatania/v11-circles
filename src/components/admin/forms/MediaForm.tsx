@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { X, Upload, Loader, Plus, Image, Video, FileAudio, FileText } from 'lucide-react';
-import { useTheme } from '../../ThemeProvider';
-import { useAdmin, MediaAsset } from '../AdminContext';
+import { useTheme } from '../../ThemeContext';
+import { useAdmin } from '../useAdmin';
+import type { MediaAsset } from '../AdminContextTypes';
 import { useDropzone } from 'react-dropzone';
 
 interface MediaFormProps {
@@ -76,7 +77,7 @@ const MediaForm: React.FC<MediaFormProps> = ({ asset, isOpen, onClose }) => {
     
     // Get dimensions for images
     if (type === 'image') {
-      const img = new Image();
+      const img = new window.Image();
       img.onload = () => {
         setFormData(prev => ({
           ...prev,
@@ -106,7 +107,7 @@ const MediaForm: React.FC<MediaFormProps> = ({ asset, isOpen, onClose }) => {
     }
   });
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: string | number | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Clear error for this field

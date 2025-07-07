@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 interface AdminUser {
   id: string;
@@ -14,12 +14,12 @@ export const useAdminAuth = () => {
   const [error, setError] = useState<string | null>(null);
 
   // Mock admin user
-  const mockAdminUser: AdminUser = {
+  const mockAdminUser = useMemo<AdminUser>(() => ({
     id: 'admin-1',
     name: 'Admin User',
     email: 'admin@circles.com',
     role: 'admin'
-  };
+  }), []);
 
   useEffect(() => {
     // Check if user is already logged in
@@ -42,7 +42,7 @@ export const useAdminAuth = () => {
     };
 
     checkAuth();
-  }, []);
+  }, [mockAdminUser]);
 
   const login = async (username: string, password: string) => {
     setIsLoading(true);

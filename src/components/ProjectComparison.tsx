@@ -2,13 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BarChartBig, 
-  Calendar, 
   Check, 
-  ChevronDown, 
   Clock, 
   DollarSign, 
   Film, 
-  Info, 
   Music, 
   Percent, 
   RotateCcw, 
@@ -18,11 +15,12 @@ import {
   Tv, 
   X 
 } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { useTheme } from './ThemeContext';
 import ProjectDetailModal from './ProjectDetailModal';
 import { Project } from '../types';
-import { extendedProjects } from '../data/extendedProjects';
+import { projects } from '../data/projects';
 import confetti from 'canvas-confetti';
+import { Heart } from 'lucide-react';
 
 interface ProjectComparisonProps {
   initialProjects?: Project[];
@@ -55,7 +53,7 @@ const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, 
     setSearchTerm(term);
     
     if (term.length > 2) {
-      const results = extendedProjects
+      const results = projects
         .filter(project => !compareProjects.some(p => p.id === project.id))
         .filter(project => 
           project.title.toLowerCase().includes(term.toLowerCase()) ||
@@ -106,9 +104,9 @@ const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, 
   // Function to pick random projects for comparison
   const pickRandomProjects = () => {
     const pick = (items: Project[]) => items[Math.floor(Math.random() * items.length)];
-    const films = extendedProjects.filter(p => p.type === 'film');
-    const musics = extendedProjects.filter(p => p.type === 'music');
-    const series = extendedProjects.filter(p => p.type === 'webseries');
+    const films = projects.filter(p => p.type === 'film');
+    const musics = projects.filter(p => p.type === 'music');
+    const series = projects.filter(p => p.type === 'webseries');
 
     const selections = [films, musics, series]
       .map(arr => (arr.length ? pick(arr) : null))
@@ -180,7 +178,7 @@ const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, 
       const types = ['film', 'music', 'webseries'];
       
       for (const type of types) {
-        const filteredProjects = extendedProjects.filter(p => p.type === type);
+        const filteredProjects = projects.filter(p => p.type === type);
         if (filteredProjects.length > 0) {
           const randomProject = filteredProjects[Math.floor(Math.random() * filteredProjects.length)];
           randomProjects.push(randomProject);
@@ -189,7 +187,7 @@ const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, 
       
       setCompareProjects(randomProjects);
     }
-  }, []);
+  }, [compareProjects.length]);
 
   return (
     <div className={`min-h-screen pt-20 pb-[100px] transition-all duration-[3000ms] ${
@@ -445,7 +443,7 @@ const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, 
                     : (theme === 'light' ? 'bg-gray-100 text-gray-600' : 'bg-gray-800 text-gray-400')
                 }`}
               >
-                <Gift className="w-4 h-4" />
+                <Heart className="w-4 h-4" />
                 <span>Perks</span>
                 {criteria.perks && <Check className="w-4 h-4" />}
               </button>
@@ -515,7 +513,10 @@ const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, 
                               ? 'border-gray-300 hover:border-purple-400 text-gray-400 hover:text-purple-500'
                               : 'border-gray-700 hover:border-purple-500 text-gray-500 hover:text-purple-400'
                           }`}
-                          onClick={() => document.querySelector('input[type="text"]')?.focus()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            (e.target as HTMLElement).focus();
+                          }}
                         >
                           <div className="flex flex-col items-center">
                             <Plus className="w-8 h-8 mb-2" />
@@ -709,7 +710,7 @@ const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, 
                   }`}>
                     <td className={`py-4 px-6 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
                       <div className="flex items-center gap-2">
-                        <Gift className="w-5 h-5" />
+                        <Heart className="w-5 h-5" />
                         <span>Investor Perks</span>
                       </div>
                     </td>
@@ -859,7 +860,7 @@ const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, 
         onClose={() => { setIsModalOpen(false); setSelectedProject(null); }}
         onTrackInvestment={() => {
           if (onTrackInvestment) onTrackInvestment();
-          setCurrentView && setCurrentView('dashboard');
+          if (setCurrentView) setCurrentView('dashboard');
         }}
         initialTab="invest"
       />
@@ -883,28 +884,6 @@ const Plus: React.FC<{ className?: string }> = ({ className = "w-6 h-6" }) => (
   >
     <path d="M5 12h14" />
     <path d="M12 5v14" />
-  </svg>
-);
-
-// Helper component for the gift icon
-const Gift: React.FC<{ className?: string }> = ({ className = "w-6 h-6" }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    width="24" 
-    height="24" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    className={className}
-  >
-    <path d="M12 8v13" />
-    <path d="M5 21h14" />
-    <path d="M5 8h14" />
-    <path d="M17 8a5 5 0 1 0-5-5c0 2.8 2.2 5 5 5Z" />
-    <path d="M7 8a5 5 0 1 1 5-5c0 2.8-2.2 5-5 5Z" />
   </svg>
 );
 

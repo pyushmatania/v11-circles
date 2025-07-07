@@ -255,7 +255,10 @@ const PixelCard = memo(function PixelCard({
     let allIdle = true;
     for (let i = 0; i < pixelsRef.current.length; i++) {
       const pixel = pixelsRef.current[i];
-      (pixel as any)[fnName]();
+      const fn = (pixel as unknown as Record<string, () => void>)[fnName];
+      if (typeof fn === 'function') {
+        fn();
+      }
       if (!pixel.isIdle) {
         allIdle = false;
       }

@@ -1,48 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  avatar?: string;
-  bio?: string;
-  location?: string;
-  joinDate: string;
-  investmentCount: number;
-  totalInvested: number;
-  socialLinks?: {
-    twitter?: string;
-    linkedin?: string;
-    instagram?: string;
-  };
-  preferences: {
-    notifications: boolean;
-    newsletter: boolean;
-    twoFactor: boolean;
-  };
-}
-
-interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
-  register: (email: string, password: string, name: string) => Promise<void>;
-  logout: () => void;
-  updateProfile: (updates: Partial<User>) => Promise<void>;
-  resetPassword: (email: string) => Promise<void>;
-  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
+import React, { useState, useEffect, ReactNode } from 'react';
+import { User, MOCK_USER, AuthContextType } from './authConstants';
+import { AuthContext } from './AuthContext';
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -53,27 +11,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Mock user data for demonstration
-  const mockUser: User = {
-    id: '1',
-    email: 'rahul.investor@gmail.com',
-    name: 'Rahul Krishnan',
-    avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150',
-    bio: 'Passionate about supporting innovative entertainment projects. Film enthusiast and early investor in emerging talent.',
-    location: 'Mumbai, India',
-    joinDate: '2023-01-15',
-    investmentCount: 12,
-    totalInvested: 450000,
-    socialLinks: {
-      twitter: 'https://twitter.com/rahul_investor',
-      linkedin: 'https://linkedin.com/in/rahul-krishnan',
-      instagram: 'https://instagram.com/rahul.films'
-    },
-    preferences: {
-      notifications: true,
-      newsletter: true,
-      twoFactor: false
-    }
-  };
+  const mockUser: User = MOCK_USER;
 
   useEffect(() => {
     // Simulate checking for existing session
@@ -81,7 +19,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsLoading(true);
       try {
         const token = localStorage.getItem('circles_token');
-        const rememberMe = localStorage.getItem('circles_remember');
         
         if (token) {
           // In a real app, validate token with backend
@@ -96,16 +33,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     checkAuth();
-  }, []);
+  }, [mockUser]);
 
-  const login = async (email: string, password: string, rememberMe = false) => {
+  const login = async (_email: string, _password: string, rememberMe = false) => {
     setIsLoading(true);
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
       
       // Mock validation
-      if (email === 'demo@circles.com' && password === 'password123') {
+      if (_email === 'demo@circles.com' && _password === 'password123') {
         const token = 'mock_jwt_token_' + Date.now();
         localStorage.setItem('circles_token', token);
         
@@ -149,10 +86,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = () => {
+    // Clear all auth-related data
     localStorage.removeItem('circles_token');
     localStorage.removeItem('circles_remember');
+    
+    // Set user to null and force a re-render
     setUser(null);
-    window.location.href = '/';
+    
+    // Add a small delay to ensure state updates properly
+    setTimeout(() => {
+      localStorage.setItem('logout_timestamp', Date.now().toString());
+    }, 100);
   };
 
   const updateProfile = async (updates: Partial<User>) => {
@@ -168,13 +112,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const resetPassword = async (email: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const resetPassword = async (_email: string) => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
     // In real app, send reset email
   };
 
-  const changePassword = async (currentPassword: string, newPassword: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const changePassword = async (_currentPassword: string, _newPassword: string) => {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
     // In real app, validate current password and update

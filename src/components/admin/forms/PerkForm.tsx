@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X, Loader } from 'lucide-react';
-import { useTheme } from '../../ThemeProvider';
-import { useAdmin, Perk } from '../AdminContext';
+import { useTheme } from '../../ThemeContext';
+import { useAdmin } from '../useAdmin';
+import type { Perk } from '../AdminContextTypes';
 
 interface PerkFormProps {
   perk: Perk | null;
@@ -39,7 +40,7 @@ const PerkForm: React.FC<PerkFormProps> = ({ perk, isOpen, onClose }) => {
     }
   }, [perk]);
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: string | number | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Clear error for this field

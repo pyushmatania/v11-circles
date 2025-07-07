@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Quote, Sparkles, AlertTriangle, ArrowDownLeft, Users, LucideIcon } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
+import { Sparkles, AlertTriangle, ArrowDownLeft, Users, LucideIcon } from 'lucide-react';
+import { useTheme } from './ThemeContext';
 import Typewriter from './Typewriter';
 
 interface WhyThisMattersProps {
@@ -160,8 +160,12 @@ const WhyThisMatters: React.FC<WhyThisMattersProps> = ({ onJoin }) => {
             <div className={`text-xl font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Ready to own the culture you love?</div>
             <button
               onClick={() => {
-                try { navigator.vibrate?.(50); } catch (e) {}
-                onJoin();
+                try { 
+                  navigator.vibrate?.(50); 
+                } catch {
+                  // Vibration not supported or failed
+                }
+                onJoin?.();
               }}
               className="group relative px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full text-white font-semibold text-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25">
               <span className="relative z-10 flex items-center gap-2">

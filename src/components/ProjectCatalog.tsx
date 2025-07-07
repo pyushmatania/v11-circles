@@ -1,12 +1,11 @@
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PixelCard from './PixelCard';
-import { Film, Music, Tv, Search, Star, Clock, Users, TrendingUp, ChevronLeft, ChevronRight, Play, Plus, Info, Siren as Fire, Award, Globe, Filter, Grid3X3, List, SlidersHorizontal, X, Calendar, DollarSign, MapPin, Heart, Share2, Bookmark, ArrowRight, Eye } from 'lucide-react';
+import { Film, Music, Tv, Search, Star, Clock, TrendingUp, ChevronLeft, ChevronRight, Play, Plus, Info, Siren as Fire, Filter, Heart, Share2, X, ArrowRight, Bookmark } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { extendedProjects } from '../data/extendedProjects';
+import { projects } from '../data/projects';
 import ProjectDetailModal from './ProjectDetailModal';
 import { Project } from '../types';
-import useIsMobile from '../hooks/useIsMobile';
 
 interface ProjectCatalogProps {
   onTrackInvestment?: () => void;
@@ -65,17 +64,13 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [initialTab, setInitialTab] = useState<'overview' | 'invest'>('overview');
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'cards'>('cards');
   const [showFilters, setShowFilters] = useState(false);
-  const [showMobileSearch, setShowMobileSearch] = useState(false);
-  const isMobile = useIsMobile();
   
   // Auto-sliding hero carousel state
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const autoSlideRef = useRef<number | null>(null);
-  const pauseTimeoutRef = useRef<number | null>(null);
   const [touchStartX, setTouchStartX] = useState(0);
   
   // Filter states
@@ -86,6 +81,8 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
   const [fundingRange, setFundingRange] = useState<[number, number]>([0, 100]);
   const [sortBy, setSortBy] = useState<string>('trending');
   const [showAllProjects, setShowAllProjects] = useState<string | null>(null);
+
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Memoized callback functions to prevent unnecessary re-renders
   const handleProjectClick = useCallback((project: Project, tab: 'overview' | 'invest' = 'overview') => {
@@ -107,7 +104,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
 
   // Memoized filtered and sorted projects
   const filteredProjects = useMemo(() => {
-    return extendedProjects.filter(project => {
+    return projects.filter(project => {
       const matchesSearch = searchTerm === '' || 
         project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -137,10 +134,11 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
           return b.fundedPercentage - a.fundedPercentage;
         case 'funding-low':
           return a.fundedPercentage - b.fundedPercentage;
-        case 'ending-soon':
+        case 'ending-soon': {
           const aTime = a.timeLeft ? parseInt(a.timeLeft) : 999;
           const bTime = b.timeLeft ? parseInt(b.timeLeft) : 999;
           return aTime - bTime;
+        }
         case 'rating':
           return (b.rating || 0) - (a.rating || 0);
         case 'amount-high':
@@ -157,46 +155,73 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
 
   // Memoized categorized projects for Netflix-style layout
   const categorizedProjects = useMemo(() => {
-    const trendingProjects = extendedProjects
+    const trendingProjects = projects
       .filter(p => p.fundedPercentage > 70)
       .sort((a, b) => b.fundedPercentage - a.fundedPercentage)
       .slice(0, 10);
 
-    const bollywoodFilms = extendedProjects
+    const bollywoodFilms = projects
       .filter(p => p.type === 'film' && p.category === 'Bollywood')
       .slice(0, 10);
 
-    const regionalContent = extendedProjects
+    const regionalContent = projects
       .filter(p => p.category === 'Regional')
       .slice(0, 10);
 
-    const musicProjects = extendedProjects
+    const musicProjects = projects
       .filter(p => p.type === 'music')
       .slice(0, 10);
 
-    const webSeries = extendedProjects
+    const webSeries = projects
       .filter(p => p.type === 'webseries')
       .slice(0, 10);
 
-    const hollywoodProjects = extendedProjects
+    const hollywoodProjects = projects
       .filter(p => p.category === 'Hollywood')
       .slice(0, 10);
 
-    const newReleases = extendedProjects
+    const newReleases = projects
       .filter(p => p.timeLeft && parseInt(p.timeLeft) < 15)
       .slice(0, 10);
 
-    const highRatedProjects = extendedProjects
+    const highRatedProjects = projects
       .filter(p => p.rating && p.rating >= 4.5)
       .slice(0, 10);
 
-    const endingSoon = extendedProjects
+    const endingSoon = projects
       .filter(p => p.timeLeft && parseInt(p.timeLeft) <= 7)
       .slice(0, 10);
 
-    const featuredProjects = extendedProjects
-      .sort((a, b) => b.fundedPercentage - a.fundedPercentage)
-      .slice(0, 7);
+    let featuredProjects = projects
+      .filter(p => p.featured)
+      .sort((a, b) => b.fundedPercentage - a.fundedPercentage);
+
+    // Add placeholders if less than 11
+    const placeholderProject = {
+      id: '',
+      title: 'Coming Soon',
+      type: 'film' as const,
+      category: '',
+      language: '',
+      poster: '/placeholder.jpg', // Make sure this image exists in your public folder
+      fundedPercentage: 0,
+      targetAmount: 0,
+      raisedAmount: 0,
+      tags: [],
+      description: '',
+      genre: '',
+      perks: [],
+      featured: false,
+    };
+    if (featuredProjects.length < 11) {
+      featuredProjects = [
+        ...featuredProjects,
+        ...Array.from({ length: 11 - featuredProjects.length }, (_, i) => ({
+          ...placeholderProject,
+          id: `placeholder-${i + 1}`
+        }))
+      ];
+    }
 
     return {
       trendingProjects,
@@ -210,7 +235,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
       endingSoon,
       featuredProjects
     };
-  }, []);
+  }, [projects]);
 
   // Memoized callback functions for carousel controls
   const handleSlideChange = useCallback((index: number) => {
@@ -218,7 +243,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
   }, []);
 
   const nextSlide = useCallback(() => {
-    setCurrentSlide(prev => (prev + 1) % categorizedProjects.featuredProjects.length);
+    setCurrentSlide((prev) => (prev + 1) % categorizedProjects.featuredProjects.length);
   }, [categorizedProjects.featuredProjects.length]);
 
   const prevSlide = useCallback(() => {
@@ -322,240 +347,268 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
   const endingSoon = categorizedProjects.endingSoon;
   const featuredProjects = categorizedProjects.featuredProjects;
 
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  // Defensive: ensure we never access out-of-bounds index
+  const safeCurrentSlide = Math.min(currentSlide, featuredProjects.length - 1);
+
   return (
     <div className="min-h-screen bg-black pb-[100px]">
       {/* Mobile Hero Carousel */}
       {!searchTerm && !showAllProjects && (
-        <div
-          className="md:hidden relative h-72 overflow-hidden"
-          onTouchStart={(e) => setTouchStartX(e.touches[0].clientX)}
-          onTouchEnd={(e) => {
-            const diff = e.changedTouches[0].clientX - touchStartX;
-            if (Math.abs(diff) > 50) diff > 0 ? prevSlide() : nextSlide();
-          }}
-          onClick={() => handleProjectClick(featuredProjects[currentSlide])}
-        >
-          <AnimatePresence mode="wait">
-            <motion.img
-              key={`m-${currentSlide}`}
-              src={featuredProjects[currentSlide]?.poster}
-              alt={featuredProjects[currentSlide]?.title}
-              initial={{ x: 150, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -150, opacity: 0 }}
-              transition={{ duration: 0.6, ease: 'easeInOut' }}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-          </AnimatePresence>
-          <div className="absolute bottom-12 left-0 w-full p-3 text-center flex flex-col items-center bg-gradient-to-t from-black/70 via-black/40 to-transparent">
-            <h3 className="text-white text-base font-semibold">
-              {featuredProjects[currentSlide]?.title}
-            </h3>
-            <span className="text-xs text-gray-300">
-              {featuredProjects[currentSlide]?.genre}
-            </span>
-          </div>
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
-            {featuredProjects.map((_, index) => (
-              <button
-                key={`md-${index}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSlideChange(index);
-                }}
-                className={`w-2 h-2 rounded-full transition-colors duration-300 ${index === currentSlide ? 'bg-white' : 'bg-white/40'}`}
+        featuredProjects.length > 0 ? (
+          <div
+            className="md:hidden relative h-72 overflow-hidden"
+            onTouchStart={(e) => setTouchStartX(e.touches[0].clientX)}
+            onTouchEnd={(e) => {
+              const diff = e.changedTouches[0].clientX - touchStartX;
+              if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                  prevSlide();
+                } else {
+                  nextSlide();
+                }
+              }
+            }}
+            onClick={() => handleProjectClick(featuredProjects[safeCurrentSlide])}
+          >
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={`m-${currentSlide}`}
+                src={featuredProjects[safeCurrentSlide]?.poster}
+                srcSet={featuredProjects[safeCurrentSlide]?.poster + ' 1x, ' + featuredProjects[safeCurrentSlide]?.poster + ' 2x, ' + featuredProjects[safeCurrentSlide]?.poster + ' 3x'}
+                sizes="(min-width: 1024px) 900px, 100vw"
+                alt={featuredProjects[safeCurrentSlide]?.title}
+                initial={{ x: 150, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: -150, opacity: 0 }}
+                transition={{ duration: 0.6, ease: 'easeInOut' }}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                loading="lazy"
+                onLoad={() => setImageLoaded(true)}
               />
-            ))}
+            </AnimatePresence>
+            {!imageLoaded && (
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse flex items-center justify-center">
+                <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+              </div>
+            )}
+            <div className="absolute bottom-12 left-0 w-full p-3 text-center flex flex-col items-center bg-gradient-to-t from-black/70 via-black/40 to-transparent">
+              <h3 className="text-white text-base font-semibold">
+                {featuredProjects[safeCurrentSlide]?.title}
+              </h3>
+              <span className="text-xs text-gray-300">
+                {featuredProjects[safeCurrentSlide]?.genre}
+              </span>
+            </div>
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+              {featuredProjects.map((_, index) => (
+                <button
+                  key={`md-${index}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSlideChange(index);
+                  }}
+                  className={`w-2 h-2 rounded-full transition-colors duration-300 ${index === currentSlide ? 'bg-white' : 'bg-white/40'}`}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="text-white text-center py-10">No featured projects available.</div>
+        )
       )}
       {/* Full-Screen Auto-Sliding Hero Carousel */}
       {!searchTerm && !showAllProjects && (
-        <div className="hidden md:block relative h-screen overflow-hidden">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentSlide}
-              initial={{ opacity: 0, scale: 1.1 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.7, ease: "easeInOut" }}
-              className="absolute inset-0"
-              onMouseEnter={() => setIsPaused(true)}
-              onMouseLeave={() => setIsPaused(false)}
-            >
-              <img 
-                src={featuredProjects[currentSlide]?.poster} 
-                alt={featuredProjects[currentSlide]?.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent" />
-            </motion.div>
-          </AnimatePresence>
-          
-          {/* Navigation Arrows */}
-          <button
-            onClick={prevSlide}
-            className="hidden sm:flex absolute left-6 top-1/2 transform -translate-y-1/2 z-20 w-14 h-14 bg-black/60 hover:bg-black/80 rounded-full items-center justify-center text-white transition-all duration-300 hover:scale-110 backdrop-blur-sm"
-          >
-            <ChevronLeft className="w-8 h-8" />
-          </button>
-
-          <button
-            onClick={nextSlide}
-            className="hidden sm:flex absolute right-6 top-1/2 transform -translate-y-1/2 z-20 w-14 h-14 bg-black/60 hover:bg-black/80 rounded-full items-center justify-center text-white transition-all duration-300 hover:scale-110 backdrop-blur-sm"
-          >
-            <ChevronRight className="w-8 h-8" />
-          </button>
-
-          {/* Content Overlay */}
-          <div className="absolute inset-0 flex items-center z-10 pt-16">
-            <div className="max-w-7xl mx-auto px-6 w-full">
-              <div className="max-w-2xl">
-                <motion.div
-                  key={`content-${currentSlide}`}
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.3 }}
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className={`flex items-center gap-2 px-3 py-1 rounded-full backdrop-blur-md ${
-                      featuredProjects[currentSlide]?.type === 'film' ? 'bg-purple-500/20 border border-purple-500/30 text-purple-300' :
-                      featuredProjects[currentSlide]?.type === 'music' ? 'bg-blue-500/20 border border-blue-500/30 text-blue-300' :
-                      'bg-green-500/20 border border-green-500/30 text-green-300'
-                    }`}>
-                      {featuredProjects[currentSlide]?.type === 'film' ? <Film className="w-4 h-4" /> :
-                       featuredProjects[currentSlide]?.type === 'music' ? <Music className="w-4 h-4" /> :
-                       <Tv className="w-4 h-4" />}
-                      <span className="text-sm font-medium uppercase">{featuredProjects[currentSlide]?.type}</span>
-                    </div>
-                    <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-red-500/20 border border-red-500/30">
-                      <Fire className="w-4 h-4 text-red-400" />
-                      <span className="text-red-300 text-sm font-medium">Trending #{currentSlide + 1}</span>
-                    </div>
-                  </div>
-
-                  <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold text-white mb-4">
-                    {featuredProjects[currentSlide]?.title}
-                  </h1>
-                  
-                  <p className="text-base sm:text-xl text-gray-300 mb-6 leading-relaxed">
-                    {featuredProjects[currentSlide]?.description}
-                  </p>
-
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8">
-                    <div className="flex items-center gap-2">
-                      <Star className="w-5 h-5 text-yellow-400 fill-current" />
-                      <span className="text-white font-semibold">{featuredProjects[currentSlide]?.rating || '4.8'}</span>
-                    </div>
-                    <span className="text-gray-400">•</span>
-                    <span className="text-gray-300">{featuredProjects[currentSlide]?.language}</span>
-                    <span className="text-gray-400">•</span>
-                    <span className="text-gray-300">{featuredProjects[currentSlide]?.genre}</span>
-                    <span className="text-gray-400">•</span>
-                    <span className="text-green-400 font-semibold">{featuredProjects[currentSlide]?.fundedPercentage}% Funded</span>
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                    <button
-                      onClick={() => handleInvestClick(featuredProjects[currentSlide])}
-                      className="flex items-center gap-3 px-8 py-4 bg-white text-black rounded-lg font-semibold text-lg hover:bg-gray-200 transition-all duration-300 hover:scale-105"
-                    >
-                      <Play className="w-6 h-6 fill-current" />
-                      Invest Now
-                    </button>
-                    
-                    <button 
-                      onClick={() => handleProjectClick(featuredProjects[currentSlide])}
-                      className="flex items-center gap-3 px-8 py-4 bg-gray-600/80 text-white rounded-lg font-semibold text-lg hover:bg-gray-600 transition-all duration-300"
-                    >
-                      <Info className="w-6 h-6" />
-                      More Info
-                    </button>
-
-                    <button className="p-4 bg-black/50 text-white rounded-full hover:bg-black/70 transition-all duration-300">
-                      <Heart className="w-6 h-6" />
-                    </button>
-
-                    <button className="p-4 bg-black/50 text-white rounded-full hover:bg-black/70 transition-all duration-300">
-                      <Share2 className="w-6 h-6" />
-                    </button>
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-          </div>
-
-          {/* Slide Indicators */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
-            <div className="flex items-center gap-3">
-              {/* Play/Pause Button */}
-              <button
-                onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-                className="p-2 bg-black/60 hover:bg-black/80 rounded-full text-white transition-all duration-300 backdrop-blur-sm"
+        featuredProjects.length > 0 ? (
+          <div className="hidden md:block relative h-screen overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentSlide}
+                initial={{ opacity: 0, scale: 1.1 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.7, ease: "easeInOut" }}
+                className="absolute inset-0"
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
               >
-                {isAutoPlaying && !isPaused ? (
-                  <div className="w-4 h-4 flex gap-1">
-                    <div className="w-1 h-4 bg-white"></div>
-                    <div className="w-1 h-4 bg-white"></div>
+                <img 
+                  src={featuredProjects[safeCurrentSlide]?.poster} 
+                  srcSet={featuredProjects[safeCurrentSlide]?.poster + ' 1x, ' + featuredProjects[safeCurrentSlide]?.poster + ' 2x, ' + featuredProjects[safeCurrentSlide]?.poster + ' 3x'}
+                  sizes="(min-width: 1024px) 900px, 100vw"
+                  alt={featuredProjects[safeCurrentSlide]?.title}
+                  className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-700 blur-lg scale-105 ${imageLoaded ? 'opacity-0' : 'opacity-100'}`}
+                  aria-hidden="true"
+                  loading="lazy"
+                  style={{ filter: 'blur(20px)', pointerEvents: 'none' }}
+                />
+                <img
+                  src={featuredProjects[safeCurrentSlide]?.poster}
+                  srcSet={featuredProjects[safeCurrentSlide]?.poster + ' 1x, ' + featuredProjects[safeCurrentSlide]?.poster + ' 2x, ' + featuredProjects[safeCurrentSlide]?.poster + ' 3x'}
+                  sizes="(min-width: 1024px) 900px, 100vw"
+                  alt={featuredProjects[safeCurrentSlide]?.title}
+                  className={`w-full h-full object-cover transition-opacity duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                  loading="lazy"
+                  onLoad={() => setImageLoaded(true)}
+                />
+                {!imageLoaded && (
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse flex items-center justify-center">
+                    <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
                   </div>
-                ) : (
-                  <Play className="w-4 h-4 fill-current" />
                 )}
-              </button>
+                <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent" />
+              </motion.div>
+            </AnimatePresence>
+            
+            {/* Navigation Arrows */}
+            <button
+              onClick={prevSlide}
+              className="hidden sm:flex absolute left-6 top-1/2 transform -translate-y-1/2 z-20 w-14 h-14 bg-black/60 hover:bg-black/80 rounded-full items-center justify-center text-white transition-all duration-300 hover:scale-110 backdrop-blur-sm"
+            >
+              <ChevronLeft className="w-8 h-8" />
+            </button>
 
-              {/* Dots */}
-              <div className="flex gap-2">
-                {featuredProjects.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleSlideChange(index)}
-                    className={`relative w-3 h-3 rounded-full transition-all duration-300 ${
-                      index === currentSlide ? 'bg-white' : 'bg-white/40 hover:bg-white/60'
-                    }`}
+            <button
+              onClick={nextSlide}
+              className="hidden sm:flex absolute right-6 top-1/2 transform -translate-y-1/2 z-20 w-14 h-14 bg-black/60 hover:bg-black/80 rounded-full items-center justify-center text-white transition-all duration-300 hover:scale-110 backdrop-blur-sm"
+            >
+              <ChevronRight className="w-8 h-8" />
+            </button>
+
+            {/* Content Overlay */}
+            <div className="absolute inset-0 flex items-center z-10 pt-16">
+              <div className="max-w-7xl mx-auto px-6 w-full">
+                <div className="max-w-2xl">
+                  <motion.div
+                    key={`content-${currentSlide}`}
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.3 }}
                   >
-                    {index === currentSlide && isAutoPlaying && !isPaused && (
-                      <div className="absolute inset-0 rounded-full border-2 border-white animate-ping"></div>
-                    )}
-                  </button>
-                ))}
-              </div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className={`flex items-center gap-2 px-3 py-1 rounded-full backdrop-blur-md ${
+                        featuredProjects[safeCurrentSlide]?.type === 'film' ? 'bg-purple-500/20 border border-purple-500/30 text-purple-300' :
+                        featuredProjects[safeCurrentSlide]?.type === 'music' ? 'bg-blue-500/20 border border-blue-500/30 text-blue-300' :
+                        'bg-green-500/20 border border-green-500/30 text-green-300'
+                      }`}>
+                        {featuredProjects[safeCurrentSlide]?.type === 'film' ? <Film className="w-4 h-4" /> :
+                         featuredProjects[safeCurrentSlide]?.type === 'music' ? <Music className="w-4 h-4" /> :
+                         <Tv className="w-4 h-4" />}
+                        <span className="text-sm font-medium uppercase">{featuredProjects[safeCurrentSlide]?.type}</span>
+                      </div>
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-red-500/20 border border-red-500/30">
+                        <Fire className="w-4 h-4 text-red-400" />
+                        <span className="text-red-300 text-sm font-medium">Trending #{safeCurrentSlide + 1}</span>
+                      </div>
+                    </div>
 
-              {/* Counter */}
-              <span className="text-white text-sm font-medium bg-black/60 px-3 py-1 rounded-full backdrop-blur-sm">
-                {currentSlide + 1}/{featuredProjects.length}
-              </span>
+                    <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold text-white mb-4">
+                      {featuredProjects[safeCurrentSlide]?.title}
+                    </h1>
+                    
+                    <p className="text-base sm:text-xl text-gray-300 mb-6 leading-relaxed">
+                      {featuredProjects[safeCurrentSlide]?.description}
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8">
+                      <div className="flex items-center gap-2">
+                        <Star className="w-5 h-5 text-yellow-400 fill-current" />
+                        <span className="text-white font-semibold">{featuredProjects[safeCurrentSlide]?.rating || '4.8'}</span>
+                      </div>
+                      <span className="text-gray-400">•</span>
+                      <span className="text-gray-300">{featuredProjects[safeCurrentSlide]?.language}</span>
+                      <span className="text-gray-400">•</span>
+                      <span className="text-gray-300">{featuredProjects[safeCurrentSlide]?.genre}</span>
+                      <span className="text-gray-400">•</span>
+                      <span className="text-green-400 font-semibold">{featuredProjects[safeCurrentSlide]?.fundedPercentage}% Funded</span>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                      <button
+                        onClick={() => handleInvestClick(featuredProjects[safeCurrentSlide])}
+                        className="flex items-center gap-3 px-8 py-4 bg-white text-black rounded-lg font-semibold text-lg hover:bg-gray-200 transition-all duration-300 hover:scale-105"
+                      >
+                        <Play className="w-6 h-6 fill-current" />
+                        Invest Now
+                      </button>
+                      
+                      <button 
+                        onClick={() => handleProjectClick(featuredProjects[safeCurrentSlide])}
+                        className="flex items-center gap-3 px-8 py-4 bg-gray-600/80 text-white rounded-lg font-semibold text-lg hover:bg-gray-600 transition-all duration-300"
+                      >
+                        <Info className="w-6 h-6" />
+                        More Info
+                      </button>
+
+                      <button className="p-4 bg-black/50 text-white rounded-full hover:bg-black/70 transition-all duration-300">
+                        <Heart className="w-6 h-6" />
+                      </button>
+
+                      <button className="p-4 bg-black/50 text-white rounded-full hover:bg-black/70 transition-all duration-300">
+                        <Share2 className="w-6 h-6" />
+                      </button>
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+
+            {/* Slide Indicators */}
+            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+              <div className="flex items-center gap-3">
+                {/* Play/Pause Button */}
+                <button
+                  onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+                  className="p-2 bg-black/60 hover:bg-black/80 rounded-full text-white transition-all duration-300 backdrop-blur-sm"
+                >
+                  {isAutoPlaying && !isPaused ? (
+                    <div className="w-4 h-4 flex gap-1">
+                      <div className="w-1 h-4 bg-white"></div>
+                      <div className="w-1 h-4 bg-white"></div>
+                    </div>
+                  ) : (
+                    <Play className="w-4 h-4 fill-current" />
+                  )}
+                </button>
+
+                {/* Dots */}
+                <div className="flex gap-2">
+                  {featuredProjects.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSlideChange(index)}
+                      className={`relative w-3 h-3 rounded-full transition-all duration-300 ${
+                        index === currentSlide ? 'bg-white' : 'bg-white/40 hover:bg-white/60'
+                      }`}
+                    >
+                      {index === currentSlide && isAutoPlaying && !isPaused && (
+                        <div className="absolute inset-0 rounded-full border-2 border-white animate-ping"></div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Counter */}
+                <span className="text-white text-sm font-medium bg-black/60 px-3 py-1 rounded-full backdrop-blur-sm">
+                  {safeCurrentSlide + 1}/{featuredProjects.length}
+                </span>
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="hidden md:flex items-center justify-center h-screen text-white text-2xl">No featured projects available.</div>
+        )
       )}
 
       {/* Search and Filter Section */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-6 py-8 mt-20">
         <div className="flex flex-col lg:flex-row gap-4 mb-8">
-          {isMobile && (
-            <div className="flex justify-between md:hidden">
-              <button
-                onClick={() => setShowMobileSearch(!showMobileSearch)}
-                className="p-2 rounded-lg bg-gray-900 text-white"
-              >
-                <Search className="w-6 h-6" />
-              </button>
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className="relative p-2 rounded-lg bg-gray-900 text-white"
-              >
-                <Filter className="w-6 h-6" />
-                {(selectedCategory !== 'all' || selectedType !== 'all' || selectedLanguage !== 'all' || selectedGenre !== 'all') && (
-                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
-                )}
-              </button>
-            </div>
-          )}
-
           {/* Search Bar */}
-          <div className={`relative flex-1 ${isMobile ? (showMobileSearch ? 'block' : 'hidden') : 'hidden md:block'}`}>
+          <div className={`relative flex-1 ${showFilters ? 'block' : 'hidden md:block'}`}>
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
             <input
+              ref={searchInputRef}
               type="text"
               placeholder="Search for films, music, web series, directors, artists..."
               value={searchTerm}
@@ -563,36 +616,22 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
                 setSearchTerm(e.target.value);
                 setShowAllProjects(null);
               }}
-              className="w-full pl-14 pr-4 py-4 bg-gray-900 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-gray-800 transition-all duration-300 text-lg"
+              className="w-full pl-14 pr-12 py-4 bg-gray-900 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-gray-800 transition-all duration-300 text-lg"
             />
-          </div>
-
-          {/* View Mode Toggle */}
-          <div className={`flex items-center gap-2 bg-gray-900 rounded-xl p-2 ${isMobile ? 'hidden' : ''}`}>
+            {searchTerm && (
             <button
-              onClick={() => setViewMode('cards')}
-              className={`p-2 rounded-lg transition-all duration-300 ${
-                viewMode === 'cards' ? 'bg-red-600 text-white' : 'text-gray-400 hover:text-white'
-              }`}
+                type="button"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white focus:outline-none"
+                onClick={() => {
+                  setSearchTerm('');
+                  setShowAllProjects(null);
+                  searchInputRef.current?.blur();
+                }}
+                aria-label="Clear search"
             >
-              <Grid3X3 className="w-6 h-6 md:w-5 md:h-5" />
+                <X className="w-5 h-5" />
             </button>
-            <button
-              onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-lg transition-all duration-300 ${
-                viewMode === 'grid' ? 'bg-red-600 text-white' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              <Grid3X3 className="w-6 h-6 md:w-5 md:h-5" />
-            </button>
-            <button
-              onClick={() => setViewMode('list')}
-              className={`p-2 rounded-lg transition-all duration-300 ${
-                viewMode === 'list' ? 'bg-red-600 text-white' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              <List className="w-6 h-6 md:w-5 md:h-5" />
-            </button>
+            )}
           </div>
 
           {/* Filter Toggle */}
@@ -601,7 +640,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
               setShowFilters(!showFilters);
               setShowAllProjects(null);
             }}
-            className={`flex items-center gap-2 px-6 py-4 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all duration-300 ${isMobile ? 'hidden' : ''}`}
+            className={`flex items-center gap-2 px-6 py-4 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all duration-300 ${showFilters ? 'hidden' : ''}`}
           >
             <Filter className="w-5 h-5" />
             Filters
@@ -772,48 +811,33 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
             </div>
 
             {filteredProjects.length > 0 ? (
-              <div className={`${
-                viewMode === 'list' ? 'space-y-4' :
-                viewMode === 'grid' ? 'grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4' :
-                'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-              }`}>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {filteredProjects.map((project) => (
-                  viewMode === 'list' ? (
-                    <ListProjectCard 
-                      key={project.id} 
-                      project={project} 
-                      onClick={() => handleProjectClick(project)}
-                      onInvestClick={handleInvestClick}
-                    />
-                  ) : (
-                    <ProjectCard 
-                      key={project.id} 
-                      project={project} 
-                      onClick={() => handleProjectClick(project)}
-                      onInvestClick={handleInvestClick}
-                      compact={viewMode === 'grid'}
-                    />
-                  )
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-16">
-                <div className="text-6xl mb-4">🔍</div>
-                <h3 className="text-white text-2xl font-bold mb-4">No results found</h3>
-                <p className="text-gray-400 mb-6">Try adjusting your search terms or filters</p>
-                <button
-                  onClick={clearFilters}
-                  className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                >
-                  Clear All Filters
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
+          <ProjectCard 
+            key={project.id} 
+            project={project} 
+            onClick={() => handleProjectClick(project)}
+            onInvestClick={handleInvestClick}
+          />
+        ))}
+      </div>
+    ) : (
+      <div className="text-center py-16">
+        <div className="text-6xl mb-4">🔍</div>
+        <h3 className="text-white text-2xl font-bold mb-4">No results found</h3>
+        <p className="text-gray-400 mb-6">Try adjusting your search terms or filters</p>
+        <button
+          onClick={clearFilters}
+          className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+        >
+          Clear All Filters
+        </button>
+      </div>
+    )}
+  </div>
+) : (
           <div className="space-y-12">
             <ProjectRow
-              id="row-trending"
               title="🔥 Trending Now"
               projects={trendingProjects}
               onProjectClick={handleProjectClick}
@@ -822,7 +846,6 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
             />
             {endingSoon.length > 0 && (
               <ProjectRow
-                id="row-ending-soon"
                 title="⏰ Ending Soon - Last Chance!"
                 projects={endingSoon}
                 onProjectClick={handleProjectClick}
@@ -832,7 +855,6 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
               />
             )}
             <ProjectRow
-              id="row-bollywood"
               title="🎬 Bollywood Blockbusters"
               projects={bollywoodFilms}
               onProjectClick={handleProjectClick}
@@ -840,7 +862,6 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
               onHeaderClick={() => handleSectionClick('bollywood')}
             />
             <ProjectRow
-              id="row-music"
               title="🎵 Music & Albums"
               projects={musicProjects}
               onProjectClick={handleProjectClick}
@@ -848,7 +869,6 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
               onHeaderClick={() => handleSectionClick('music')}
             />
             <ProjectRow
-              id="row-webseries"
               title="📺 Binge-Worthy Web Series"
               projects={webSeries}
               onProjectClick={handleProjectClick}
@@ -856,7 +876,6 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
               onHeaderClick={() => handleSectionClick('webseries')}
             />
             <ProjectRow
-              id="row-regional"
               title="🌍 Regional Cinema Gems"
               projects={regionalContent}
               onProjectClick={handleProjectClick}
@@ -864,7 +883,6 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
               onHeaderClick={() => handleSectionClick('regional')}
             />
             <ProjectRow
-              id="row-high-rated"
               title="🏆 Highly Rated Projects"
               projects={highRatedProjects}
               onProjectClick={handleProjectClick}
@@ -872,7 +890,6 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
               onHeaderClick={() => handleSectionClick('high-rated')}
             />
             <ProjectRow
-              id="row-new-releases"
               title="🆕 Fresh Releases"
               projects={newReleases}
               onProjectClick={handleProjectClick}
@@ -881,7 +898,6 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
             />
             {hollywoodProjects.length > 0 && (
               <ProjectRow
-                id="row-hollywood"
                 title="🌟 Hollywood International"
                 projects={hollywoodProjects}
                 onProjectClick={handleProjectClick}
@@ -914,10 +930,9 @@ interface ProjectRowProps {
   onHeaderClick?: () => void;
   featured?: boolean;
   urgent?: boolean;
-  id: string;
 }
 
-const ProjectRow = React.memo<ProjectRowProps>(({ title, projects, onProjectClick, onInvestClick, onHeaderClick, featured, urgent, id }) => {
+const ProjectRow = React.memo<ProjectRowProps>(({ title, projects, onProjectClick, onInvestClick, onHeaderClick, featured, urgent }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: 'left' | 'right') => {
@@ -994,13 +1009,12 @@ interface ProjectCardProps {
   onInvestClick: (project: Project) => void;
   featured?: boolean;
   urgent?: boolean;
-  compact?: boolean;
 }
 
-const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestClick, featured, urgent, compact }) => {
+const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestClick, featured, urgent }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const cardWidth = featured ? 'w-96' : compact ? 'w-48' : 'w-72';
+  const cardWidth = featured ? 'w-96' : 'w-72';
   const aspectRatio = featured ? 'aspect-[16/10]' : 'aspect-[2/3]';
 
   return (
@@ -1009,7 +1023,7 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestCl
         className="absolute inset-0 cursor-pointer group"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        whileHover={{ scale: compact ? 1.02 : 1.05 }}
+        whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.3 }}
         onClick={onClick}
       >
@@ -1042,20 +1056,20 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestCl
             {project.type === 'film' ? <Film className="w-3 h-3" /> :
              project.type === 'music' ? <Music className="w-3 h-3" /> :
              <Tv className="w-3 h-3" />}
-            {!compact && project.type.toUpperCase()}
+            {!featured && project.type.toUpperCase()}
           </div>
           
           {featured && (
             <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 text-black text-xs font-bold shadow-lg">
               <TrendingUp className="w-3 h-3" />
-              {!compact && 'TRENDING'}
+              {!featured && 'TRENDING'}
             </div>
           )}
           
           {urgent && (
             <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold shadow-lg animate-pulse">
               <Clock className="w-3 h-3" />
-              {!compact && 'ENDING SOON'}
+              {!featured && 'ENDING SOON'}
             </div>
           )}
         </div>
@@ -1076,11 +1090,11 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestCl
             {/* Title and Basic Info */}
             <div>
               <h3 className={`text-white font-bold leading-tight ${
-                compact ? 'text-sm' : featured ? 'text-xl' : 'text-lg'
+                featured ? 'text-xl' : 'text-lg'
               }`}>
                 {project.title}
               </h3>
-              {!compact && (
+              {!featured && (
                 <p className="text-gray-300 text-sm mt-1 line-clamp-2">
                   {project.description}
                 </p>
@@ -1115,7 +1129,7 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestCl
             </div>
 
             {/* Funding Details */}
-            {!compact && (
+            {!featured && (
               <div className="flex items-center justify-between text-xs">
                 <div className="text-gray-400">
                   ₹{(project.raisedAmount / 100000).toFixed(1)}L raised
@@ -1133,7 +1147,7 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestCl
 
         {/* Hover Content - Enhanced with Better Readability */}
         <AnimatePresence>
-          {isHovered && !compact && (
+          {isHovered && !featured && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -1214,102 +1228,5 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestCl
     </PixelCard>
   );
 });
-
-// List View Project Card
-interface ListProjectCardProps {
-  project: Project;
-  onClick: () => void;
-  onInvestClick: (project: Project) => void;
-}
-
-const ListProjectCard: React.FC<ListProjectCardProps> = ({ project, onClick, onInvestClick }) => {
-  return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      className="flex gap-4 p-4 bg-gray-900 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-300 cursor-pointer"
-      onClick={onClick}
-    >
-      <img 
-        src={project.poster} 
-        alt={project.title}
-        className="w-24 h-36 object-cover rounded-lg"
-      />
-      
-      <div className="flex-1">
-        <div className="flex items-start justify-between mb-2">
-          <div>
-            <h3 className="text-white font-bold text-xl mb-1">{project.title}</h3>
-            <p className="text-gray-400 text-sm">
-              by {project.director || project.artist} • {project.genre} • {project.language}
-            </p>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            {project.rating && (
-              <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-500/20">
-                <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                <span className="text-yellow-300 text-sm">{project.rating}</span>
-              </div>
-            )}
-            
-            <div className={`flex items-center gap-1 px-2 py-1 rounded-full ${
-              project.type === 'film' ? 'bg-purple-500/20 text-purple-300' :
-              project.type === 'music' ? 'bg-blue-500/20 text-blue-300' :
-              'bg-green-500/20 text-green-300'
-            }`}>
-              {project.type === 'film' ? <Film className="w-4 h-4" /> :
-               project.type === 'music' ? <Music className="w-4 h-4" /> :
-               <Tv className="w-4 h-4" />}
-              <span className="text-sm font-medium">{project.type.toUpperCase()}</span>
-            </div>
-          </div>
-        </div>
-        
-        <p className="text-gray-300 text-sm mb-4 line-clamp-2">{project.description}</p>
-        
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-6">
-            <div>
-              <p className="text-gray-400 text-xs">Funded</p>
-              <p className="text-white font-semibold">{project.fundedPercentage}%</p>
-            </div>
-            <div>
-              <p className="text-gray-400 text-xs">Raised</p>
-              <p className="text-green-400 font-semibold">₹{(project.raisedAmount / 100000).toFixed(1)}L</p>
-            </div>
-            <div>
-              <p className="text-gray-400 text-xs">Target</p>
-              <p className="text-gray-300">₹{(project.targetAmount / 100000).toFixed(1)}L</p>
-            </div>
-            {project.timeLeft && (
-              <div>
-                <p className="text-gray-400 text-xs">Time Left</p>
-                <p className="text-orange-400 font-semibold">{project.timeLeft}</p>
-              </div>
-            )}
-          </div>
-          
-          <button
-            onClick={() => onInvestClick(project)}
-            className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:from-purple-500 hover:to-blue-500 transition-all duration-300"
-          >
-            Invest Now
-          </button>
-        </div>
-        
-        <div className="w-full bg-gray-700 rounded-full h-2">
-          <div 
-            className={`h-full rounded-full ${
-              project.type === 'film' ? 'bg-gradient-to-r from-purple-500 to-pink-500' :
-              project.type === 'music' ? 'bg-gradient-to-r from-blue-500 to-cyan-500' :
-              'bg-gradient-to-r from-green-500 to-emerald-500'
-            }`}
-            style={{ width: `${project.fundedPercentage}%` }}
-          />
-        </div>
-      </div>
-    </motion.div>
-  );
-};
 
 export default ProjectCatalog;

@@ -1,13 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
 import { 
   Plus, 
-  Filter, 
   Search, 
   Edit, 
   Trash2, 
   Archive, 
-  MoreVertical,
   Film,
   Music,
   Tv,
@@ -15,15 +12,18 @@ import {
   Clock,
   XCircle,
   Download,
-  ChevronDown,
-  ChevronUp,
   RefreshCw
 } from 'lucide-react';
-import { useTheme } from '../../ThemeProvider';
-import { useAdmin, Project } from '../AdminContext';
+import { useTheme } from '../../ThemeContext';
+import { useAdmin } from '../useAdmin';
+import type { Project } from '../../../types/index';
 import ProjectForm from '../forms/ProjectForm';
 import ConfirmDialog from '../shared/ConfirmDialog';
 import DataTable from '../shared/DataTable';
+
+function safeDateString(value: string | undefined): string {
+  return typeof value === 'string' && value ? value : '1970-01-01';
+}
 
 const ProjectsPanel: React.FC = () => {
   const { theme } = useTheme();
@@ -87,11 +87,11 @@ const ProjectsPanel: React.FC = () => {
     return Array.from(uniqueCategories);
   }, [projects]);
 
-  const handleSort = (field: keyof Project) => {
+  const handleSort = (field: string) => {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
-      setSortField(field);
+      setSortField(field as keyof Project);
       setSortDirection('asc');
     }
   };
@@ -142,7 +142,7 @@ const ProjectsPanel: React.FC = () => {
     {
       Header: 'Title',
       accessor: 'title',
-      Cell: ({ row }: any) => (
+      Cell: ({ row }: { row: { original: Project } }) => (
         <div className="flex items-center gap-3">
           {row.original.poster ? (
             <img 
@@ -179,7 +179,7 @@ const ProjectsPanel: React.FC = () => {
     {
       Header: 'Status',
       accessor: 'status',
-      Cell: ({ value }: any) => (
+      Cell: ({ value }: { value: string }) => (
         <div className="flex items-center gap-2">
           {getStatusIcon(value)}
           <span className={`capitalize ${
@@ -196,7 +196,7 @@ const ProjectsPanel: React.FC = () => {
     {
       Header: 'Funding',
       accessor: 'fundedPercentage',
-      Cell: ({ row }: any) => (
+      Cell: ({ row }: { row: { original: Project } }) => (
         <div>
           <div className="flex items-center justify-between mb-1">
             <span className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
@@ -220,25 +220,31 @@ const ProjectsPanel: React.FC = () => {
     },
     {
       Header: 'Created',
-      accessor: 'createdAt',
-      Cell: ({ value }: any) => (
-        <span className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
-          {new Date(value).toLocaleDateString()}
-        </span>
-      )
+      accessor: (row: Project) => safeDateString(row.createdAt),
+      Cell: ({ value }: { value?: string }) => {
+        const dateString: string = (value && typeof value === 'string') ? value : '1970-01-01';
+        return (
+          <span className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
+            {new Date(dateString as string).toLocaleDateString()}
+          </span>
+        );
+      }
     },
     {
       Header: 'Updated',
-      accessor: 'updatedAt',
-      Cell: ({ value }: any) => (
-        <span className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
-          {new Date(value).toLocaleDateString()}
-        </span>
-      )
+      accessor: (row: Project) => safeDateString(row.updatedAt),
+      Cell: ({ value }: { value?: string }) => {
+        const dateString: string = (value && typeof value === 'string') ? value : '1970-01-01';
+        return (
+          <span className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
+            {new Date(dateString as string).toLocaleDateString()}
+          </span>
+        );
+      }
     },
     {
       Header: 'Actions',
-      Cell: ({ row }: any) => (
+      Cell: ({ row }: { row: { original: Project } }) => (
         <div className="flex items-center gap-2">
           <button
             onClick={() => setEditingProject(row.original)}

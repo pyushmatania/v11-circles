@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, 
@@ -12,8 +12,8 @@ import {
   Star, 
   TrendingUp
 } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
-import { extendedProjects } from '../data/extendedProjects';
+import { useTheme } from './ThemeContext';
+import { projects } from '../data/projects';
 import { Project } from '../types';
 import { useDebounce } from '../hooks/useDebounce';
 
@@ -69,7 +69,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSelectProject, onViewAllResults
 
     // Use setTimeout to prevent blocking the UI
     setTimeout(() => {
-      let results = extendedProjects.filter(project => {
+      let results = projects.filter(project => {
         return project.title.toLowerCase().includes(term.toLowerCase()) ||
           project.description.toLowerCase().includes(term.toLowerCase()) ||
           project.tags.some((tag: string) => tag.toLowerCase().includes(term.toLowerCase())) ||
