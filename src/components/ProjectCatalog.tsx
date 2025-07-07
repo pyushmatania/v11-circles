@@ -65,7 +65,6 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [initialTab, setInitialTab] = useState<'overview' | 'invest'>('overview');
   const [showFilters, setShowFilters] = useState(false);
-  const [showMobileSearch, setShowMobileSearch] = useState(false);
   
   // Auto-sliding hero carousel state
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -193,9 +192,36 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
       .filter(p => p.timeLeft && parseInt(p.timeLeft) <= 7)
       .slice(0, 10);
 
-    const featuredProjects = projects
-      .sort((a, b) => b.fundedPercentage - a.fundedPercentage)
-      .slice(0, 7);
+    let featuredProjects = projects
+      .filter(p => p.featured)
+      .sort((a, b) => b.fundedPercentage - a.fundedPercentage);
+
+    // Add placeholders if less than 11
+    const placeholderProject = {
+      id: '',
+      title: 'Coming Soon',
+      type: 'film' as const,
+      category: '',
+      language: '',
+      poster: '/placeholder.jpg', // Make sure this image exists in your public folder
+      fundedPercentage: 0,
+      targetAmount: 0,
+      raisedAmount: 0,
+      tags: [],
+      description: '',
+      genre: '',
+      perks: [],
+      featured: false,
+    };
+    if (featuredProjects.length < 11) {
+      featuredProjects = [
+        ...featuredProjects,
+        ...Array.from({ length: 11 - featuredProjects.length }, (_, i) => ({
+          ...placeholderProject,
+          id: `placeholder-${i + 1}`
+        }))
+      ];
+    }
 
     return {
       trendingProjects,
@@ -209,7 +235,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
       endingSoon,
       featuredProjects
     };
-  }, []);
+  }, [projects]);
 
   // Memoized callback functions for carousel controls
   const handleSlideChange = useCallback((index: number) => {
@@ -323,246 +349,263 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
 
   const [imageLoaded, setImageLoaded] = useState(false);
 
+  // Defensive: ensure we never access out-of-bounds index
+  const safeCurrentSlide = Math.min(currentSlide, featuredProjects.length - 1);
+
   return (
     <div className="min-h-screen bg-black pb-[100px]">
       {/* Mobile Hero Carousel */}
       {!searchTerm && !showAllProjects && (
-        <div
-          className="md:hidden relative h-72 overflow-hidden"
-          onTouchStart={(e) => setTouchStartX(e.touches[0].clientX)}
-          onTouchEnd={(e) => {
-            const diff = e.changedTouches[0].clientX - touchStartX;
-            if (Math.abs(diff) > 50) {
-              if (diff > 0) {
-                prevSlide();
-              } else {
-                nextSlide();
+        featuredProjects.length > 0 ? (
+          <div
+            className="md:hidden relative h-72 overflow-hidden"
+            onTouchStart={(e) => setTouchStartX(e.touches[0].clientX)}
+            onTouchEnd={(e) => {
+              const diff = e.changedTouches[0].clientX - touchStartX;
+              if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                  prevSlide();
+                } else {
+                  nextSlide();
+                }
               }
-            }
-          }}
-          onClick={() => handleProjectClick(featuredProjects[currentSlide])}
-        >
-          <AnimatePresence mode="wait">
-            <motion.img
-              key={`m-${currentSlide}`}
-              src={featuredProjects[currentSlide]?.poster}
-              alt={featuredProjects[currentSlide]?.title}
-              initial={{ x: 150, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: -150, opacity: 0 }}
-              transition={{ duration: 0.6, ease: 'easeInOut' }}
-              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-              loading="lazy"
-              onLoad={() => setImageLoaded(true)}
-            />
-          </AnimatePresence>
-          {!imageLoaded && (
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse flex items-center justify-center">
-              <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
-            </div>
-          )}
-          <div className="absolute bottom-12 left-0 w-full p-3 text-center flex flex-col items-center bg-gradient-to-t from-black/70 via-black/40 to-transparent">
-            <h3 className="text-white text-base font-semibold">
-              {featuredProjects[currentSlide]?.title}
-            </h3>
-            <span className="text-xs text-gray-300">
-              {featuredProjects[currentSlide]?.genre}
-            </span>
-          </div>
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
-            {featuredProjects.map((_, index) => (
-              <button
-                key={`md-${index}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSlideChange(index);
-                }}
-                className={`w-2 h-2 rounded-full transition-colors duration-300 ${index === currentSlide ? 'bg-white' : 'bg-white/40'}`}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-      {/* Full-Screen Auto-Sliding Hero Carousel */}
-      {!searchTerm && !showAllProjects && (
-        <div className="hidden md:block relative h-screen overflow-hidden">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentSlide}
-              initial={{ opacity: 0, scale: 1.1 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.7, ease: "easeInOut" }}
-              className="absolute inset-0"
-              onMouseEnter={() => setIsPaused(true)}
-              onMouseLeave={() => setIsPaused(false)}
-            >
-              <img 
-                src={featuredProjects[currentSlide]?.poster} 
-                alt={featuredProjects[currentSlide]?.title}
-                className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-700 blur-lg scale-105 ${imageLoaded ? 'opacity-0' : 'opacity-100'}`}
-                aria-hidden="true"
-                loading="lazy"
-                style={{ filter: 'blur(20px)', pointerEvents: 'none' }}
-              />
-              <img
-                src={featuredProjects[currentSlide]?.poster}
-                alt={featuredProjects[currentSlide]?.title}
-                className={`w-full h-full object-cover transition-opacity duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+            }}
+            onClick={() => handleProjectClick(featuredProjects[safeCurrentSlide])}
+          >
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={`m-${currentSlide}`}
+                src={featuredProjects[safeCurrentSlide]?.poster}
+                srcSet={featuredProjects[safeCurrentSlide]?.poster + ' 1x, ' + featuredProjects[safeCurrentSlide]?.poster + ' 2x, ' + featuredProjects[safeCurrentSlide]?.poster + ' 3x'}
+                sizes="(min-width: 1024px) 900px, 100vw"
+                alt={featuredProjects[safeCurrentSlide]?.title}
+                initial={{ x: 150, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: -150, opacity: 0 }}
+                transition={{ duration: 0.6, ease: 'easeInOut' }}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
                 loading="lazy"
                 onLoad={() => setImageLoaded(true)}
               />
-              {!imageLoaded && (
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse flex items-center justify-center">
-                  <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
-                </div>
-              )}
-              <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent" />
-            </motion.div>
-          </AnimatePresence>
-          
-          {/* Navigation Arrows */}
-          <button
-            onClick={prevSlide}
-            className="hidden sm:flex absolute left-6 top-1/2 transform -translate-y-1/2 z-20 w-14 h-14 bg-black/60 hover:bg-black/80 rounded-full items-center justify-center text-white transition-all duration-300 hover:scale-110 backdrop-blur-sm"
-          >
-            <ChevronLeft className="w-8 h-8" />
-          </button>
-
-          <button
-            onClick={nextSlide}
-            className="hidden sm:flex absolute right-6 top-1/2 transform -translate-y-1/2 z-20 w-14 h-14 bg-black/60 hover:bg-black/80 rounded-full items-center justify-center text-white transition-all duration-300 hover:scale-110 backdrop-blur-sm"
-          >
-            <ChevronRight className="w-8 h-8" />
-          </button>
-
-          {/* Content Overlay */}
-          <div className="absolute inset-0 flex items-center z-10 pt-16">
-            <div className="max-w-7xl mx-auto px-6 w-full">
-              <div className="max-w-2xl">
-                <motion.div
-                  key={`content-${currentSlide}`}
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.3 }}
-                >
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className={`flex items-center gap-2 px-3 py-1 rounded-full backdrop-blur-md ${
-                      featuredProjects[currentSlide]?.type === 'film' ? 'bg-purple-500/20 border border-purple-500/30 text-purple-300' :
-                      featuredProjects[currentSlide]?.type === 'music' ? 'bg-blue-500/20 border border-blue-500/30 text-blue-300' :
-                      'bg-green-500/20 border border-green-500/30 text-green-300'
-                    }`}>
-                      {featuredProjects[currentSlide]?.type === 'film' ? <Film className="w-4 h-4" /> :
-                       featuredProjects[currentSlide]?.type === 'music' ? <Music className="w-4 h-4" /> :
-                       <Tv className="w-4 h-4" />}
-                      <span className="text-sm font-medium uppercase">{featuredProjects[currentSlide]?.type}</span>
-                    </div>
-                    <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-red-500/20 border border-red-500/30">
-                      <Fire className="w-4 h-4 text-red-400" />
-                      <span className="text-red-300 text-sm font-medium">Trending #{currentSlide + 1}</span>
-                    </div>
-                  </div>
-
-                  <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold text-white mb-4">
-                    {featuredProjects[currentSlide]?.title}
-                  </h1>
-                  
-                  <p className="text-base sm:text-xl text-gray-300 mb-6 leading-relaxed">
-                    {featuredProjects[currentSlide]?.description}
-                  </p>
-
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8">
-                    <div className="flex items-center gap-2">
-                      <Star className="w-5 h-5 text-yellow-400 fill-current" />
-                      <span className="text-white font-semibold">{featuredProjects[currentSlide]?.rating || '4.8'}</span>
-                    </div>
-                    <span className="text-gray-400">•</span>
-                    <span className="text-gray-300">{featuredProjects[currentSlide]?.language}</span>
-                    <span className="text-gray-400">•</span>
-                    <span className="text-gray-300">{featuredProjects[currentSlide]?.genre}</span>
-                    <span className="text-gray-400">•</span>
-                    <span className="text-green-400 font-semibold">{featuredProjects[currentSlide]?.fundedPercentage}% Funded</span>
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                    <button
-                      onClick={() => handleInvestClick(featuredProjects[currentSlide])}
-                      className="flex items-center gap-3 px-8 py-4 bg-white text-black rounded-lg font-semibold text-lg hover:bg-gray-200 transition-all duration-300 hover:scale-105"
-                    >
-                      <Play className="w-6 h-6 fill-current" />
-                      Invest Now
-                    </button>
-                    
-                    <button 
-                      onClick={() => handleProjectClick(featuredProjects[currentSlide])}
-                      className="flex items-center gap-3 px-8 py-4 bg-gray-600/80 text-white rounded-lg font-semibold text-lg hover:bg-gray-600 transition-all duration-300"
-                    >
-                      <Info className="w-6 h-6" />
-                      More Info
-                    </button>
-
-                    <button className="p-4 bg-black/50 text-white rounded-full hover:bg-black/70 transition-all duration-300">
-                      <Heart className="w-6 h-6" />
-                    </button>
-
-                    <button className="p-4 bg-black/50 text-white rounded-full hover:bg-black/70 transition-all duration-300">
-                      <Share2 className="w-6 h-6" />
-                    </button>
-                  </div>
-                </motion.div>
+            </AnimatePresence>
+            {!imageLoaded && (
+              <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse flex items-center justify-center">
+                <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
               </div>
-            </div>
-          </div>
-
-          {/* Slide Indicators */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
-            <div className="flex items-center gap-3">
-              {/* Play/Pause Button */}
-              <button
-                onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-                className="p-2 bg-black/60 hover:bg-black/80 rounded-full text-white transition-all duration-300 backdrop-blur-sm"
-              >
-                {isAutoPlaying && !isPaused ? (
-                  <div className="w-4 h-4 flex gap-1">
-                    <div className="w-1 h-4 bg-white"></div>
-                    <div className="w-1 h-4 bg-white"></div>
-                  </div>
-                ) : (
-                  <Play className="w-4 h-4 fill-current" />
-                )}
-              </button>
-
-              {/* Dots */}
-              <div className="flex gap-2">
-                {featuredProjects.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleSlideChange(index)}
-                    className={`relative w-3 h-3 rounded-full transition-all duration-300 ${
-                      index === currentSlide ? 'bg-white' : 'bg-white/40 hover:bg-white/60'
-                    }`}
-                  >
-                    {index === currentSlide && isAutoPlaying && !isPaused && (
-                      <div className="absolute inset-0 rounded-full border-2 border-white animate-ping"></div>
-                    )}
-                  </button>
-                ))}
-              </div>
-
-              {/* Counter */}
-              <span className="text-white text-sm font-medium bg-black/60 px-3 py-1 rounded-full backdrop-blur-sm">
-                {currentSlide + 1}/{featuredProjects.length}
+            )}
+            <div className="absolute bottom-12 left-0 w-full p-3 text-center flex flex-col items-center bg-gradient-to-t from-black/70 via-black/40 to-transparent">
+              <h3 className="text-white text-base font-semibold">
+                {featuredProjects[safeCurrentSlide]?.title}
+              </h3>
+              <span className="text-xs text-gray-300">
+                {featuredProjects[safeCurrentSlide]?.genre}
               </span>
             </div>
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+              {featuredProjects.map((_, index) => (
+                <button
+                  key={`md-${index}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSlideChange(index);
+                  }}
+                  className={`w-2 h-2 rounded-full transition-colors duration-300 ${index === currentSlide ? 'bg-white' : 'bg-white/40'}`}
+                />
+              ))}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="text-white text-center py-10">No featured projects available.</div>
+        )
+      )}
+      {/* Full-Screen Auto-Sliding Hero Carousel */}
+      {!searchTerm && !showAllProjects && (
+        featuredProjects.length > 0 ? (
+          <div className="hidden md:block relative h-screen overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentSlide}
+                initial={{ opacity: 0, scale: 1.1 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.7, ease: "easeInOut" }}
+                className="absolute inset-0"
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+              >
+                <img 
+                  src={featuredProjects[safeCurrentSlide]?.poster} 
+                  srcSet={featuredProjects[safeCurrentSlide]?.poster + ' 1x, ' + featuredProjects[safeCurrentSlide]?.poster + ' 2x, ' + featuredProjects[safeCurrentSlide]?.poster + ' 3x'}
+                  sizes="(min-width: 1024px) 900px, 100vw"
+                  alt={featuredProjects[safeCurrentSlide]?.title}
+                  className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-700 blur-lg scale-105 ${imageLoaded ? 'opacity-0' : 'opacity-100'}`}
+                  aria-hidden="true"
+                  loading="lazy"
+                  style={{ filter: 'blur(20px)', pointerEvents: 'none' }}
+                />
+                <img
+                  src={featuredProjects[safeCurrentSlide]?.poster}
+                  srcSet={featuredProjects[safeCurrentSlide]?.poster + ' 1x, ' + featuredProjects[safeCurrentSlide]?.poster + ' 2x, ' + featuredProjects[safeCurrentSlide]?.poster + ' 3x'}
+                  sizes="(min-width: 1024px) 900px, 100vw"
+                  alt={featuredProjects[safeCurrentSlide]?.title}
+                  className={`w-full h-full object-cover transition-opacity duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                  loading="lazy"
+                  onLoad={() => setImageLoaded(true)}
+                />
+                {!imageLoaded && (
+                  <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse flex items-center justify-center">
+                    <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent" />
+              </motion.div>
+            </AnimatePresence>
+            
+            {/* Navigation Arrows */}
+            <button
+              onClick={prevSlide}
+              className="hidden sm:flex absolute left-6 top-1/2 transform -translate-y-1/2 z-20 w-14 h-14 bg-black/60 hover:bg-black/80 rounded-full items-center justify-center text-white transition-all duration-300 hover:scale-110 backdrop-blur-sm"
+            >
+              <ChevronLeft className="w-8 h-8" />
+            </button>
+
+            <button
+              onClick={nextSlide}
+              className="hidden sm:flex absolute right-6 top-1/2 transform -translate-y-1/2 z-20 w-14 h-14 bg-black/60 hover:bg-black/80 rounded-full items-center justify-center text-white transition-all duration-300 hover:scale-110 backdrop-blur-sm"
+            >
+              <ChevronRight className="w-8 h-8" />
+            </button>
+
+            {/* Content Overlay */}
+            <div className="absolute inset-0 flex items-center z-10 pt-16">
+              <div className="max-w-7xl mx-auto px-6 w-full">
+                <div className="max-w-2xl">
+                  <motion.div
+                    key={`content-${currentSlide}`}
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.3 }}
+                  >
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className={`flex items-center gap-2 px-3 py-1 rounded-full backdrop-blur-md ${
+                        featuredProjects[safeCurrentSlide]?.type === 'film' ? 'bg-purple-500/20 border border-purple-500/30 text-purple-300' :
+                        featuredProjects[safeCurrentSlide]?.type === 'music' ? 'bg-blue-500/20 border border-blue-500/30 text-blue-300' :
+                        'bg-green-500/20 border border-green-500/30 text-green-300'
+                      }`}>
+                        {featuredProjects[safeCurrentSlide]?.type === 'film' ? <Film className="w-4 h-4" /> :
+                         featuredProjects[safeCurrentSlide]?.type === 'music' ? <Music className="w-4 h-4" /> :
+                         <Tv className="w-4 h-4" />}
+                        <span className="text-sm font-medium uppercase">{featuredProjects[safeCurrentSlide]?.type}</span>
+                      </div>
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-red-500/20 border border-red-500/30">
+                        <Fire className="w-4 h-4 text-red-400" />
+                        <span className="text-red-300 text-sm font-medium">Trending #{safeCurrentSlide + 1}</span>
+                      </div>
+                    </div>
+
+                    <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold text-white mb-4">
+                      {featuredProjects[safeCurrentSlide]?.title}
+                    </h1>
+                    
+                    <p className="text-base sm:text-xl text-gray-300 mb-6 leading-relaxed">
+                      {featuredProjects[safeCurrentSlide]?.description}
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8">
+                      <div className="flex items-center gap-2">
+                        <Star className="w-5 h-5 text-yellow-400 fill-current" />
+                        <span className="text-white font-semibold">{featuredProjects[safeCurrentSlide]?.rating || '4.8'}</span>
+                      </div>
+                      <span className="text-gray-400">•</span>
+                      <span className="text-gray-300">{featuredProjects[safeCurrentSlide]?.language}</span>
+                      <span className="text-gray-400">•</span>
+                      <span className="text-gray-300">{featuredProjects[safeCurrentSlide]?.genre}</span>
+                      <span className="text-gray-400">•</span>
+                      <span className="text-green-400 font-semibold">{featuredProjects[safeCurrentSlide]?.fundedPercentage}% Funded</span>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                      <button
+                        onClick={() => handleInvestClick(featuredProjects[safeCurrentSlide])}
+                        className="flex items-center gap-3 px-8 py-4 bg-white text-black rounded-lg font-semibold text-lg hover:bg-gray-200 transition-all duration-300 hover:scale-105"
+                      >
+                        <Play className="w-6 h-6 fill-current" />
+                        Invest Now
+                      </button>
+                      
+                      <button 
+                        onClick={() => handleProjectClick(featuredProjects[safeCurrentSlide])}
+                        className="flex items-center gap-3 px-8 py-4 bg-gray-600/80 text-white rounded-lg font-semibold text-lg hover:bg-gray-600 transition-all duration-300"
+                      >
+                        <Info className="w-6 h-6" />
+                        More Info
+                      </button>
+
+                      <button className="p-4 bg-black/50 text-white rounded-full hover:bg-black/70 transition-all duration-300">
+                        <Heart className="w-6 h-6" />
+                      </button>
+
+                      <button className="p-4 bg-black/50 text-white rounded-full hover:bg-black/70 transition-all duration-300">
+                        <Share2 className="w-6 h-6" />
+                      </button>
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+
+            {/* Slide Indicators */}
+            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+              <div className="flex items-center gap-3">
+                {/* Play/Pause Button */}
+                <button
+                  onClick={() => setIsAutoPlaying(!isAutoPlaying)}
+                  className="p-2 bg-black/60 hover:bg-black/80 rounded-full text-white transition-all duration-300 backdrop-blur-sm"
+                >
+                  {isAutoPlaying && !isPaused ? (
+                    <div className="w-4 h-4 flex gap-1">
+                      <div className="w-1 h-4 bg-white"></div>
+                      <div className="w-1 h-4 bg-white"></div>
+                    </div>
+                  ) : (
+                    <Play className="w-4 h-4 fill-current" />
+                  )}
+                </button>
+
+                {/* Dots */}
+                <div className="flex gap-2">
+                  {featuredProjects.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleSlideChange(index)}
+                      className={`relative w-3 h-3 rounded-full transition-all duration-300 ${
+                        index === currentSlide ? 'bg-white' : 'bg-white/40 hover:bg-white/60'
+                      }`}
+                    >
+                      {index === currentSlide && isAutoPlaying && !isPaused && (
+                        <div className="absolute inset-0 rounded-full border-2 border-white animate-ping"></div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Counter */}
+                <span className="text-white text-sm font-medium bg-black/60 px-3 py-1 rounded-full backdrop-blur-sm">
+                  {safeCurrentSlide + 1}/{featuredProjects.length}
+                </span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="hidden md:flex items-center justify-center h-screen text-white text-2xl">No featured projects available.</div>
+        )
       )}
 
       {/* Search and Filter Section */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-6 py-8 mt-20">
         <div className="flex flex-col lg:flex-row gap-4 mb-8">
           {/* Search Bar */}
-          <div className={`relative flex-1 ${showMobileSearch ? 'block' : 'hidden md:block'}`}>
+          <div className={`relative flex-1 ${showFilters ? 'block' : 'hidden md:block'}`}>
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
             <input
               ref={searchInputRef}
@@ -576,7 +619,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
               className="w-full pl-14 pr-12 py-4 bg-gray-900 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-gray-800 transition-all duration-300 text-lg"
             />
             {searchTerm && (
-              <button
+            <button
                 type="button"
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white focus:outline-none"
                 onClick={() => {
@@ -585,9 +628,9 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
                   searchInputRef.current?.blur();
                 }}
                 aria-label="Clear search"
-              >
+            >
                 <X className="w-5 h-5" />
-              </button>
+            </button>
             )}
           </div>
 
@@ -597,7 +640,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
               setShowFilters(!showFilters);
               setShowAllProjects(null);
             }}
-            className={`flex items-center gap-2 px-6 py-4 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all duration-300 ${showMobileSearch ? 'hidden' : ''}`}
+            className={`flex items-center gap-2 px-6 py-4 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all duration-300 ${showFilters ? 'hidden' : ''}`}
           >
             <Filter className="w-5 h-5" />
             Filters
@@ -768,31 +811,31 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
             </div>
 
             {filteredProjects.length > 0 ? (
-              <div className="space-y-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {filteredProjects.map((project) => (
-                  <ProjectCard 
-                    key={project.id} 
-                    project={project} 
-                    onClick={() => handleProjectClick(project)}
-                    onInvestClick={handleInvestClick}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-16">
-                <div className="text-6xl mb-4">🔍</div>
-                <h3 className="text-white text-2xl font-bold mb-4">No results found</h3>
-                <p className="text-gray-400 mb-6">Try adjusting your search terms or filters</p>
-                <button
-                  onClick={clearFilters}
-                  className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                >
-                  Clear All Filters
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
+          <ProjectCard 
+            key={project.id} 
+            project={project} 
+            onClick={() => handleProjectClick(project)}
+            onInvestClick={handleInvestClick}
+          />
+        ))}
+      </div>
+    ) : (
+      <div className="text-center py-16">
+        <div className="text-6xl mb-4">🔍</div>
+        <h3 className="text-white text-2xl font-bold mb-4">No results found</h3>
+        <p className="text-gray-400 mb-6">Try adjusting your search terms or filters</p>
+        <button
+          onClick={clearFilters}
+          className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+        >
+          Clear All Filters
+        </button>
+      </div>
+    )}
+  </div>
+) : (
           <div className="space-y-12">
             <ProjectRow
               title="🔥 Trending Now"

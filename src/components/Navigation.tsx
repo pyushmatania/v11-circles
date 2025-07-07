@@ -145,7 +145,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                       )}
                     </motion.button>
                   ))}
-
+                  
                   {/* More Menu Dropdown */}
                   <div className="relative hidden md:block">
                     <motion.button
@@ -304,7 +304,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                       )}
                     </motion.button>
                   ))}
-                </div>
+              </div>
               </div>
             </div>
           </motion.nav>
@@ -331,12 +331,12 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                       onClick={() => handleItemClick(item.id)}
                       className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-[3000ms] ${
                         currentView === item.id
-                          ? `${theme === 'light'
-                              ? 'text-purple-600 bg-purple-100/50 shadow-lg shadow-purple-400/25'
+                          ? `${theme === 'light' 
+                              ? 'text-purple-600 bg-purple-100/50 shadow-lg shadow-purple-400/25' 
                               : 'text-cyan-400 bg-cyan-400/10 shadow-lg shadow-cyan-400/25'
                             }`
-                          : `${theme === 'light'
-                              ? 'text-gray-700 hover:text-gray-900 hover:bg-white/50'
+                          : `${theme === 'light' 
+                              ? 'text-gray-700 hover:text-gray-900 hover:bg-white/50' 
                               : 'text-gray-400 hover:text-white hover:bg-white/10'
                             }`
                       }`}
@@ -355,7 +355,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                         <motion.div
                           layoutId="activeIndicator"
                           className={`absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-8 rounded-r-full transition-all duration-[3000ms] ${
-                            theme === 'light'
+                            theme === 'light' 
                               ? 'bg-gradient-to-b from-purple-400 to-purple-500'
                               : 'bg-gradient-to-b from-cyan-400 to-blue-500'
                           }`}
@@ -363,7 +363,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                         />
                       )}
                     </motion.button>
-
+                    
                     {/* Hover Text */}
                     <span className={`absolute left-16 top-1/2 transform -translate-y-1/2 whitespace-nowrap px-2 py-1 text-sm font-light opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out pointer-events-none select-none group-hover:translate-x-0 translate-x-[-10px] ${
                       currentView === item.id
@@ -385,12 +385,12 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                     onClick={() => setShowMoreMenu(!showMoreMenu)}
                     className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-[3000ms] ${
                       moreNavItems.some(item => item.id === currentView)
-                        ? `${theme === 'light'
-                            ? 'text-purple-600 bg-purple-100/50 shadow-lg shadow-purple-400/25'
+                        ? `${theme === 'light' 
+                            ? 'text-purple-600 bg-purple-100/50 shadow-lg shadow-purple-400/25' 
                             : 'text-cyan-400 bg-cyan-400/10 shadow-lg shadow-cyan-400/25'
                           }`
-                        : `${theme === 'light'
-                            ? 'text-gray-700 hover:text-gray-900 hover:bg-white/50'
+                        : `${theme === 'light' 
+                            ? 'text-gray-700 hover:text-gray-900 hover:bg-white/50' 
                             : 'text-gray-400 hover:text-white hover:bg-white/10'
                           }`
                     }`}
@@ -399,7 +399,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                   >
                     <MoreHorizontal className="w-6 h-6" />
                   </motion.button>
-
+                  
                   {/* More Menu Dropdown */}
                   <AnimatePresence>
                     {showMoreMenu && (
@@ -442,47 +442,47 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                   </AnimatePresence>
 
                   {/* Hover Text for More */}
-                  <span className={`absolute left-16 top-1/2 transform -translate-y-1/2 whitespace-nowrap px-2 py-1 text-sm font-light opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out pointer-events-none select-none group-hover:translate-x-0 translate-x-[-10px] ${
+                    <span className={`absolute left-16 top-1/2 transform -translate-y-1/2 whitespace-nowrap px-2 py-1 text-sm font-light opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out pointer-events-none select-none group-hover:translate-x-0 translate-x-[-10px] ${
                     moreNavItems.some(item => item.id === currentView)
-                      ? theme === 'light'
-                        ? 'text-purple-600'
-                        : 'text-cyan-400'
-                      : theme === 'light'
-                        ? 'text-gray-700'
-                        : 'text-gray-400'
-                  }`}>
+                        ? theme === 'light'
+                          ? 'text-purple-600'
+                          : 'text-cyan-400'
+                        : theme === 'light'
+                          ? 'text-gray-700'
+                          : 'text-gray-400'
+                    }`}>
                     More
-                  </span>
+                    </span>
                 </div>
 
                 {/* Theme Toggle */}
-                <div className="relative">
-                  <motion.button
+                  <div className="relative">
+                    <motion.button
                     onClick={toggleTheme}
-                    className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-[3000ms] ${
-                      theme === 'light'
-                        ? 'text-gray-700 hover:text-gray-900 hover:bg-white/50'
-                        : 'text-gray-400 hover:text-white hover:bg-white/10'
-                    }`}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                      className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-[3000ms] ${
+                        theme === 'light' 
+                          ? 'text-gray-700 hover:text-gray-900 hover:bg-white/50' 
+                          : 'text-gray-400 hover:text-white hover:bg-white/10'
+                      }`}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
                     {theme === 'light' ? (
                       <Moon className="w-6 h-6" />
                     ) : (
                       <Sun className="w-6 h-6" />
                     )}
-                  </motion.button>
-
+                    </motion.button>
+                    
                   {/* Hover Text for Theme */}
-                  <span className={`absolute left-16 top-1/2 transform -translate-y-1/2 whitespace-nowrap px-2 py-1 text-sm font-light opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out pointer-events-none select-none group-hover:translate-x-0 translate-x-[-10px] ${
-                    theme === 'light'
-                      ? 'text-gray-700'
-                      : 'text-gray-400'
-                  }`}>
+                    <span className={`absolute left-16 top-1/2 transform -translate-y-1/2 whitespace-nowrap px-2 py-1 text-sm font-light opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out pointer-events-none select-none group-hover:translate-x-0 translate-x-[-10px] ${
+                      theme === 'light'
+                        ? 'text-gray-700'
+                        : 'text-gray-400'
+                    }`}>
                     {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
-                  </span>
-                </div>
+                    </span>
+                  </div>
 
 
               </div>

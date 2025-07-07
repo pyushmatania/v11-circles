@@ -16,10 +16,14 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../../ThemeContext';
 import { useAdmin } from '../useAdmin';
-import type { Project } from '../AdminContextTypes';
+import type { Project } from '../../../types/index';
 import ProjectForm from '../forms/ProjectForm';
 import ConfirmDialog from '../shared/ConfirmDialog';
 import DataTable from '../shared/DataTable';
+
+function safeDateString(value: string | undefined): string {
+  return typeof value === 'string' && value ? value : '1970-01-01';
+}
 
 const ProjectsPanel: React.FC = () => {
   const { theme } = useTheme();
@@ -216,21 +220,27 @@ const ProjectsPanel: React.FC = () => {
     },
     {
       Header: 'Created',
-      accessor: 'createdAt',
-      Cell: ({ value }: { value: string }) => (
-        <span className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
-          {new Date(value).toLocaleDateString()}
-        </span>
-      )
+      accessor: (row: Project) => safeDateString(row.createdAt),
+      Cell: ({ value }: { value?: string }) => {
+        const dateString: string = (value && typeof value === 'string') ? value : '1970-01-01';
+        return (
+          <span className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
+            {new Date(dateString as string).toLocaleDateString()}
+          </span>
+        );
+      }
     },
     {
       Header: 'Updated',
-      accessor: 'updatedAt',
-      Cell: ({ value }: { value: string }) => (
-        <span className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
-          {new Date(value).toLocaleDateString()}
-        </span>
-      )
+      accessor: (row: Project) => safeDateString(row.updatedAt),
+      Cell: ({ value }: { value?: string }) => {
+        const dateString: string = (value && typeof value === 'string') ? value : '1970-01-01';
+        return (
+          <span className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
+            {new Date(dateString as string).toLocaleDateString()}
+          </span>
+        );
+      }
     },
     {
       Header: 'Actions',

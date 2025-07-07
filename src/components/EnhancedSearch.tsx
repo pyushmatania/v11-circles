@@ -761,20 +761,20 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({ onSelectProject }) => {
                         </div>
                       </div>
                       
-                      <div className="flex items-center justify-between mb-2">
-                        <div className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
-                          {project.fundedPercentage}% Funded
-                        </div>
-                        {project.timeLeft && (
-                          <div className={`text-sm ${theme === 'light' ? 'text-orange-600' : 'text-orange-400'}`}>
-                            {project.timeLeft} left
+                        <div className="flex items-center justify-between mb-2">
+                          <div className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                            {project.fundedPercentage}% Funded
                           </div>
-                        )}
-                      </div>
+                          {project.timeLeft && (
+                            <div className={`text-sm ${theme === 'light' ? 'text-orange-600' : 'text-orange-400'}`}>
+                              {project.timeLeft} left
+                            </div>
+                          )}
+                        </div>
                       
-                      <div className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
-                        Target: ₹{(project.targetAmount / 100000).toFixed(1)}L
-                      </div>
+                        <div className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                          Target: ₹{(project.targetAmount / 100000).toFixed(1)}L
+                        </div>
                       
                       {/* Project Tags */}
                       <div className="mt-3 flex flex-wrap gap-2">

@@ -1,45 +1,28 @@
-import React, { useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from 'react';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// import { motion } from 'framer-motion';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// import { AnimatePresence } from 'framer-motion';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// import { Film, Music, Tv, Star, Clock, Play, Plus, Bookmark, Heart, TrendingUp, ArrowRight } from 'lucide-react';
 import PixelCard from './PixelCard';
-import {
-  Film,
-  Music,
-  Tv,
-  Star, 
-  Clock, 
-  Play, 
-  Plus, 
-  Bookmark, 
-  Heart,
-  TrendingUp,
-  ArrowRight
-} from 'lucide-react';
-import confetti from 'canvas-confetti';
 import { Project } from '../types';
 
 interface ProjectCardProps {
   project: Project;
-  onClick: () => void;
   featured?: boolean;
-  urgent?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // urgent?: boolean;
   compact?: boolean;
   layout?: 'netflix' | 'grid' | 'list';
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ 
   project, 
-  onClick, 
   featured, 
-  urgent, 
   compact
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
-
-  const handleInvestClick = useCallback(() => {
-    confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
-    onClick();
-  }, [onClick]);
 
   const cardWidth = featured ? 'w-96' : compact ? 'w-48' : 'w-72';
   // Fixed: Use consistent aspect ratio for all cards
@@ -50,14 +33,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       variant="pink"
       className={`relative flex-shrink-0 ${cardWidth} snap-start`}
     >
-      <motion.div
+      {/* <motion.div
         className="absolute inset-0 cursor-pointer group"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         whileHover={{ scale: compact ? 1.02 : 1.05 }}
         transition={{ duration: 0.3 }}
         onClick={onClick}
-      >
+      > */}
       <div className={`relative ${aspectRatio} rounded-xl overflow-hidden bg-gray-800 shadow-2xl`}>
         {/* Blurred placeholder (shows until imageLoaded) */}
         <img
@@ -90,7 +73,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         {/* Premium Glow Effect */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       </div>
-      </motion.div>
+      {/* </motion.div> */}
     </PixelCard>
   );
 };

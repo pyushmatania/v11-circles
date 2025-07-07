@@ -1,3 +1,14 @@
+export interface KeyCommunityData {
+  id: string;
+  movieId: string;
+  movieName: string;
+  productionHouse?: string;
+  keyPeople?: string[];
+  actor?: string;
+  actress?: string;
+  director?: string;
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -32,24 +43,4 @@ export interface Project {
   raisedAmountHuman?: string; // Human-readable raised amount (e.g., '₹50 Lakh')
   keyCommunityData?: unknown;
   disabled?: boolean;
-  featured?: boolean;
-}
-
-export interface Testimonial {
-  name?: string;
-  role?: string;
-  content?: string;
-  avatar?: string;
-  project?: string;
-  text?: string; // For testimonials with a 'text' field
-  author?: string; // For testimonials with an 'author' field
-  movie?: string; // For testimonials with a 'movie' field
-  rating?: number; // For testimonials with a 'rating' field
-}
-
-export interface Step {
-  number: number;
-  title: string;
-  description: string;
-  icon: string;
-}
+} 
