@@ -15,6 +15,7 @@ import { ThemeProvider } from './components/ThemeProvider';
 import { AuthProvider } from './components/auth/AuthProvider';
 import { useAuth } from './components/auth/useAuth';
 import { useToast } from './hooks/useToast';
+import DebugPanel from './components/DebugPanel';
 
 // Lazy load heavy components for better performance
 const Dashboard = lazy(() => import('./components/Dashboard'));
@@ -182,13 +183,12 @@ function AppContent() {
         onAuthRequired={handleAuthRequired}
       />
       {renderCurrentView()}
-      
+      <DebugPanel currentView={currentView} />
       <AuthModal 
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
         initialMode={authModalMode}
       />
-      
       <ToastContainer 
         toasts={toasts}
         onClose={removeToast}

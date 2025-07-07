@@ -1,12 +1,11 @@
 import React, { useState, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PixelCard from './PixelCard';
-import { Film, Music, Tv, Search, Star, Clock, TrendingUp, ChevronLeft, ChevronRight, Play, Plus, Info, Siren as Fire, Filter, Grid3X3, List, X, Heart, Share2, Bookmark, ArrowRight } from 'lucide-react';
+import { Film, Music, Tv, Search, Star, Clock, TrendingUp, ChevronLeft, ChevronRight, Play, Plus, Info, Siren as Fire, Filter, Heart, Share2, X, ArrowRight, Bookmark } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { projects } from '../data/projects';
 import ProjectDetailModal from './ProjectDetailModal';
 import { Project } from '../types';
-import useIsMobile from '../hooks/useIsMobile';
 
 interface ProjectCatalogProps {
   onTrackInvestment?: () => void;
@@ -65,10 +64,8 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [initialTab, setInitialTab] = useState<'overview' | 'invest'>('overview');
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'cards'>('cards');
   const [showFilters, setShowFilters] = useState(false);
   const [showMobileSearch, setShowMobileSearch] = useState(false);
-  const isMobile = useIsMobile();
   
   // Auto-sliding hero carousel state
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -85,6 +82,8 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
   const [fundingRange, setFundingRange] = useState<[number, number]>([0, 100]);
   const [sortBy, setSortBy] = useState<string>('trending');
   const [showAllProjects, setShowAllProjects] = useState<string | null>(null);
+
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Memoized callback functions to prevent unnecessary re-renders
   const handleProjectClick = useCallback((project: Project, tab: 'overview' | 'invest' = 'overview') => {
@@ -323,7 +322,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
   const featuredProjects = categorizedProjects.featuredProjects;
 
   return (
-    <div className="min-h-screen bg-black pb-[100px]">
+    <div className="min-h-screen bg-black pb-[100px] mt-28 md:mt-32">
       {/* Mobile Hero Carousel */}
       {!searchTerm && !showAllProjects && (
         <div
@@ -538,30 +537,11 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
       {/* Search and Filter Section */}
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex flex-col lg:flex-row gap-4 mb-8">
-          {isMobile && (
-            <div className="flex justify-between md:hidden">
-              <button
-                onClick={() => setShowMobileSearch(!showMobileSearch)}
-                className="p-2 rounded-lg bg-gray-900 text-white"
-              >
-                <Search className="w-6 h-6" />
-              </button>
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className="relative p-2 rounded-lg bg-gray-900 text-white"
-              >
-                <Filter className="w-6 h-6" />
-                {(selectedCategory !== 'all' || selectedType !== 'all' || selectedLanguage !== 'all' || selectedGenre !== 'all') && (
-                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
-                )}
-              </button>
-            </div>
-          )}
-
           {/* Search Bar */}
-          <div className={`relative flex-1 ${isMobile ? (showMobileSearch ? 'block' : 'hidden') : 'hidden md:block'}`}>
+          <div className={`relative flex-1 ${showMobileSearch ? 'block' : 'hidden md:block'}`}>
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
             <input
+              ref={searchInputRef}
               type="text"
               placeholder="Search for films, music, web series, directors, artists..."
               value={searchTerm}
@@ -569,36 +549,22 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
                 setSearchTerm(e.target.value);
                 setShowAllProjects(null);
               }}
-              className="w-full pl-14 pr-4 py-4 bg-gray-900 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-gray-800 transition-all duration-300 text-lg"
+              className="w-full pl-14 pr-12 py-4 bg-gray-900 border border-gray-700 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-gray-800 transition-all duration-300 text-lg"
             />
-          </div>
-
-          {/* View Mode Toggle */}
-          <div className={`flex items-center gap-2 bg-gray-900 rounded-xl p-2 ${isMobile ? 'hidden' : ''}`}>
-            <button
-              onClick={() => setViewMode('cards')}
-              className={`p-2 rounded-lg transition-all duration-300 ${
-                viewMode === 'cards' ? 'bg-red-600 text-white' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              <Grid3X3 className="w-6 h-6 md:w-5 md:h-5" />
-            </button>
-            <button
-              onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-lg transition-all duration-300 ${
-                viewMode === 'grid' ? 'bg-red-600 text-white' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              <Grid3X3 className="w-6 h-6 md:w-5 md:h-5" />
-            </button>
-            <button
-              onClick={() => setViewMode('list')}
-              className={`p-2 rounded-lg transition-all duration-300 ${
-                viewMode === 'list' ? 'bg-red-600 text-white' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              <List className="w-6 h-6 md:w-5 md:h-5" />
-            </button>
+            {searchTerm && (
+              <button
+                type="button"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white focus:outline-none"
+                onClick={() => {
+                  setSearchTerm('');
+                  setShowAllProjects(null);
+                  searchInputRef.current?.blur();
+                }}
+                aria-label="Clear search"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
           </div>
 
           {/* Filter Toggle */}
@@ -607,7 +573,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
               setShowFilters(!showFilters);
               setShowAllProjects(null);
             }}
-            className={`flex items-center gap-2 px-6 py-4 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all duration-300 ${isMobile ? 'hidden' : ''}`}
+            className={`flex items-center gap-2 px-6 py-4 bg-gray-900 text-white rounded-xl hover:bg-gray-800 transition-all duration-300 ${showMobileSearch ? 'hidden' : ''}`}
           >
             <Filter className="w-5 h-5" />
             Filters
@@ -778,28 +744,14 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
             </div>
 
             {filteredProjects.length > 0 ? (
-              <div className={`${
-                viewMode === 'list' ? 'space-y-4' :
-                viewMode === 'grid' ? 'grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4' :
-                'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-              }`}>
+              <div className="space-y-4">
                 {filteredProjects.map((project) => (
-                  viewMode === 'list' ? (
-                    <ListProjectCard 
-                      key={project.id} 
-                      project={project} 
-                      onClick={() => handleProjectClick(project)}
-                      onInvestClick={handleInvestClick}
-                    />
-                  ) : (
-                    <ProjectCard 
-                      key={project.id} 
-                      project={project} 
-                      onClick={() => handleProjectClick(project)}
-                      onInvestClick={handleInvestClick}
-                      compact={viewMode === 'grid'}
-                    />
-                  )
+                  <ProjectCard 
+                    key={project.id} 
+                    project={project} 
+                    onClick={() => handleProjectClick(project)}
+                    onInvestClick={handleInvestClick}
+                  />
                 ))}
               </div>
             ) : (
@@ -990,13 +942,12 @@ interface ProjectCardProps {
   onInvestClick: (project: Project) => void;
   featured?: boolean;
   urgent?: boolean;
-  compact?: boolean;
 }
 
-const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestClick, featured, urgent, compact }) => {
+const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestClick, featured, urgent }) => {
   const [isHovered, setIsHovered] = useState(false);
 
-  const cardWidth = featured ? 'w-96' : compact ? 'w-48' : 'w-72';
+  const cardWidth = featured ? 'w-96' : 'w-72';
   const aspectRatio = featured ? 'aspect-[16/10]' : 'aspect-[2/3]';
 
   return (
@@ -1005,7 +956,7 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestCl
         className="absolute inset-0 cursor-pointer group"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        whileHover={{ scale: compact ? 1.02 : 1.05 }}
+        whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.3 }}
         onClick={onClick}
       >
@@ -1038,20 +989,20 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestCl
             {project.type === 'film' ? <Film className="w-3 h-3" /> :
              project.type === 'music' ? <Music className="w-3 h-3" /> :
              <Tv className="w-3 h-3" />}
-            {!compact && project.type.toUpperCase()}
+            {!featured && project.type.toUpperCase()}
           </div>
           
           {featured && (
             <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-gradient-to-r from-yellow-500 to-orange-500 text-black text-xs font-bold shadow-lg">
               <TrendingUp className="w-3 h-3" />
-              {!compact && 'TRENDING'}
+              {!featured && 'TRENDING'}
             </div>
           )}
           
           {urgent && (
             <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs font-bold shadow-lg animate-pulse">
               <Clock className="w-3 h-3" />
-              {!compact && 'ENDING SOON'}
+              {!featured && 'ENDING SOON'}
             </div>
           )}
         </div>
@@ -1072,11 +1023,11 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestCl
             {/* Title and Basic Info */}
             <div>
               <h3 className={`text-white font-bold leading-tight ${
-                compact ? 'text-sm' : featured ? 'text-xl' : 'text-lg'
+                featured ? 'text-xl' : 'text-lg'
               }`}>
                 {project.title}
               </h3>
-              {!compact && (
+              {!featured && (
                 <p className="text-gray-300 text-sm mt-1 line-clamp-2">
                   {project.description}
                 </p>
@@ -1111,7 +1062,7 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestCl
             </div>
 
             {/* Funding Details */}
-            {!compact && (
+            {!featured && (
               <div className="flex items-center justify-between text-xs">
                 <div className="text-gray-400">
                   ₹{(project.raisedAmount / 100000).toFixed(1)}L raised
@@ -1129,7 +1080,7 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestCl
 
         {/* Hover Content - Enhanced with Better Readability */}
         <AnimatePresence>
-          {isHovered && !compact && (
+          {isHovered && !featured && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -1210,102 +1161,5 @@ const ProjectCard = React.memo<ProjectCardProps>(({ project, onClick, onInvestCl
     </PixelCard>
   );
 });
-
-// List View Project Card
-interface ListProjectCardProps {
-  project: Project;
-  onClick: () => void;
-  onInvestClick: (project: Project) => void;
-}
-
-const ListProjectCard: React.FC<ListProjectCardProps> = ({ project, onClick, onInvestClick }) => {
-  return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      className="flex gap-4 p-4 bg-gray-900 rounded-xl border border-gray-700 hover:border-gray-600 transition-all duration-300 cursor-pointer"
-      onClick={onClick}
-    >
-      <img 
-        src={project.poster} 
-        alt={project.title}
-        className="w-24 h-36 object-cover rounded-lg"
-      />
-      
-      <div className="flex-1">
-        <div className="flex items-start justify-between mb-2">
-          <div>
-            <h3 className="text-white font-bold text-xl mb-1">{project.title}</h3>
-            <p className="text-gray-400 text-sm">
-              by {project.director || project.artist} • {project.genre} • {project.language}
-            </p>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            {project.rating && (
-              <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-500/20">
-                <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                <span className="text-yellow-300 text-sm">{project.rating}</span>
-              </div>
-            )}
-            
-            <div className={`flex items-center gap-1 px-2 py-1 rounded-full ${
-              project.type === 'film' ? 'bg-purple-500/20 text-purple-300' :
-              project.type === 'music' ? 'bg-blue-500/20 text-blue-300' :
-              'bg-green-500/20 text-green-300'
-            }`}>
-              {project.type === 'film' ? <Film className="w-4 h-4" /> :
-               project.type === 'music' ? <Music className="w-4 h-4" /> :
-               <Tv className="w-4 h-4" />}
-              <span className="text-sm font-medium">{project.type.toUpperCase()}</span>
-            </div>
-          </div>
-        </div>
-        
-        <p className="text-gray-300 text-sm mb-4 line-clamp-2">{project.description}</p>
-        
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-6">
-            <div>
-              <p className="text-gray-400 text-xs">Funded</p>
-              <p className="text-white font-semibold">{project.fundedPercentage}%</p>
-            </div>
-            <div>
-              <p className="text-gray-400 text-xs">Raised</p>
-              <p className="text-green-400 font-semibold">₹{(project.raisedAmount / 100000).toFixed(1)}L</p>
-            </div>
-            <div>
-              <p className="text-gray-400 text-xs">Target</p>
-              <p className="text-gray-300">₹{(project.targetAmount / 100000).toFixed(1)}L</p>
-            </div>
-            {project.timeLeft && (
-              <div>
-                <p className="text-gray-400 text-xs">Time Left</p>
-                <p className="text-orange-400 font-semibold">{project.timeLeft}</p>
-              </div>
-            )}
-          </div>
-          
-          <button
-            onClick={() => onInvestClick(project)}
-            className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-medium hover:from-purple-500 hover:to-blue-500 transition-all duration-300"
-          >
-            Invest Now
-          </button>
-        </div>
-        
-        <div className="w-full bg-gray-700 rounded-full h-2">
-          <div 
-            className={`h-full rounded-full ${
-              project.type === 'film' ? 'bg-gradient-to-r from-purple-500 to-pink-500' :
-              project.type === 'music' ? 'bg-gradient-to-r from-blue-500 to-cyan-500' :
-              'bg-gradient-to-r from-green-500 to-emerald-500'
-            }`}
-            style={{ width: `${project.fundedPercentage}%` }}
-          />
-        </div>
-      </div>
-    </motion.div>
-  );
-};
 
 export default ProjectCatalog;

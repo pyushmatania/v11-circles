@@ -50,8 +50,9 @@
     width: 100%;
     height: 100%;
     z-index: -2;
-    background: #121212;
-    transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    background: #1a1333;
+    will-change: opacity;
+    transition: none !important;
   }
 
   /* Dark Theme Gradient 0: Purple-Blue Shimmer */
@@ -119,8 +120,10 @@
     height: 100%;
     z-index: -1;
     pointer-events: none;
-    opacity: 0;
-    transition: opacity 1.5s ease-in-out;
+    opacity: 1;
+    background: none;
+    will-change: opacity;
+    transition: none !important;
   }
 
   /* Dark Theme Particles - Gradient 0: Purple-Blue */
@@ -195,7 +198,7 @@
 
   /* Enhanced light theme body background - 5 Cycling Gradient Themes */
   .light body::before {
-    display: none;
+    background: #e0e7ff;
   }
 
   .light body::after {
@@ -1023,5 +1026,15 @@
 .scrollbar-thin::-webkit-scrollbar-thumb {
   background: #8b5cf6;
   border-radius: 3px;
+}
+
+html, body {
+  min-height: 100vh;
+  /* Fallback: solid gradient, never transparent */
+  background: linear-gradient(135deg, #1a1333 0%, #1e2a78 100%) !important;
+}
+
+.light html, .light body {
+  background: linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%) !important;
 }
 

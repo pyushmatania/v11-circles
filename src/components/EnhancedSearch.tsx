@@ -9,8 +9,6 @@ import {
   Film, 
   Filter, 
   Globe, 
-  Grid3X3, 
-  List, 
   Music, 
   RotateCcw, 
   Search as SearchIcon, 
@@ -40,7 +38,6 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({ onSelectProject }) => {
   const [sortBy, setSortBy] = useState<string>('relevance');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<Project[]>([]);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
@@ -562,42 +559,6 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({ onSelectProject }) => {
                     {sortOrder === 'asc' ? <ArrowUp className="w-5 h-5" /> : <ArrowDown className="w-5 h-5" />}
                   </button>
                 </div>
-                
-                {/* View Mode Toggle */}
-                <div className={`flex items-center border rounded-lg overflow-hidden ${
-                  theme === 'light'
-                    ? 'border-gray-300'
-                    : 'border-gray-700'
-                }`}>
-                  <button
-                    onClick={() => setViewMode('grid')}
-                    className={`p-2 ${
-                      viewMode === 'grid'
-                        ? theme === 'light'
-                          ? 'bg-gray-100 text-gray-900'
-                          : 'bg-gray-700 text-white'
-                        : theme === 'light'
-                        ? 'bg-white text-gray-700 hover:bg-gray-50'
-                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                    } transition-colors`}
-                  >
-                    <Grid3X3 className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode('list')}
-                    className={`p-2 ${
-                      viewMode === 'list'
-                        ? theme === 'light'
-                          ? 'bg-gray-100 text-gray-900'
-                          : 'bg-gray-700 text-white'
-                        : theme === 'light'
-                        ? 'bg-white text-gray-700 hover:bg-gray-50'
-                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
-                    } transition-colors`}
-                  >
-                    <List className="w-5 h-5" />
-                  </button>
-                </div>
               </div>
             </div>
             
@@ -730,7 +691,7 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({ onSelectProject }) => {
             
             {/* Results Grid/List */}
             {searchResults.length > 0 ? (
-              <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' : 'space-y-6'}>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {searchResults.map((project, index) => (
                   <motion.div
                     key={project.id}
@@ -742,10 +703,10 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({ onSelectProject }) => {
                       theme === 'light'
                         ? 'bg-white/60 border-gray-200 shadow-sm hover:shadow-md'
                         : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20 hover:border-white/30'
-                    } ${viewMode === 'list' ? 'flex' : ''}`}
+                    }`}
                   >
                     {/* Project Image */}
-                    <div className={`relative ${viewMode === 'list' ? 'w-48 h-full' : 'h-48'}`}>
+                    <div className="relative h-48">
                       <img 
                         src={project.poster} 
                         alt={project.title}
@@ -788,56 +749,32 @@ const EnhancedSearch: React.FC<EnhancedSearchProps> = ({ onSelectProject }) => {
                     </div>
                     
                     {/* Project Details */}
-                    <div className={`p-4 ${viewMode === 'list' ? 'flex-1' : ''}`}>
-                      <div className={viewMode === 'list' ? 'flex justify-between items-start' : ''}>
+                    <div className="p-4">
+                      <div className="flex justify-between items-start">
                         <div>
-                          <h3 className={`font-semibold mb-1 ${theme === 'light' ? 'text-gray-900' : 'text-white'} ${
-                            viewMode === 'list' ? 'text-xl' : ''
-                          }`}>
+                          <h3 className={`font-semibold mb-1 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                             {project.title}
                           </h3>
-                          <p className={`text-sm mb-2 ${
-                            viewMode === 'list' ? 'line-clamp-2 max-w-xl' : 'line-clamp-2'
-                          } ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'}`}>
+                          <p className={`text-sm mb-2 ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'}`}>
                             {project.description}
                           </p>
                         </div>
-                        
-                        {viewMode === 'list' && (
-                          <div className="flex flex-col items-end space-y-1">
-                            <div className={`text-lg font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
-                              {project.fundedPercentage}% Funded
-                            </div>
-                            <div className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
-                              Target: ₹{(project.targetAmount / 100000).toFixed(1)}L
-                            </div>
-                            {project.timeLeft && (
-                              <div className={`text-sm ${theme === 'light' ? 'text-orange-600' : 'text-orange-400'}`}>
-                                {project.timeLeft} left
-                              </div>
-                            )}
+                      </div>
+                      
+                      <div className="flex items-center justify-between mb-2">
+                        <div className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                          {project.fundedPercentage}% Funded
+                        </div>
+                        {project.timeLeft && (
+                          <div className={`text-sm ${theme === 'light' ? 'text-orange-600' : 'text-orange-400'}`}>
+                            {project.timeLeft} left
                           </div>
                         )}
                       </div>
                       
-                      {viewMode !== 'list' && (
-                        <div className="flex items-center justify-between mb-2">
-                          <div className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
-                            {project.fundedPercentage}% Funded
-                          </div>
-                          {project.timeLeft && (
-                            <div className={`text-sm ${theme === 'light' ? 'text-orange-600' : 'text-orange-400'}`}>
-                              {project.timeLeft} left
-                            </div>
-                          )}
-                        </div>
-                      )}
-                      
-                      {viewMode !== 'list' && (
-                        <div className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
-                          Target: ₹{(project.targetAmount / 100000).toFixed(1)}L
-                        </div>
-                      )}
+                      <div className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                        Target: ₹{(project.targetAmount / 100000).toFixed(1)}L
+                      </div>
                       
                       {/* Project Tags */}
                       <div className="mt-3 flex flex-wrap gap-2">
