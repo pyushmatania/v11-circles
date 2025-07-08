@@ -75,73 +75,291 @@ const WhyThisMatters: React.FC<WhyThisMattersProps> = ({ onJoin }) => {
 
         {/* Story Flow */}
         <div className="space-y-24">
-          {stories.map((story, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 100 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: index * 0.2 }}
-              viewport={{ once: true }}
-              className={`relative ${story.highlight ? 'transform scale-110' : ''}`}
-            >
-              
-              {/* Quote Card */}
-              <div className={`relative p-12 md:p-16 rounded-3xl backdrop-blur-xl border ${
-                theme === 'light'
-                  ? 'bg-white/40 border-white/60 shadow-lg'
-                  : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
-              } ${story.highlight ? (theme === 'light' ? 'shadow-xl' : 'border-white/40 shadow-2xl shadow-purple-500/20') : ''}`}>
-                
-                {/* Quote Icon */}
-                <div className="relative z-10">
-                  <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-r ${story.gradient} bg-opacity-20 mb-8`}>
-                    {React.createElement(story.icon, { className: `w-8 h-8 ${theme === 'light' ? 'text-gray-900' : 'text-white'}` })}
-                  </div>
+          {/* Staggered layout for mobile */}
+          <div className="flex flex-col gap-8 md:hidden">
+            <div className="flex gap-4">
+              <div className="flex-1">
+                {/* First story */}
+                {stories[0] && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 100 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0 }}
+                    viewport={{ once: true }}
+                  >
+                    {/* Quote Card */}
+                    <div className={`relative p-12 md:p-16 rounded-3xl backdrop-blur-xl border ${
+                      theme === 'light'
+                        ? 'bg-white/40 border-white/60 shadow-lg'
+                        : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
+                    } ${stories[0].highlight ? (theme === 'light' ? 'shadow-xl' : 'border-white/40 shadow-2xl shadow-purple-500/20') : ''}`}>
+                      
+                      {/* Quote Icon */}
+                      <div className="relative z-10">
+                        <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-r ${stories[0].gradient} bg-opacity-20 mb-8`}>
+                          {React.createElement(stories[0].icon, { className: `w-8 h-8 ${theme === 'light' ? 'text-gray-900' : 'text-white'}` })}
+                        </div>
 
-                  {/* Main Quote */}
-                  <blockquote className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-8 ${
-                    story.highlight 
-                      ? 'bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent' 
-                      : (theme === 'light' ? 'text-gray-900' : 'text-white')
-                  }`}>
-                    "{story.text}"
-                  </blockquote>
+                        {/* Main Quote */}
+                        <blockquote className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-8 ${
+                          stories[0].highlight 
+                            ? 'bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent' 
+                            : (theme === 'light' ? 'text-gray-900' : 'text-white')
+                        }`}>
+                          "{stories[0].text}"
+                        </blockquote>
 
-                  {/* Description */}
-                  <p className={`text-xl md:text-2xl leading-relaxed max-w-4xl ${
-                    theme === 'light' ? 'text-gray-600' : 'text-gray-300'
-                  }`}>
-                    {story.description}
-                  </p>
-                </div>
+                        {/* Description */}
+                        <p className={`text-xl md:text-2xl leading-relaxed max-w-4xl ${
+                          theme === 'light' ? 'text-gray-600' : 'text-gray-300'
+                        }`}>
+                          {stories[0].description}
+                        </p>
+                      </div>
 
-                {/* Decorative Elements */}
-                {story.highlight && (
-                  <>
-                    <div className="absolute -top-2 -left-2 w-4 h-4 bg-purple-500 rounded-full animate-pulse"></div>
-                    <div className="absolute -top-1 -right-3 w-3 h-3 bg-blue-500 rounded-full animate-pulse delay-500"></div>
-                    <div className="absolute -bottom-3 -left-1 w-2 h-2 bg-pink-500 rounded-full animate-pulse delay-1000"></div>
-                    <div className="absolute -bottom-2 -right-2 w-3 h-3 bg-cyan-500 rounded-full animate-pulse delay-1500"></div>
-                  </>
+                      {/* Decorative Elements */}
+                      {stories[0].highlight && (
+                        <>
+                          <div className="absolute -top-2 -left-2 w-4 h-4 bg-purple-500 rounded-full animate-pulse"></div>
+                          <div className="absolute -top-1 -right-3 w-3 h-3 bg-blue-500 rounded-full animate-pulse delay-500"></div>
+                          <div className="absolute -bottom-3 -left-1 w-2 h-2 bg-pink-500 rounded-full animate-pulse delay-1000"></div>
+                          <div className="absolute -bottom-2 -right-2 w-3 h-3 bg-cyan-500 rounded-full animate-pulse delay-1500"></div>
+                        </>
+                      )}
+                    </div>
+                  </motion.div>
                 )}
               </div>
-
-              {/* Connection Line */}
-              {index < stories.length - 1 && (
-                <div className="flex justify-center py-12">
+              <div className="flex-1">
+                {/* Second story */}
+                {stories[1] && (
                   <motion.div
-                    initial={{ scaleY: 0 }}
-                    whileInView={{ scaleY: 1 }}
-                    transition={{ duration: 0.8, delay: 0.5 }}
+                    initial={{ opacity: 0, y: 100 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
                     viewport={{ once: true }}
-                    className={`w-1 h-16 bg-gradient-to-b ${story.gradient} opacity-50`}
-                    style={{ transformOrigin: 'top' }}
-                  />
-                </div>
-              )}
+                  >
+                    {/* Quote Card */}
+                    <div className={`relative p-12 md:p-16 rounded-3xl backdrop-blur-xl border ${
+                      theme === 'light'
+                        ? 'bg-white/40 border-white/60 shadow-lg'
+                        : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
+                    } ${stories[1].highlight ? (theme === 'light' ? 'shadow-xl' : 'border-white/40 shadow-2xl shadow-purple-500/20') : ''}`}>
+                      
+                      {/* Quote Icon */}
+                      <div className="relative z-10">
+                        <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-r ${stories[1].gradient} bg-opacity-20 mb-8`}>
+                          {React.createElement(stories[1].icon, { className: `w-8 h-8 ${theme === 'light' ? 'text-gray-900' : 'text-white'}` })}
+                        </div>
 
-            </motion.div>
-          ))}
+                        {/* Main Quote */}
+                        <blockquote className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-8 ${
+                          stories[1].highlight 
+                            ? 'bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent' 
+                            : (theme === 'light' ? 'text-gray-900' : 'text-white')
+                        }`}>
+                          "{stories[1].text}"
+                        </blockquote>
+
+                        {/* Description */}
+                        <p className={`text-xl md:text-2xl leading-relaxed max-w-4xl ${
+                          theme === 'light' ? 'text-gray-600' : 'text-gray-300'
+                        }`}>
+                          {stories[1].description}
+                        </p>
+                      </div>
+
+                      {/* Decorative Elements */}
+                      {stories[1].highlight && (
+                        <>
+                          <div className="absolute -top-2 -left-2 w-4 h-4 bg-purple-500 rounded-full animate-pulse"></div>
+                          <div className="absolute -top-1 -right-3 w-3 h-3 bg-blue-500 rounded-full animate-pulse delay-500"></div>
+                          <div className="absolute -bottom-3 -left-1 w-2 h-2 bg-pink-500 rounded-full animate-pulse delay-1000"></div>
+                          <div className="absolute -bottom-2 -right-2 w-3 h-3 bg-cyan-500 rounded-full animate-pulse delay-1500"></div>
+                        </>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+            </div>
+            <div className="flex justify-center">
+              <div className="w-full max-w-xs">
+                {/* Third story centered */}
+                {stories[2] && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 100 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.4 }}
+                    viewport={{ once: true }}
+                  >
+                    {/* Quote Card */}
+                    <div className={`relative p-12 md:p-16 rounded-3xl backdrop-blur-xl border ${
+                      theme === 'light'
+                        ? 'bg-white/40 border-white/60 shadow-lg'
+                        : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
+                    } ${stories[2].highlight ? (theme === 'light' ? 'shadow-xl' : 'border-white/40 shadow-2xl shadow-purple-500/20') : ''}`}>
+                      
+                      {/* Quote Icon */}
+                      <div className="relative z-10">
+                        <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-r ${stories[2].gradient} bg-opacity-20 mb-8`}>
+                          {React.createElement(stories[2].icon, { className: `w-8 h-8 ${theme === 'light' ? 'text-gray-900' : 'text-white'}` })}
+                        </div>
+
+                        {/* Main Quote */}
+                        <blockquote className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-8 ${
+                          stories[2].highlight 
+                            ? 'bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent' 
+                            : (theme === 'light' ? 'text-gray-900' : 'text-white')
+                        }`}>
+                          "{stories[2].text}"
+                        </blockquote>
+
+                        {/* Description */}
+                        <p className={`text-xl md:text-2xl leading-relaxed max-w-4xl ${
+                          theme === 'light' ? 'text-gray-600' : 'text-gray-300'
+                        }`}>
+                          {stories[2].description}
+                        </p>
+                      </div>
+
+                      {/* Decorative Elements */}
+                      {stories[2].highlight && (
+                        <>
+                          <div className="absolute -top-2 -left-2 w-4 h-4 bg-purple-500 rounded-full animate-pulse"></div>
+                          <div className="absolute -top-1 -right-3 w-3 h-3 bg-blue-500 rounded-full animate-pulse delay-500"></div>
+                          <div className="absolute -bottom-3 -left-1 w-2 h-2 bg-pink-500 rounded-full animate-pulse delay-1000"></div>
+                          <div className="absolute -bottom-2 -right-2 w-3 h-3 bg-cyan-500 rounded-full animate-pulse delay-1500"></div>
+                        </>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+            </div>
+            <div>
+              {/* Fourth story full width */}
+              {stories[3] && (
+                <motion.div
+                  initial={{ opacity: 0, y: 100 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.6 }}
+                  viewport={{ once: true }}
+                >
+                  {/* Quote Card */}
+                  <div className={`relative p-12 md:p-16 rounded-3xl backdrop-blur-xl border ${
+                    theme === 'light'
+                      ? 'bg-white/40 border-white/60 shadow-lg'
+                      : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
+                  } ${stories[3].highlight ? (theme === 'light' ? 'shadow-xl' : 'border-white/40 shadow-2xl shadow-purple-500/20') : ''}`}>
+                    
+                    {/* Quote Icon */}
+                    <div className="relative z-10">
+                      <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-r ${stories[3].gradient} bg-opacity-20 mb-8`}>
+                        {React.createElement(stories[3].icon, { className: `w-8 h-8 ${theme === 'light' ? 'text-gray-900' : 'text-white'}` })}
+                      </div>
+
+                      {/* Main Quote */}
+                      <blockquote className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-8 ${
+                        stories[3].highlight 
+                          ? 'bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent' 
+                          : (theme === 'light' ? 'text-gray-900' : 'text-white')
+                      }`}>
+                        "{stories[3].text}"
+                      </blockquote>
+
+                      {/* Description */}
+                      <p className={`text-xl md:text-2xl leading-relaxed max-w-4xl ${
+                        theme === 'light' ? 'text-gray-600' : 'text-gray-300'
+                      }`}>
+                        {stories[3].description}
+                      </p>
+                    </div>
+
+                    {/* Decorative Elements */}
+                    {stories[3].highlight && (
+                      <>
+                        <div className="absolute -top-2 -left-2 w-4 h-4 bg-purple-500 rounded-full animate-pulse"></div>
+                        <div className="absolute -top-1 -right-3 w-3 h-3 bg-blue-500 rounded-full animate-pulse delay-500"></div>
+                        <div className="absolute -bottom-3 -left-1 w-2 h-2 bg-pink-500 rounded-full animate-pulse delay-1000"></div>
+                        <div className="absolute -bottom-2 -right-2 w-3 h-3 bg-cyan-500 rounded-full animate-pulse delay-1500"></div>
+                      </>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          </div>
+
+          {/* Original vertical flow for md+ screens */}
+          <div className="hidden md:block">
+            {stories.map((story, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 100 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.2 }}
+                viewport={{ once: true }}
+                className={`relative ${story.highlight ? 'transform scale-110' : ''}`}
+              >
+                {/* Quote Card */}
+                <div className={`relative p-12 md:p-16 rounded-3xl backdrop-blur-xl border ${
+                  theme === 'light'
+                    ? 'bg-white/40 border-white/60 shadow-lg'
+                    : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
+                } ${story.highlight ? (theme === 'light' ? 'shadow-xl' : 'border-white/40 shadow-2xl shadow-purple-500/20') : ''}`}>
+                  
+                  {/* Quote Icon */}
+                  <div className="relative z-10">
+                    <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-r ${story.gradient} bg-opacity-20 mb-8`}>
+                      {React.createElement(story.icon, { className: `w-8 h-8 ${theme === 'light' ? 'text-gray-900' : 'text-white'}` })}
+                    </div>
+
+                    {/* Main Quote */}
+                    <blockquote className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-8 ${
+                      story.highlight 
+                        ? 'bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent' 
+                        : (theme === 'light' ? 'text-gray-900' : 'text-white')
+                    }`}>
+                      "{story.text}"
+                    </blockquote>
+
+                    {/* Description */}
+                    <p className={`text-xl md:text-2xl leading-relaxed max-w-4xl ${
+                      theme === 'light' ? 'text-gray-600' : 'text-gray-300'
+                    }`}>
+                      {story.description}
+                    </p>
+                  </div>
+
+                  {/* Decorative Elements */}
+                  {story.highlight && (
+                    <>
+                      <div className="absolute -top-2 -left-2 w-4 h-4 bg-purple-500 rounded-full animate-pulse"></div>
+                      <div className="absolute -top-1 -right-3 w-3 h-3 bg-blue-500 rounded-full animate-pulse delay-500"></div>
+                      <div className="absolute -bottom-3 -left-1 w-2 h-2 bg-pink-500 rounded-full animate-pulse delay-1000"></div>
+                      <div className="absolute -bottom-2 -right-2 w-3 h-3 bg-cyan-500 rounded-full animate-pulse delay-1500"></div>
+                    </>
+                  )}
+                </div>
+
+                {/* Connection Line */}
+                {index < stories.length - 1 && (
+                  <div className="flex justify-center py-12">
+                    <motion.div
+                      initial={{ scaleY: 0 }}
+                      whileInView={{ scaleY: 1 }}
+                      transition={{ duration: 0.8, delay: 0.5 }}
+                      viewport={{ once: true }}
+                      className={`w-1 h-16 bg-gradient-to-b ${story.gradient} opacity-50`}
+                      style={{ transformOrigin: 'top' }}
+                    />
+                  </div>
+                )}
+
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* Call to Action */}

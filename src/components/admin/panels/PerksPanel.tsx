@@ -167,6 +167,53 @@ const PerksPanel: React.FC = () => {
       )
     },
     {
+      Header: 'Type',
+      accessor: 'type',
+      Cell: ({ row }: { row: { original: Perk } }) => (
+        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+          row.original.type === 'free' ? 'bg-green-100 text-green-700' :
+          row.original.type === 'paid' ? 'bg-blue-100 text-blue-700' :
+          row.original.type === 'voting' ? 'bg-purple-100 text-purple-700' :
+          row.original.type === 'bidding' ? 'bg-orange-100 text-orange-700' :
+          row.original.type === 'exclusive' ? 'bg-pink-100 text-pink-700' :
+          'bg-gray-100 text-gray-700'
+        }`}>
+          {row.original.type}
+        </span>
+      )
+    },
+    {
+      Header: 'Status',
+      accessor: 'status',
+      Cell: ({ row }: { row: { original: Perk } }) => (
+        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+          row.original.status === 'active' ? 'bg-green-100 text-green-700' :
+          row.original.status === 'upcoming' ? 'bg-blue-100 text-blue-700' :
+          row.original.status === 'completed' ? 'bg-purple-100 text-purple-700' :
+          'bg-gray-100 text-gray-700'
+        }`}>
+          {row.original.status}
+        </span>
+      )
+    },
+    {
+      Header: 'Participants',
+      accessor: 'participants',
+      Cell: ({ row }: { row: { original: Perk } }) => (
+        <div className="text-sm">
+          {row.original.maxParticipants ? (
+            <span className={theme === 'light' ? 'text-gray-700' : 'text-gray-300'}>
+              {row.original.currentParticipants || 0}/{row.original.maxParticipants}
+            </span>
+          ) : (
+            <span className={theme === 'light' ? 'text-gray-500' : 'text-gray-400'}>
+              Unlimited
+            </span>
+          )}
+        </div>
+      )
+    },
+    {
       Header: 'Min. Amount',
       accessor: 'minAmount',
       Cell: ({ value }: { value: number }) => (
@@ -176,37 +223,32 @@ const PerksPanel: React.FC = () => {
       )
     },
     {
-      Header: 'Created',
-      accessor: 'createdAt',
-      Cell: ({ value }: { value: string }) => (
-        <span className={theme === 'light' ? 'text-gray-600' : 'text-gray-400'}>
-          {new Date(value).toLocaleDateString()}
+      Header: 'Est. Value',
+      accessor: 'estimatedValue',
+      Cell: ({ row }: { row: { original: Perk } }) => (
+        <span className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+          ₹{row.original.estimatedValue?.toLocaleString() || 'N/A'}
         </span>
       )
     },
     {
       Header: 'Actions',
+      accessor: 'actions',
       Cell: ({ row }: { row: { original: Perk } }) => (
         <div className="flex items-center gap-2">
           <button
             onClick={() => setEditingPerk(row.original)}
             className={`p-2 rounded-lg ${
-              theme === 'light' 
-                ? 'hover:bg-gray-100 text-gray-600' 
-                : 'hover:bg-gray-700 text-gray-300'
+              theme === 'light'
+                ? 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+                : 'text-gray-400 hover:text-gray-200 hover:bg-gray-700'
             }`}
-            title="Edit"
           >
             <Edit className="w-4 h-4" />
           </button>
           <button
             onClick={() => setPerkToDelete(row.original.id)}
-            className={`p-2 rounded-lg ${
-              theme === 'light' 
-                ? 'hover:bg-gray-100 text-red-600' 
-                : 'hover:bg-gray-700 text-red-400'
-            }`}
-            title="Delete"
+            className="p-2 rounded-lg text-red-500 hover:text-red-700 hover:bg-red-50"
           >
             <Trash2 className="w-4 h-4" />
           </button>

@@ -82,7 +82,7 @@ function makeProject(id, { title, type, category }) {
     director: '',
     genre: '',
     tags: [],
-    perks: ['Behind-the-scenes', 'Signed Poster', 'Premiere Invite'],
+    perks: ['Digital Certificate of Investment', 'Community Casting Vote', 'VIP Set Visit', 'Executive Producer Credit'],
     rating: 0,
     trailer: '',
     movie: title.trim(),

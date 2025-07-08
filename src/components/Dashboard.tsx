@@ -14,9 +14,31 @@ import {
   Download,
   ExternalLink,
   BarChart3,
-  BarChart
+  BarChart,
+  MapPin
 } from 'lucide-react';
 import PortfolioAnalytics from './PortfolioAnalytics';
+
+interface PerkMetadata {
+  location?: string;
+  maxParticipants?: number;
+  currentParticipants?: number;
+  virtual: boolean;
+  requiresVerification: boolean;
+  estimatedValue?: number;
+  tags?: string[];
+}
+
+interface DashboardPerk {
+  id: string;
+  title: string;
+  type: 'free' | 'paid' | 'voting' | 'bidding' | 'exclusive' | 'limited';
+  description: string;
+  status: 'active' | 'upcoming' | 'available' | 'delivered';
+  date: string;
+  icon: React.ReactNode;
+  metadata: PerkMetadata;
+}
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'investments' | 'perks' | 'circles' | 'portfolio'>('overview');
@@ -98,51 +120,106 @@ const Dashboard: React.FC = () => {
     }
   ];
 
-  const perks = [
+  const perks: DashboardPerk[] = [
     {
       id: '1',
-      title: 'Neon Nights Premiere',
-      type: 'event',
-      description: 'Red carpet premiere access in Mumbai',
+      title: 'Premiere Screening Access',
+      type: 'exclusive',
+      description: 'VIP access to the movie premiere with red carpet',
       status: 'upcoming',
       date: '2024-06-10',
-      icon: <Ticket className="w-5 h-5" />
+      icon: <Ticket className="w-5 h-5" />,
+      metadata: {
+        location: 'Mumbai Multiplex',
+        maxParticipants: 100,
+        currentParticipants: 45,
+        virtual: false,
+        requiresVerification: true,
+        estimatedValue: 15000,
+        tags: ['premiere', 'vip', 'red-carpet']
+      }
     },
     {
       id: '2',
       title: 'Signed Poster Collection',
-      type: 'merchandise',
+      type: 'limited',
       description: 'Limited edition signed posters from 3 films',
       status: 'delivered',
       date: '2024-02-15',
-      icon: <Gift className="w-5 h-5" />
+      icon: <Gift className="w-5 h-5" />,
+      metadata: {
+        maxParticipants: 50,
+        currentParticipants: 50,
+        virtual: true,
+        requiresVerification: false,
+        estimatedValue: 8000,
+        tags: ['signed', 'limited-edition', 'poster']
+      }
     },
     {
       id: '3',
       title: 'Behind the Scenes Access',
-      type: 'content',
+      type: 'free',
       description: 'Exclusive BTS footage from The Last Village',
       status: 'available',
       date: '2024-03-01',
-      icon: <Camera className="w-5 h-5" />
+      icon: <Camera className="w-5 h-5" />,
+      metadata: {
+        virtual: true,
+        requiresVerification: false,
+        estimatedValue: 3000,
+        tags: ['bts', 'exclusive', 'content']
+      }
     },
     {
       id: '4',
-      title: 'Producer Credit',
-      type: 'credit',
+      title: 'Executive Producer Credit',
+      type: 'exclusive',
       description: 'Your name in end credits of Monsoon Melodies',
       status: 'active',
       date: '2024-03-20',
-      icon: <Crown className="w-5 h-5" />
+      icon: <Crown className="w-5 h-5" />,
+      metadata: {
+        virtual: false,
+        requiresVerification: true,
+        estimatedValue: 35000,
+        tags: ['credits', 'executive-producer', 'recognition']
+      }
     },
     {
       id: '5',
-      title: 'Early Music Release',
-      type: 'content',
-      description: 'Get Urban Beats album 2 weeks before public release',
+      title: 'Community Casting Vote',
+      type: 'voting',
+      description: 'Vote on cast members for upcoming projects',
       status: 'upcoming',
-      date: '2024-06-20',
-      icon: <Play className="w-5 h-5" />
+      date: '2024-04-15',
+      icon: <Users className="w-5 h-5" />,
+      metadata: {
+        maxParticipants: 200,
+        currentParticipants: 78,
+        virtual: true,
+        requiresVerification: true,
+        estimatedValue: 5000,
+        tags: ['voting', 'casting', 'community']
+      }
+    },
+    {
+      id: '6',
+      title: 'Set Visit Experience',
+      type: 'exclusive',
+      description: 'Visit the movie set during filming',
+      status: 'available',
+      date: '2024-05-20',
+      icon: <MapPin className="w-5 h-5" />,
+      metadata: {
+        location: 'Film City, Mumbai',
+        maxParticipants: 20,
+        currentParticipants: 12,
+        virtual: false,
+        requiresVerification: true,
+        estimatedValue: 25000,
+        tags: ['set-visit', 'exclusive', 'experience']
+      }
     }
   ];
 
@@ -228,7 +305,7 @@ const Dashboard: React.FC = () => {
             className="space-y-8"
           >
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="p-6 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-green-500/10 to-emerald-500/5 border border-green-500/20">
                 <div className="flex flex-col sm:flex-row items-center gap-4 mb-4 text-center sm:text-left">
                   <div className="p-3 rounded-xl bg-green-500/20">
@@ -427,50 +504,90 @@ const Dashboard: React.FC = () => {
             transition={{ duration: 0.6 }}
             className="grid md:grid-cols-2 gap-6"
           >
-            {perks.map((perk) => (
-              <div key={perk.id} className="p-6 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20">
-                <div className="flex items-start gap-4 mb-4">
-                  <div className={`p-3 rounded-xl ${
-                    perk.status === 'available' ? 'bg-green-500/20' :
-                    perk.status === 'upcoming' ? 'bg-blue-500/20' :
-                    perk.status === 'delivered' ? 'bg-purple-500/20' :
-                    'bg-yellow-500/20'
-                  }`}>
-                    <div className={`${
-                      perk.status === 'available' ? 'text-green-400' :
-                      perk.status === 'upcoming' ? 'text-blue-400' :
-                      perk.status === 'delivered' ? 'text-purple-400' :
-                      'text-yellow-400'
-                    }`}>
+            {perks.map((perk) => {
+              const showLocation = !perk.metadata.virtual && perk.metadata.location;
+              const showParticipants = perk.metadata.maxParticipants && perk.metadata.maxParticipants > 0;
+              const showTags = perk.metadata.tags && perk.metadata.tags.length > 0;
+              return (
+                <div key={perk.id} className="p-6 rounded-2xl shadow-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex flex-col justify-between min-h-[220px] transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 rounded-xl bg-white/10 flex items-center justify-center">
                       {perk.icon}
                     </div>
-                  </div>
-                  
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-white font-bold">{perk.title}</h3>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        perk.status === 'available' ? 'bg-green-500/20 text-green-300' :
-                        perk.status === 'upcoming' ? 'bg-blue-500/20 text-blue-300' :
-                        perk.status === 'delivered' ? 'bg-purple-500/20 text-purple-300' :
-                        'bg-yellow-500/20 text-yellow-300'
-                      }`}>
-                        {perk.status.toUpperCase()}
-                      </span>
-                    </div>
-                    <p className="text-gray-300 text-sm mb-3">{perk.description}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-400 text-sm">{perk.date}</span>
-                      {perk.status === 'available' && (
-                        <button className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg text-white text-sm font-medium hover:from-green-400 hover:to-emerald-400 transition-all duration-300">
-                          Claim Now
-                        </button>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <h3 className="font-bold text-lg truncate text-white flex-1">{perk.title}</h3>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${
+                          perk.type === 'free' ? 'bg-green-100 text-green-700' :
+                          perk.type === 'paid' ? 'bg-blue-100 text-blue-700' :
+                          perk.type === 'voting' ? 'bg-purple-100 text-purple-700' :
+                          perk.type === 'bidding' ? 'bg-orange-100 text-orange-700' :
+                          perk.type === 'exclusive' ? 'bg-pink-100 text-pink-700' :
+                          'bg-gray-100 text-gray-700'
+                        }`}>{perk.type}</span>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${
+                          perk.status === 'active' ? 'bg-green-100 text-green-700' :
+                          perk.status === 'upcoming' ? 'bg-blue-100 text-blue-700' :
+                          perk.status === 'available' ? 'bg-purple-100 text-purple-700' :
+                          perk.status === 'delivered' ? 'bg-gray-100 text-gray-700' :
+                          'bg-yellow-100 text-yellow-700'
+                        }`}>{perk.status}</span>
+                      </div>
+                      <p className="text-sm text-gray-300 mb-2 truncate">{perk.description}</p>
+                      {/* Metadata Row */}
+                      <div className="flex flex-wrap items-center gap-4 text-xs text-gray-400 mb-2">
+                        <div className="flex items-center gap-1">
+                          <DollarSign className="w-4 h-4" />
+                          <span className="font-semibold text-white">₹{perk.metadata.estimatedValue?.toLocaleString() || 'N/A'}</span>
+                        </div>
+                        {showLocation && (
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-4 h-4" />
+                            <span>{perk.metadata.location}</span>
+                          </div>
+                        )}
+                        {showParticipants && (
+                          <div className="flex items-center gap-1">
+                            <Users className="w-4 h-4" />
+                            <span>{perk.metadata.currentParticipants || 0}/{perk.metadata.maxParticipants}</span>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-1">
+                          {perk.metadata.virtual ? (
+                            <span className="text-blue-400 font-medium">Virtual</span>
+                          ) : (
+                            <span className="text-green-400 font-medium">In-Person</span>
+                          )}
+                        </div>
+                      </div>
+                      {/* Tags */}
+                      {showTags && (
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">
+                            {perk.metadata.tags?.[0]}
+                          </span>
+                          {perk.metadata.tags && perk.metadata.tags.length > 1 && (
+                            <span className="text-xs text-gray-400 font-medium">
+                              +{perk.metadata.tags.length - 1} more
+                            </span>
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
+                  <div className="flex items-center justify-between mt-4 pt-2 border-t border-white/10">
+                    <span className="text-xs text-gray-500 font-medium">
+                      {perk.date}
+                    </span>
+                    {perk.metadata.requiresVerification && (
+                      <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded-full font-semibold">
+                        Verification Required
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </motion.div>
         )}
 

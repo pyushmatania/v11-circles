@@ -21,7 +21,18 @@ const PerkForm: React.FC<PerkFormProps> = ({ perk, isOpen, onClose }) => {
     projectId: '',
     projectTitle: '',
     tier: 'supporter',
-    minAmount: 10000
+    minAmount: 10000,
+    type: 'free',
+    status: 'active',
+    maxParticipants: undefined,
+    currentParticipants: undefined,
+    startDate: '',
+    endDate: '',
+    location: '',
+    virtual: false,
+    requiresVerification: false,
+    estimatedValue: 0,
+    tags: []
   });
   
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,12 +46,23 @@ const PerkForm: React.FC<PerkFormProps> = ({ perk, isOpen, onClose }) => {
         projectId: perk.projectId || '',
         projectTitle: perk.projectTitle || '',
         tier: perk.tier,
-        minAmount: perk.minAmount
+        minAmount: perk.minAmount,
+        type: perk.type,
+        status: perk.status,
+        maxParticipants: perk.maxParticipants,
+        currentParticipants: perk.currentParticipants,
+        startDate: perk.startDate || '',
+        endDate: perk.endDate || '',
+        location: perk.location || '',
+        virtual: perk.virtual,
+        requiresVerification: perk.requiresVerification,
+        estimatedValue: perk.estimatedValue,
+        tags: perk.tags || []
       });
     }
   }, [perk]);
 
-  const handleInputChange = (field: string, value: string | number | boolean) => {
+  const handleInputChange = (field: string, value: string | number | boolean | undefined) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Clear error for this field
@@ -251,6 +273,157 @@ const PerkForm: React.FC<PerkFormProps> = ({ perk, isOpen, onClose }) => {
                 {errors.minAmount && (
                   <p className="mt-1 text-sm text-red-500">{errors.minAmount}</p>
                 )}
+              </div>
+
+              <div>
+                <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                  Perk Type
+                </label>
+                <select
+                  value={formData.type}
+                  onChange={(e) => handleInputChange('type', e.target.value)}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    theme === 'light'
+                      ? 'border-gray-300 focus:border-purple-500 bg-white text-gray-900'
+                      : 'border-gray-600 focus:border-purple-500 bg-gray-700 text-white'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
+                >
+                  <option value="free">Free</option>
+                  <option value="paid">Paid</option>
+                  <option value="voting">Voting</option>
+                  <option value="bidding">Bidding</option>
+                  <option value="exclusive">Exclusive</option>
+                  <option value="limited">Limited</option>
+                </select>
+              </div>
+
+              <div>
+                <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                  Status
+                </label>
+                <select
+                  value={formData.status}
+                  onChange={(e) => handleInputChange('status', e.target.value)}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    theme === 'light'
+                      ? 'border-gray-300 focus:border-purple-500 bg-white text-gray-900'
+                      : 'border-gray-600 focus:border-purple-500 bg-gray-700 text-white'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
+                >
+                  <option value="active">Active</option>
+                  <option value="upcoming">Upcoming</option>
+                  <option value="completed">Completed</option>
+                  <option value="expired">Expired</option>
+                </select>
+              </div>
+
+              <div>
+                <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                  Estimated Value (₹)
+                </label>
+                <input
+                  type="number"
+                  value={formData.estimatedValue}
+                  onChange={(e) => handleInputChange('estimatedValue', Number(e.target.value))}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    theme === 'light'
+                      ? 'border-gray-300 focus:border-purple-500 bg-white text-gray-900'
+                      : 'border-gray-600 focus:border-purple-500 bg-gray-700 text-white'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
+                  placeholder="Enter estimated value"
+                />
+              </div>
+
+              <div>
+                <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                  Max Participants
+                </label>
+                <input
+                  type="number"
+                  value={formData.maxParticipants || ''}
+                  onChange={(e) => handleInputChange('maxParticipants', e.target.value ? Number(e.target.value) : undefined)}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    theme === 'light'
+                      ? 'border-gray-300 focus:border-purple-500 bg-white text-gray-900'
+                      : 'border-gray-600 focus:border-purple-500 bg-gray-700 text-white'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
+                  placeholder="Leave empty for unlimited"
+                />
+              </div>
+
+              <div>
+                <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                  Location
+                </label>
+                <input
+                  type="text"
+                  value={formData.location || ''}
+                  onChange={(e) => handleInputChange('location', e.target.value)}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    theme === 'light'
+                      ? 'border-gray-300 focus:border-purple-500 bg-white text-gray-900'
+                      : 'border-gray-600 focus:border-purple-500 bg-gray-700 text-white'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
+                  placeholder="Enter location (optional)"
+                />
+              </div>
+
+              <div>
+                <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                  Start Date
+                </label>
+                <input
+                  type="datetime-local"
+                  value={formData.startDate || ''}
+                  onChange={(e) => handleInputChange('startDate', e.target.value)}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    theme === 'light'
+                      ? 'border-gray-300 focus:border-purple-500 bg-white text-gray-900'
+                      : 'border-gray-600 focus:border-purple-500 bg-gray-700 text-white'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
+                />
+              </div>
+
+              <div>
+                <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                  End Date
+                </label>
+                <input
+                  type="datetime-local"
+                  value={formData.endDate || ''}
+                  onChange={(e) => handleInputChange('endDate', e.target.value)}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    theme === 'light'
+                      ? 'border-gray-300 focus:border-purple-500 bg-white text-gray-900'
+                      : 'border-gray-600 focus:border-purple-500 bg-gray-700 text-white'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
+                />
+              </div>
+
+              <div className="flex items-center gap-4">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={formData.virtual}
+                    onChange={(e) => handleInputChange('virtual', e.target.checked)}
+                    className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                  />
+                  <span className={`text-sm ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                    Virtual Event
+                  </span>
+                </label>
+
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={formData.requiresVerification}
+                    onChange={(e) => handleInputChange('requiresVerification', e.target.checked)}
+                    className="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                  />
+                  <span className={`text-sm ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                    Requires Verification
+                  </span>
+                </label>
               </div>
             </div>
 

@@ -24,7 +24,9 @@ import {
   Activity,
   BarChart3,
   Hash,
-  Ticket
+  Ticket,
+  Vote,
+  DollarSign
 } from 'lucide-react';
 import { useTheme } from './ThemeContext';
 import useIsMobile from '../hooks/useIsMobile';
@@ -1330,12 +1332,130 @@ const Community: React.FC = () => {
               className="grid md:grid-cols-2 gap-6"
             >
               {[
-                { title: 'Premiere Screening Access', description: 'VIP access to the movie premiere', status: 'Available', type: 'event', icon: Ticket },
-                { title: 'Signed Poster Collection', description: 'Limited edition signed posters', status: 'Claimed', type: 'merchandise', icon: Gift },
-                { title: 'Behind-the-Scenes Footage', description: 'Exclusive BTS content access', status: 'Available', type: 'content', icon: Camera },
-                { title: 'Producer Credit', description: 'Your name in the end credits', status: 'Active', type: 'credit', icon: Crown },
-                { title: 'Set Visit Experience', description: 'Visit the movie set during filming', status: 'Upcoming', type: 'experience', icon: MapPin },
-                { title: 'Cast Meet & Greet', description: 'Personal meeting with the cast', status: 'Available', type: 'experience', icon: Users }
+                { 
+                  title: 'Premiere Screening Access', 
+                  description: 'VIP access to the movie premiere with red carpet', 
+                  status: 'Available', 
+                  type: 'exclusive', 
+                  icon: Ticket,
+                  metadata: {
+                    location: 'Mumbai Multiplex',
+                    maxParticipants: 100,
+                    currentParticipants: 45,
+                    virtual: false,
+                    requiresVerification: true,
+                    estimatedValue: 15000,
+                    tags: ['premiere', 'vip', 'red-carpet'],
+                    date: '2024-06-10'
+                  }
+                },
+                { 
+                  title: 'Signed Poster Collection', 
+                  description: 'Limited edition signed posters', 
+                  status: 'Claimed', 
+                  type: 'limited', 
+                  icon: Gift,
+                  metadata: {
+                    maxParticipants: 50,
+                    currentParticipants: 50,
+                    virtual: true,
+                    requiresVerification: false,
+                    estimatedValue: 8000,
+                    tags: ['signed', 'limited-edition', 'poster'],
+                    date: '2024-02-15'
+                  }
+                },
+                { 
+                  title: 'Behind-the-Scenes Footage', 
+                  description: 'Exclusive BTS content access', 
+                  status: 'Available', 
+                  type: 'free', 
+                  icon: Camera,
+                  metadata: {
+                    virtual: true,
+                    requiresVerification: false,
+                    estimatedValue: 3000,
+                    tags: ['bts', 'exclusive', 'content'],
+                    date: '2024-03-01'
+                  }
+                },
+                { 
+                  title: 'Executive Producer Credit', 
+                  description: 'Your name in the end credits', 
+                  status: 'Active', 
+                  type: 'exclusive', 
+                  icon: Crown,
+                  metadata: {
+                    virtual: false,
+                    requiresVerification: true,
+                    estimatedValue: 35000,
+                    tags: ['credits', 'executive-producer', 'recognition'],
+                    date: '2024-03-20'
+                  }
+                },
+                { 
+                  title: 'Set Visit Experience', 
+                  description: 'Visit the movie set during filming', 
+                  status: 'Upcoming', 
+                  type: 'exclusive', 
+                  icon: MapPin,
+                  metadata: {
+                    location: 'Film City, Mumbai',
+                    maxParticipants: 20,
+                    currentParticipants: 12,
+                    virtual: false,
+                    requiresVerification: true,
+                    estimatedValue: 25000,
+                    tags: ['set-visit', 'exclusive', 'experience'],
+                    date: '2024-05-20'
+                  }
+                },
+                { 
+                  title: 'Community Casting Vote', 
+                  description: 'Vote on cast members for projects', 
+                  status: 'Available', 
+                  type: 'voting', 
+                  icon: Users,
+                  metadata: {
+                    maxParticipants: 200,
+                    currentParticipants: 78,
+                    virtual: true,
+                    requiresVerification: true,
+                    estimatedValue: 5000,
+                    tags: ['voting', 'casting', 'community'],
+                    date: '2024-04-15'
+                  }
+                },
+                { 
+                  title: 'Fan Voting Board', 
+                  description: 'Vote on posters, trailers, and scenes', 
+                  status: 'Active', 
+                  type: 'voting', 
+                  icon: Vote,
+                  metadata: {
+                    virtual: true,
+                    requiresVerification: false,
+                    estimatedValue: 3000,
+                    tags: ['voting', 'fan-engagement', 'creative-input'],
+                    date: '2024-04-10'
+                  }
+                },
+                { 
+                  title: 'Virtual Q&A Sessions', 
+                  description: 'Direct interaction with cast and crew', 
+                  status: 'Upcoming', 
+                  type: 'exclusive', 
+                  icon: MessageCircle,
+                  metadata: {
+                    maxParticipants: 50,
+                    currentParticipants: 25,
+                    virtual: true,
+                    requiresVerification: true,
+                    estimatedValue: 8000,
+                    tags: ['q&a', 'director', 'virtual', 'exclusive'],
+                    date: '2024-02-20'
+                  }
+                }
               ].map((perk, index) => (
                 <motion.div
                   key={index}
@@ -1349,42 +1469,84 @@ const Community: React.FC = () => {
                   } transition-all duration-300`}
                 >
                   <div className="flex items-start gap-4">
-                    <div className={`p-3 rounded-xl ${
-                      perk.status === 'Available' ? 'bg-green-500/20' :
-                      perk.status === 'Claimed' ? 'bg-purple-500/20' :
-                      perk.status === 'Active' ? 'bg-blue-500/20' :
-                      'bg-yellow-500/20'
-                    }`}>
-                      <perk.icon className={`w-6 h-6 ${
-                        perk.status === 'Available' ? 'text-green-400' :
-                        perk.status === 'Claimed' ? 'text-purple-400' :
-                        perk.status === 'Active' ? 'text-blue-400' :
-                        'text-yellow-400'
-                      }`} />
+                    <div className="p-3 rounded-xl bg-white/10 flex items-center justify-center">
+                      <perk.icon className="w-6 h-6" />
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className={`font-bold text-lg ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <h3 className={`font-bold text-lg truncate ${theme === 'light' ? 'text-gray-900' : 'text-white'} flex-1`}>
                           {perk.title}
                         </h3>
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          perk.status === 'Available' ? 'bg-green-500/20 text-green-400' :
-                          perk.status === 'Claimed' ? 'bg-purple-500/20 text-purple-400' :
-                          perk.status === 'Active' ? 'bg-blue-500/20 text-blue-400' :
-                          'bg-yellow-500/20 text-yellow-400'
-                        }`}>
-                          {perk.status}
-                        </span>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${
+                          perk.type === 'free' ? 'bg-green-100 text-green-700' :
+                          perk.type === 'paid' ? 'bg-blue-100 text-blue-700' :
+                          perk.type === 'voting' ? 'bg-purple-100 text-purple-700' :
+                          perk.type === 'bidding' ? 'bg-orange-100 text-orange-700' :
+                          perk.type === 'exclusive' ? 'bg-pink-100 text-pink-700' :
+                          'bg-gray-100 text-gray-700'
+                        }`}>{perk.type}</span>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${
+                          perk.status === 'Active' ? 'bg-green-100 text-green-700' :
+                          perk.status === 'Available' ? 'bg-blue-100 text-blue-700' :
+                          perk.status === 'Claimed' ? 'bg-purple-100 text-purple-700' :
+                          'bg-yellow-100 text-yellow-700'
+                        }`}>{perk.status}</span>
                       </div>
-                      <p className={`text-sm mb-4 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                      <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'} mb-2 truncate`}>
                         {perk.description}
                       </p>
-                      {perk.status === 'Available' && (
-                        <button className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg text-white text-sm font-medium hover:from-purple-400 hover:to-blue-400 transition-all duration-300">
-                          Claim Perk
-                        </button>
+                      {/* Metadata Row */}
+                      <div className="flex flex-wrap items-center gap-4 text-xs text-gray-400 mb-2">
+                        <div className="flex items-center gap-1">
+                          <DollarSign className="w-4 h-4" />
+                          <span className="font-semibold text-white">₹{perk.metadata.estimatedValue?.toLocaleString() || 'N/A'}</span>
+                        </div>
+                        {perk.metadata.location && !perk.metadata.virtual && (
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-4 h-4" />
+                            <span>{perk.metadata.location}</span>
+                          </div>
+                        )}
+                        {perk.metadata.maxParticipants && perk.metadata.maxParticipants > 0 && (
+                          <div className="flex items-center gap-1">
+                            <Users className="w-4 h-4" />
+                            <span>{perk.metadata.currentParticipants || 0}/{perk.metadata.maxParticipants}</span>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-1">
+                          {perk.metadata.virtual ? (
+                            <span className="text-blue-400 font-medium">Virtual</span>
+                          ) : (
+                            <span className="text-green-400 font-medium">In-Person</span>
+                          )}
+                        </div>
+                      </div>
+                      {/* Tags */}
+                      {perk.metadata.tags && perk.metadata.tags.length > 0 && (
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">
+                            {perk.metadata.tags[0]}
+                          </span>
+                          {perk.metadata.tags.length > 1 && (
+                            <span className="text-xs text-gray-400 font-medium">
+                              +{perk.metadata.tags.length - 1} more
+                            </span>
+                          )}
+                        </div>
                       )}
                     </div>
+                  </div>
+                  <div className="flex items-center justify-between mt-4 pt-2 border-t border-white/10">
+                    {perk.metadata.date && (
+                      <span className="text-xs text-gray-500 font-medium">
+                        {perk.metadata.date}
+                      </span>
+                    )}
+                    {perk.metadata.requiresVerification && (
+                      <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded-full font-semibold">
+                        Verification Required
+                      </span>
+                    )}
                   </div>
                 </motion.div>
               ))}

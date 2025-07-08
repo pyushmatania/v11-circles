@@ -55,6 +55,18 @@ export interface Perk {
   tier: 'supporter' | 'backer' | 'producer' | 'executive';
   minAmount: number;
   createdAt: string;
+  // Metadata fields
+  type: 'paid' | 'free' | 'voting' | 'bidding' | 'exclusive' | 'limited';
+  status: 'active' | 'upcoming' | 'completed' | 'expired';
+  maxParticipants?: number;
+  currentParticipants?: number;
+  startDate?: string;
+  endDate?: string;
+  location?: string;
+  virtual?: boolean;
+  requiresVerification?: boolean;
+  estimatedValue?: number;
+  tags?: string[];
 }
 
 export interface MediaAsset {

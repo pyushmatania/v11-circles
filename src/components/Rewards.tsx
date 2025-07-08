@@ -63,52 +63,52 @@ const Rewards: React.FC = () => {
 
   const rewardTiers = [
     {
-      title: "Supporter",
+      title: "🎟️ Supporter",
       minAmount: "₹10K",
       color: "from-gray-500 to-gray-600",
       icon: <Medal className="w-6 h-6" />,
       perks: [
-        "Early access to content",
-        "Digital poster collection",
-        "Exclusive updates",
-        "Community access"
+        "Digital certificate of investment",
+        "Early access to trailer",
+        "Exclusive project updates",
+        "Digital poster collection"
       ]
     },
     {
-      title: "Backer",
+      title: "🎬 Backer",
       minAmount: "₹25K",
       color: "from-blue-500 to-cyan-500",
       icon: <Box className="w-6 h-6" />,
       perks: [
         "All Supporter perks",
-        "Behind-the-scenes content",
-        "Digital soundtrack/script",
-        "Virtual meet & greet"
+        "Name in credits",
+        "Community casting vote",
+        "Fan voting board access"
       ],
       popular: true
     },
     {
-      title: "Producer",
-      minAmount: "₹50K",
+      title: "📽️ Producer",
+      minAmount: "₹75K",
       color: "from-purple-500 to-pink-500",
       icon: <Gem className="w-6 h-6" />,
       perks: [
         "All Backer perks",
-        "Name in end credits",
-        "Premiere screening invite",
-        "Signed collectibles"
+        "Leaderboard shoutout",
+        "Limited edition digital art",
+        "VIP Q&A with Creators"
       ]
     },
     {
-      title: "Executive",
-      minAmount: "₹1L+",
+      title: "🌟 Executive Producer",
+      minAmount: "₹1.5L+",
       color: "from-yellow-500 to-orange-500",
       icon: <Badge className="w-6 h-6" />,
       perks: [
         "All Producer perks",
-        "Set visit opportunity",
-        "Producer credit",
-        "Revenue sharing (up to 15%)"
+        "Trip with the stars",
+        "1-on-1 meetings",
+        "VIP set visits"
       ]
     }
   ];
@@ -157,7 +157,7 @@ const Rewards: React.FC = () => {
         </motion.div>
 
         {/* Reward Tiers */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
           {rewardTiers.map((tier, index) => (
             <motion.div
               key={index}

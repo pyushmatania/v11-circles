@@ -167,7 +167,7 @@ const HowItWorks: React.FC<HowItWorksProps> = ({ setCurrentView }) => {
             </span>
           </h3>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {benefits.map((benefit, index) => (
               <motion.div
                 key={index}
@@ -175,23 +175,17 @@ const HowItWorks: React.FC<HowItWorksProps> = ({ setCurrentView }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className={`group p-6 rounded-xl backdrop-blur-xl border transition-all duration-300 ${
+                className={`flex flex-col items-center text-center p-8 rounded-xl backdrop-blur-xl border transition-all duration-300 ${
                   theme === 'light'
                     ? 'bg-white/40 border-white/60 hover:shadow-lg'
                     : 'bg-gradient-to-br from-white/5 to-white/10 border-white/10 hover:border-white/30'
                 }`}
               >
-                <div className="flex flex-col items-center text-center">
-                  <div className="p-3 rounded-lg bg-gradient-to-r from-purple-500/20 to-blue-500/20 mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <benefit.icon className="w-8 h-8 text-purple-400" />
-                  </div>
-                  <h4 className={`${theme === 'light' ? 'text-gray-900' : 'text-white'} text-xl font-semibold mb-3`}>
-                    {benefit.title}
-                  </h4>
-                  <p className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-300'} text-sm leading-relaxed`}>
-                    {benefit.description}
-                  </p>
+                <div className="p-4 rounded-lg bg-gradient-to-r from-purple-500/20 to-blue-500/20 mb-4 group-hover:scale-110 transition-transform duration-300">
+                  {React.createElement(benefit.icon, { className: "w-10 h-10 text-purple-400" })}
                 </div>
+                <h4 className={`text-xl font-semibold mb-3 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{benefit.title}</h4>
+                <p className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-300'} text-base leading-relaxed`}>{benefit.description}</p>
               </motion.div>
             ))}
           </div>

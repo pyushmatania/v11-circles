@@ -22,7 +22,9 @@ import {
   TrendingUp,
   DollarSign,
   Shield,
-  CheckCircle
+  CheckCircle,
+  Gem,
+  Badge
 } from 'lucide-react';
 import { Project } from '../types';
 import { useTheme } from './ThemeContext';
@@ -194,72 +196,77 @@ TITLE CARD: "NEON NIGHTS"`,
     perkTiers: [
       {
         id: 'supporter',
-        name: 'Supporter',
+        name: '🎟️ Supporter',
         minAmount: 10000,
         color: 'from-gray-500 to-gray-600',
         icon: <Star className="w-6 h-6" />,
         perks: [
-          'Digital poster collection (5 exclusive designs)',
-          'Early access to trailer (2 weeks before public)',
-          'Behind-the-scenes photo gallery',
-          'Exclusive project updates via email',
           'Digital certificate of investment',
-          'Access to investor-only community forum'
+          'Early access to trailer (2 weeks before public)',
+          'Exclusive project updates via email',
+          'Digital poster collection (5 exclusive designs)',
+          'Behind-the-scenes photo gallery',
+          'Custom wallpaper pack',
+          'Access to investor-only community forum',
+          'Personalized thank-you video from cast'
         ],
         estimatedValue: '₹2,500'
       },
       {
         id: 'backer',
-        name: 'Backer',
+        name: '🎬 Backer',
         minAmount: 25000,
         color: 'from-blue-500 to-cyan-500',
         icon: <Gift className="w-6 h-6" />,
         perks: [
           'All Supporter perks',
-          'Signed physical poster by lead actors',
-          'Behind-the-scenes video content (30 mins)',
-          'Digital soundtrack with bonus tracks',
-          'Virtual meet & greet with cast (1 hour)',
-          'Exclusive making-of documentary',
-          'Priority booking for premiere'
+          'Name in credits',
+          'Community casting vote',
+          'Fan voting board (poster, trailer, scenes)',
+          'Early access to new project listings',
+          'Animated sticker & GIF pack',
+          'Q&A with director or cast (virtual)',
+          'Early access to interactive storyboard',
+          'Virtual photobook and concept art gallery'
         ],
         estimatedValue: '₹8,000',
         popular: true
       },
       {
         id: 'producer',
-        name: 'Producer',
-        minAmount: 50000,
+        name: '📽️ Producer',
+        minAmount: 75000,
         color: 'from-purple-500 to-pink-500',
-        icon: <Crown className="w-6 h-6" />,
+        icon: <Gem className="w-6 h-6" />,
         perks: [
           'All Backer perks',
-          'Name in end credits as Associate Producer',
-          'Premiere screening invite (2 tickets)',
-          'Set visit during filming (1 day)',
-          'Signed script copy by director',
-          'Exclusive merchandise package',
-          'Private screening for friends/family (up to 10 people)',
-          'Revenue sharing certificate'
+          'Leaderboard shoutout',
+          'Limited edition signed digital art',
+          'Backstage Pass NFT for creator livestreams',
+          'Free access to concert or music launch',
+          'Access to creator workshops',
+          'Invite to co-watch party',
+          'Red carpet shadow access',
+          'Attend private wrap party or shoot-day experience'
         ],
         estimatedValue: '₹15,000'
       },
       {
         id: 'executive',
-        name: 'Executive Producer',
-        minAmount: 100000,
+        name: '🌟 Executive Producer',
+        minAmount: 150000,
         color: 'from-yellow-500 to-orange-500',
-        icon: <Award className="w-6 h-6" />,
+        icon: <Badge className="w-6 h-6" />,
         perks: [
           'All Producer perks',
-          'Executive Producer credit in opening titles',
-          'Multiple set visits with cast interaction',
-          'Invitation to film festivals and award shows',
-          'Personalized video message from lead actors',
-          'Original costume piece or prop from the film',
-          'Dinner with cast and crew',
-          'Revenue sharing up to 15% of investment',
-          'Consultation on marketing strategy'
+          'Trip with the stars (paid tier access)',
+          '1-on-1 coffee/meeting with cast or creator',
+          'VIP set visit with crew',
+          'Premiere invite + post-screening afterparty',
+          'Exclusive influence over future story arcs',
+          'Gamified XP system unlocking ultra-rare perks',
+          'Special mention as Executive Producer in public credits',
+          'First access to upcoming flagship campaigns'
         ],
         estimatedValue: '₹35,000'
       }
@@ -654,6 +661,201 @@ TITLE CARD: "NEON NIGHTS"`,
           />
         )}
                     </div>
+                    </div>
+
+                    {/* Detailed Funding Information with Graphics */}
+                    <div>
+                      <h2 className={`text-2xl font-bold mb-6 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                        Funding Progress
+                      </h2>
+                      <div className="grid lg:grid-cols-2 gap-8">
+                        {/* Main Progress Visualization */}
+                        <div className={`p-6 rounded-xl border ${
+                          theme === 'light'
+                            ? 'bg-white/50 border-gray-200'
+                            : 'bg-black/50 border-white/10'
+                        }`}>
+                          <div className="space-y-6">
+                            {/* Large Progress Bar */}
+                            <div>
+                              <div className="flex justify-between items-center mb-3">
+                                <h3 className={`text-lg font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                                  Funding Progress
+                                </h3>
+                                <span className={`text-2xl font-bold ${
+                                  project.fundedPercentage >= 75 ? 'text-green-400' :
+                                  project.fundedPercentage >= 50 ? 'text-yellow-400' : 'text-gray-400'
+                                }`}>
+                                  {project.fundedPercentage}%
+                                </span>
+                              </div>
+                              <div className={`w-full h-4 rounded-full overflow-hidden ${
+                                theme === 'light' ? 'bg-gray-200' : 'bg-gray-700'
+                              }`}>
+                                <motion.div 
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${project.fundedPercentage}%` }}
+                                  transition={{ duration: 1.5, delay: 0.3 }}
+                                  className={`h-full rounded-full ${
+                                    project.fundedPercentage >= 75 ? 'bg-gradient-to-r from-green-500 to-emerald-500' :
+                                    project.fundedPercentage >= 50 ? 'bg-gradient-to-r from-yellow-500 to-orange-500' :
+                                    'bg-gradient-to-r from-purple-500 to-blue-500'
+                                  } shadow-lg`}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Funding Stats Grid */}
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className={`p-4 rounded-lg border ${
+                                theme === 'light' ? 'bg-green-50 border-green-200' : 'bg-green-500/10 border-green-500/20'
+                              }`}>
+                                <div className="flex items-center gap-2 mb-2">
+                                  <TrendingUp className="w-4 h-4 text-green-500" />
+                                  <span className={`text-sm font-medium ${theme === 'light' ? 'text-green-700' : 'text-green-300'}`}>
+                                    Raised
+                                  </span>
+                                </div>
+                                <p className={`text-xl font-bold ${theme === 'light' ? 'text-green-900' : 'text-green-400'}`}>
+                                  ₹{(project.raisedAmount / 100000).toFixed(1)}L
+                                </p>
+                                <p className={`text-xs ${theme === 'light' ? 'text-green-600' : 'text-green-300'}`}>
+                                  {project.raisedAmount.toLocaleString()} total
+                                </p>
+                              </div>
+
+                              <div className={`p-4 rounded-lg border ${
+                                theme === 'light' ? 'bg-blue-50 border-blue-200' : 'bg-blue-500/10 border-blue-500/20'
+                              }`}>
+                                <div className="flex items-center gap-2 mb-2">
+                                  <DollarSign className="w-4 h-4 text-blue-500" />
+                                  <span className={`text-sm font-medium ${theme === 'light' ? 'text-blue-700' : 'text-blue-300'}`}>
+                                    Target
+                                  </span>
+                                </div>
+                                <p className={`text-xl font-bold ${theme === 'light' ? 'text-blue-900' : 'text-blue-400'}`}>
+                                  ₹{(project.targetAmount / 100000).toFixed(1)}L
+                                </p>
+                                <p className={`text-xs ${theme === 'light' ? 'text-blue-600' : 'text-blue-300'}`}>
+                                  Goal amount
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Time Remaining */}
+                            {project.timeLeft && (
+                              <div className={`p-4 rounded-lg border ${
+                                theme === 'light' ? 'bg-orange-50 border-orange-200' : 'bg-orange-500/10 border-orange-500/20'
+                              }`}>
+                                <div className="flex items-center gap-2 mb-2">
+                                  <Clock className="w-4 h-4 text-orange-500" />
+                                  <span className={`text-sm font-medium ${theme === 'light' ? 'text-orange-700' : 'text-orange-300'}`}>
+                                    Time Remaining
+                                  </span>
+                                </div>
+                                <p className={`text-xl font-bold ${theme === 'light' ? 'text-orange-900' : 'text-orange-400'}`}>
+                                  {project.timeLeft}
+                                </p>
+                                <p className={`text-xs ${theme === 'light' ? 'text-orange-600' : 'text-orange-300'}`}>
+                                  Campaign ends soon
+                                </p>
+                              </div>
+                            )}
+                            {/* Days Left and Created Date */}
+                            <div className="flex items-center gap-4 mt-2">
+                              {project.timeLeft && (
+                                <span className="text-xs text-orange-400 font-semibold">
+                                  {project.timeLeft} days left
+                                </span>
+                              )}
+                              {project.createdAt && (
+                                <span className="text-xs text-gray-400 font-semibold">
+                                  Created: {new Date(project.createdAt).toLocaleDateString()}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Funding Breakdown & Analytics */}
+                        <div className={`p-6 rounded-xl border ${
+                          theme === 'light'
+                            ? 'bg-white/50 border-gray-200'
+                            : 'bg-black/50 border-white/10'
+                        }`}>
+                          <h3 className={`text-lg font-semibold mb-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                            Funding Analytics
+                          </h3>
+                          <div className="space-y-4">
+                            {/* Progress Milestones */}
+                            <div>
+                              <h4 className={`text-sm font-medium mb-3 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                                Progress Milestones
+                              </h4>
+                              <div className="space-y-2">
+                                {[25, 50, 75, 100].map((milestone) => (
+                                  <div key={milestone} className="flex items-center justify-between">
+                                    <span className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                                      {milestone}% - ₹{(project.targetAmount * milestone / 100 / 100000).toFixed(1)}L
+                                    </span>
+                                    <div className={`w-2 h-2 rounded-full ${
+                                      project.fundedPercentage >= milestone 
+                                        ? 'bg-green-500' 
+                                        : theme === 'light' ? 'bg-gray-300' : 'bg-gray-600'
+                                    }`} />
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Funding Rate */}
+                            <div>
+                              <h4 className={`text-sm font-medium mb-3 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                                Funding Rate
+                              </h4>
+                              <div className="flex items-center gap-3">
+                                <div className={`w-16 h-16 rounded-full border-4 flex items-center justify-center ${
+                                  project.fundedPercentage >= 75 ? 'border-green-500' :
+                                  project.fundedPercentage >= 50 ? 'border-yellow-500' : 'border-purple-500'
+                                }`}>
+                                  <span className={`text-sm font-bold ${
+                                    project.fundedPercentage >= 75 ? 'text-green-500' :
+                                    project.fundedPercentage >= 50 ? 'text-yellow-500' : 'text-purple-500'
+                                  }`}>
+                                    {project.fundedPercentage}%
+                                  </span>
+                                </div>
+                                <div>
+                                  <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                                    {project.fundedPercentage >= 75 ? 'Excellent Progress' :
+                                     project.fundedPercentage >= 50 ? 'Good Progress' : 'Early Stage'}
+                                  </p>
+                                  <p className={`text-xs ${theme === 'light' ? 'text-gray-500' : 'text-gray-500'}`}>
+                                    {project.fundedPercentage >= 75 ? 'Nearly funded!' :
+                                     project.fundedPercentage >= 50 ? 'Halfway there!' : 'Just getting started'}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Remaining Amount */}
+                            <div className={`p-3 rounded-lg ${
+                              theme === 'light' ? 'bg-gray-50' : 'bg-gray-800/50'
+                            }`}>
+                              <div className="flex justify-between items-center">
+                                <span className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                                  Still needed
+                                </span>
+                                <span className={`font-bold ${
+                                  theme === 'light' ? 'text-gray-900' : 'text-white'
+                                }`}>
+                                  ₹{((project.targetAmount - project.raisedAmount) / 100000).toFixed(1)}L
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
                     {/* Production Details */}

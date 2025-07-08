@@ -70,7 +70,7 @@ const LiveProjects: React.FC<LiveProjectsProps> = ({ onViewAll, onTrackInvestmen
         </motion.div>
 
         {/* Projects Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {trendingProjects.map((project, index) => (
             <motion.div
               key={project.id}
@@ -87,9 +87,9 @@ const LiveProjects: React.FC<LiveProjectsProps> = ({ onViewAll, onTrackInvestmen
               {/* Background Image */}
               <div className="relative h-64 overflow-hidden">
                 <img 
-                  src={project.poster} 
+                  src={project.poster.replace('SX300', 'SX1080')} 
                   alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 bg-black"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
                 
