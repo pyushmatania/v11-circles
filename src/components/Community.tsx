@@ -15,7 +15,6 @@ import {
   MoreHorizontal,
   Bookmark,
   Play,
-  Clock,
   MapPin,
   Gift,
   Plus,
@@ -31,23 +30,31 @@ import {
 import { useTheme } from './ThemeContext';
 import useIsMobile from '../hooks/useIsMobile';
 import Merchandise from './Merchandise';
+import { friends } from '../data/friends';
+import { communityPosts, type CommunityPost } from '../data/community';
 
-// Add FeedPost interface
-interface FeedPost {
-  id: string;
-  user: {
-    name: string;
-    avatar: string;
-    verified: boolean;
-    role: string;
+// Helper function to create new posts
+const createNewPost = (content: string, media?: { type: 'image' | 'video' | 'poll'; url?: string; thumbnail?: string; pollOptions?: string[]; pollResults?: number[] }): CommunityPost => {
+  return {
+    id: Date.now().toString(),
+    userId: 'current_user',
+    userName: 'You',
+    userAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+    userVerified: true,
+    userFollowers: 1234,
+    content,
+    media,
+    likes: 0,
+    comments: 0,
+    shares: 0,
+    views: 0,
+    timestamp: new Date().toISOString(),
+    tags: [],
+    trending: false,
+    sponsored: false,
+    category: 'general'
   };
-  timestamp: string;
-  content: string;
-  media?: { type: 'image' | 'video'; url: string };
-  reactions: { emoji: string; count: number }[];
-  comments: number;
-  shares: number;
-}
+};
 
 const Community: React.FC = () => {
   const [selectedCircle, setSelectedCircle] = useState<string>('pathaan-circle');
@@ -58,28 +65,18 @@ const Community: React.FC = () => {
   const photoInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
   const [selectedChannel, setSelectedChannel] = useState<string>('announcements');
-  const [newMessage, setNewMessage] = useState('');
-  const [messages, setMessages] = useState<Record<string, {user:string; message:string; time:string; avatar:string}[]>>({
-    announcements: [
-      { user: 'Priya Sharma', message: 'Just saw the latest behind-the-scenes footage! 🔥', time: '2:30 PM', avatar: 'https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=50' },
-      { user: 'Dev Malhotra', message: 'The action sequences look incredible!', time: '2:32 PM', avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=50' }
-    ]
-  });
-  const friendsList = [
-    { id: 'priya', name: 'Priya Sharma', avatar: 'https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=100', online: true },
-    { id: 'dev', name: 'Dev Malhotra', avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100', online: true },
-    { id: 'rahul', name: 'Rahul Krishnan', avatar: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=100', online: false },
-    { id: 'kavya', name: 'Kavya Nair', avatar: 'https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=100', online: true },
-    { id: 'arjun', name: 'Arjun Reddy', avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100', online: false },
-    { id: 'meera', name: 'Meera Patel', avatar: 'https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=100', online: true }
-  ];
+  const friendsList = friends.map(friend => ({
+    id: friend.id,
+    name: friend.name,
+    avatar: friend.avatar,
+    online: friend.isOnline
+  }));
   const [selectedFriend, setSelectedFriend] = useState<string>(friendsList[0].id);
   const [friendChats, setFriendChats] = useState<Record<string, {user:string; message:string; time:string; avatar:string}[]>>({
     [friendsList[0].id]: [
       { user: friendsList[0].name, message: 'Hey! Excited for the project?', time: '2:45 PM', avatar: friendsList[0].avatar }
     ]
   });
-  const [previewChannel, setPreviewChannel] = useState<string | null>(null);
   const [previewFriend, setPreviewFriend] = useState<string | null>(null);
   const previewTimeout = useRef<number | null>(null);
   const [friendInput, setFriendInput] = useState('');
@@ -87,38 +84,34 @@ const Community: React.FC = () => {
   const { theme } = useTheme();
   const isMobile = useIsMobile();
 
-  // Send message to selected channel
-  const sendChannelMessage = () => {
-    if (!newMessage.trim()) return;
-    try { 
-      navigator.vibrate?.(30); 
-    } catch {
-      // Vibration not supported or failed
-    }
-    const msg = {
-      user: 'You',
-      message: newMessage,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=50'
-    };
-    setMessages(prev => ({
-      ...prev,
-      [selectedChannel]: [...(prev[selectedChannel] || []), msg]
-    }));
-    setNewMessage('');
-    setTimeout(() => {
-      const reply = {
-        user: 'Friend',
-        message: 'Got it!',
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        avatar: 'https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=50'
-      };
-      setMessages(prev => ({
-        ...prev,
-        [selectedChannel]: [...(prev[selectedChannel] || []), reply]
-      }));
-    }, 3000);
+  // Add channelMessages state for realistic channel chat
+  const initialChannelMessages: Record<string, {user: string; avatar: string; message: string; time: string; type: 'text' | 'image' | 'video'; mediaUrl?: string}[]> = {
+    announcements: [
+      { user: 'Bollywood Insider', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face', message: 'Welcome to the Announcements channel! 🎉', time: '10:00 AM', type: 'text' },
+      { user: 'Film Critic Pro', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face', message: 'New project launch: Pathaan 2!', time: '10:05 AM', type: 'text' },
+      { user: 'Cinema Lover', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face', message: 'Check out this poster!', time: '10:10 AM', type: 'image', mediaUrl: 'https://images.unsplash.com/photo-1489599832522-3ea1d11d9e11?w=400&h=300&fit=crop' }
+    ],
+    'investor-hall': [
+      { user: 'Priya Sharma', avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face', message: 'How are the returns on Animal?', time: '11:00 AM', type: 'text' },
+      { user: 'Rahul Verma', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face', message: 'Pretty solid! 15% so far.', time: '11:02 AM', type: 'text' }
+    ],
+    'creator-talks': [
+      { user: 'Siddharth Anand', avatar: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=100', message: 'Ask me anything about directing!', time: '12:00 PM', type: 'text' }
+    ],
+    'fan-zone': [
+      { user: 'Fan Art Creator', avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face', message: 'Check out my new SRK fan art!', time: '1:00 PM', type: 'image', mediaUrl: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=600&h=400&fit=crop' }
+    ],
+    polls: [
+      { user: 'Bollywood Updates', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face', message: 'Who should star in the next big project?', time: '2:00 PM', type: 'text' }
+    ],
+    'behind-scenes': [
+      { user: 'Movie Buff', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face', message: 'Behind the scenes from Pathaan 2!', time: '3:00 PM', type: 'video', mediaUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4' }
+    ]
   };
+  const [channelMessages, setChannelMessages] = useState(initialChannelMessages);
+  const [channelInput, setChannelInput] = useState('');
+
+
 
   // Send message to selected friend
   const sendFriendMessage = () => {
@@ -179,170 +172,145 @@ const Community: React.FC = () => {
   // Mock circles data with key people and detailed info
   const myCircles = [
     {
-      id: 'pathaan-circle',
-      name: 'Pathaan Universe',
-      type: 'film',
+      id: 'srk-circle',
+      name: 'Shah Rukh Khan',
+      type: 'actor',
       category: 'Bollywood',
-      members: 15420,
-      activeMembers: 2847,
-      avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100',
-      cover: 'https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&w=600',
-      description: 'Official community for Shah Rukh Khan\'s action franchise',
+      members: 120000,
+      activeMembers: 18000,
+      avatar: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Shah_Rukh_Khan_grace_the_launch_of_the_new_Tag_Heuer_Carrera_watch_%28cropped%29.jpg',
+      cover: 'https://m.media-amazon.com/images/M/MV5BMjA2YjYwYzUtYjQwZi00YjQwLTg2YjMtYjQwYzYwYzYwYzYwXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_FMjpg_UX1000_.jpg',
+      description: 'The King of Bollywood. Actor, producer, and global icon. Known for Pathaan, Jawan, DDLJ, and more.',
       keyPeople: [
-        { name: 'Shah Rukh Khan', role: 'Lead Actor', verified: true, avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=50' },
-        { name: 'Deepika Padukone', role: 'Lead Actress', verified: true, avatar: 'https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=50' },
-        { name: 'Siddharth Anand', role: 'Director', verified: true, avatar: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=50' },
-        { name: 'John Abraham', role: 'Antagonist', verified: true, avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=50' }
+        { name: 'Shah Rukh Khan', role: 'Actor', verified: true, avatar: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Shah_Rukh_Khan_grace_the_launch_of_the_new_Tag_Heuer_Carrera_watch_%28cropped%29.jpg' },
+        { name: 'Atlee Kumar', role: 'Director', verified: true, avatar: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Atlee_Kumar.jpg' }
       ],
       movieInfo: {
-        budget: '₹250 Crores',
-        releaseDate: 'January 25, 2023',
-        boxOffice: '₹1050 Crores',
-        rating: '8.2/10',
-        genre: 'Action, Thriller, Spy'
-      },
-      lastActivity: '2 minutes ago',
-      unreadMessages: 12,
-      isJoined: true,
-      level: 'Producer'
+        budget: '₹300 Crores',
+        releaseDate: 'September 7, 2023',
+        boxOffice: '₹1100 Crores',
+        topProjects: ['Jawan', 'Pathaan', 'Chennai Express', 'DDLJ']
+      }
     },
     {
-      id: 'ar-rahman-circle',
-      name: 'A.R. Rahman Music Circle',
-      type: 'music',
-      category: 'Classical Fusion',
-      members: 8950,
-      activeMembers: 1234,
-      avatar: 'https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=100',
-      cover: 'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=600',
-      description: 'Celebrating the Mozart of Madras and his musical journey',
+      id: 'salman-circle',
+      name: 'Salman Khan',
+      type: 'actor',
+      category: 'Bollywood',
+      members: 95000,
+      activeMembers: 12000,
+      avatar: 'https://upload.wikimedia.org/wikipedia/commons/8/8e/Salman_Khan_at_the_launch_of_Bigg_Boss_Season_12.jpg',
+      cover: 'https://m.media-amazon.com/images/M/MV5BMTYwYjYwYzUtYjQwZi00YjQwLTg2YjMtYjQwYzYwYzYwYzYwXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_FMjpg_UX1000_.jpg',
+      description: 'Superstar of Bollywood. Known for Tiger, Bajrangi Bhaijaan, Sultan, and more.',
       keyPeople: [
-        { name: 'A.R. Rahman', role: 'Composer', verified: true, avatar: 'https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=50' },
-        { name: 'Hariharan', role: 'Vocalist', verified: true, avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=50' },
-        { name: 'Shreya Ghoshal', role: 'Vocalist', verified: true, avatar: 'https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=50' },
-        { name: 'Ustad Zakir Hussain', role: 'Percussionist', verified: true, avatar: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=50' }
+        { name: 'Salman Khan', role: 'Actor', verified: true, avatar: 'https://upload.wikimedia.org/wikipedia/commons/8/8e/Salman_Khan_at_the_launch_of_Bigg_Boss_Season_12.jpg' }
       ],
       movieInfo: {
-        albums: '150+ Albums',
-        awards: '6 National Awards, 2 Oscars',
-        genres: 'Classical, Fusion, World Music',
-        collaborations: '200+ Artists',
-        experience: '30+ Years'
-      },
-      lastActivity: '5 minutes ago',
-      unreadMessages: 5,
-      isJoined: true,
-      level: 'Executive'
+        budget: '₹200 Crores',
+        releaseDate: 'April 21, 2023',
+        boxOffice: '₹900 Crores',
+        topProjects: ['Tiger 3', 'Bajrangi Bhaijaan', 'Sultan', 'Kick']
+      }
     },
     {
-      id: 'rrr-circle',
-      name: 'RRR Epic Universe',
-      type: 'film',
-      category: 'Regional',
-      members: 22100,
-      activeMembers: 4567,
-      avatar: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=100',
-      cover: 'https://images.pexels.com/photos/2449665/pexels-photo-2449665.jpeg?auto=compress&cs=tinysrgb&w=600',
-      description: 'Rise, Roar, Revolt - The epic that conquered the world',
-      keyPeople: [
-        { name: 'S.S. Rajamouli', role: 'Director', verified: true, avatar: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=50' },
-        { name: 'Ram Charan', role: 'Alluri Sitarama Raju', verified: true, avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=50' },
-        { name: 'Jr. NTR', role: 'Komaram Bheem', verified: true, avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=50' },
-        { name: 'Alia Bhatt', role: 'Sita', verified: true, avatar: 'https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=50' }
-      ],
-      movieInfo: {
-        budget: '₹550 Crores',
-        releaseDate: 'March 25, 2022',
-        boxOffice: '₹1387 Crores',
-        rating: '8.8/10',
-        awards: 'Oscar Winner, Golden Globe'
-      },
-      lastActivity: '1 hour ago',
-      unreadMessages: 0,
-      isJoined: true,
-      level: 'Backer'
-    },
-    {
-      id: 'spider-man-circle',
-      name: 'Spider-Verse Community',
-      type: 'film',
+      id: 'taylor-circle',
+      name: 'Taylor Swift',
+      type: 'artist',
       category: 'Hollywood',
-      members: 34500,
-      activeMembers: 6789,
-      avatar: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=100',
-      cover: 'https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&w=600',
-      description: 'Your friendly neighborhood Spider-Man multiverse',
+      members: 200000,
+      activeMembers: 35000,
+      avatar: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/Taylor_Swift_Red_Tour_5%2C_2013.jpg',
+      cover: 'https://upload.wikimedia.org/wikipedia/en/9/9e/Taylor_Swift_-_The_Eras_Tour.png',
+      description: 'Global pop icon, singer-songwriter, and record-breaking performer. Known for The Eras Tour, 1989, Folklore, and more.',
       keyPeople: [
-        { name: 'Tom Holland', role: 'Spider-Man', verified: true, avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=50' },
-        { name: 'Zendaya', role: 'MJ', verified: true, avatar: 'https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=50' },
-        { name: 'Jon Watts', role: 'Director', verified: true, avatar: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=50' }
+        { name: 'Taylor Swift', role: 'Artist', verified: true, avatar: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/Taylor_Swift_Red_Tour_5%2C_2013.jpg' }
       ],
       movieInfo: {
-        budget: '$200 Million',
-        releaseDate: 'December 17, 2021',
-        boxOffice: '$1.9 Billion',
-        rating: '8.4/10',
-        genre: 'Superhero, Action, Adventure'
-      },
-      lastActivity: '30 minutes ago',
-      unreadMessages: 3,
-      isJoined: true,
-      level: 'Supporter'
+        budget: '$100M',
+        releaseDate: 'October 13, 2023',
+        boxOffice: '$250M',
+        topProjects: ['The Eras Tour', '1989', 'Folklore', 'Lover']
+      }
     },
     {
-      id: 'taylor-swift-circle',
-      name: 'Swifties United',
-      type: 'music',
-      category: 'Pop',
-      members: 67890,
-      activeMembers: 12345,
-      avatar: 'https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=100',
-      cover: 'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=600',
-      description: 'The ultimate Taylor Swift fan community',
+      id: 'cameron-circle',
+      name: 'James Cameron',
+      type: 'director',
+      category: 'Hollywood',
+      members: 80000,
+      activeMembers: 9000,
+      avatar: 'https://upload.wikimedia.org/wikipedia/commons/9/9e/James_Cameron_by_Gage_Skidmore_2.jpg',
+      cover: 'https://m.media-amazon.com/images/M/MV5BMjA2YjYwYzUtYjQwZi00YjQwLTg2YjMtYjQwYzYwYzYwYzYwXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_FMjpg_UX1000_.jpg',
+      description: 'Legendary director of Avatar, Titanic, Terminator, and more.',
       keyPeople: [
-        { name: 'Taylor Swift', role: 'Artist', verified: true, avatar: 'https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=50' },
-        { name: 'Jack Antonoff', role: 'Producer', verified: true, avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=50' },
-        { name: 'Aaron Dessner', role: 'Producer', verified: true, avatar: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=50' }
+        { name: 'James Cameron', role: 'Director', verified: true, avatar: 'https://upload.wikimedia.org/wikipedia/commons/9/9e/James_Cameron_by_Gage_Skidmore_2.jpg' }
       ],
       movieInfo: {
-        albums: '10 Studio Albums',
-        awards: '12 Grammy Awards',
-        tours: 'Eras Tour 2023-2024',
-        fanbase: '200M+ Followers',
-        achievements: 'Billionaire Artist'
-      },
-      lastActivity: '15 minutes ago',
-      unreadMessages: 8,
-      isJoined: true,
-      level: 'VIP'
+        budget: '$250M',
+        releaseDate: 'December 16, 2022',
+        boxOffice: '$2.3B',
+        topProjects: ['Avatar', 'Titanic', 'Terminator 2', 'Aliens']
+      }
     },
     {
-      id: 'stranger-things-circle',
-      name: 'Hawkins Community',
-      type: 'webseries',
-      category: 'Sci-Fi Horror',
-      members: 45670,
-      activeMembers: 8901,
-      avatar: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=100',
-      cover: 'https://images.pexels.com/photos/2449665/pexels-photo-2449665.jpeg?auto=compress&cs=tinysrgb&w=600',
-      description: 'Exploring the Upside Down with fellow fans',
+      id: 'katy-circle',
+      name: 'Katy Perry',
+      type: 'artist',
+      category: 'Hollywood',
+      members: 65000,
+      activeMembers: 7000,
+      avatar: 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Katy_Perry_UNICEF_2012.jpg',
+      cover: 'https://upload.wikimedia.org/wikipedia/en/9/9e/Taylor_Swift_-_The_Eras_Tour.png',
+      description: 'Pop superstar, known for hits like Roar, Firework, and Teenage Dream.',
       keyPeople: [
-        { name: 'The Duffer Brothers', role: 'Creators', verified: true, avatar: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=50' },
-        { name: 'Millie Bobby Brown', role: 'Eleven', verified: true, avatar: 'https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=50' },
-        { name: 'Finn Wolfhard', role: 'Mike Wheeler', verified: true, avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=50' },
-        { name: 'David Harbour', role: 'Jim Hopper', verified: true, avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=50' }
+        { name: 'Katy Perry', role: 'Artist', verified: true, avatar: 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Katy_Perry_UNICEF_2012.jpg' }
       ],
       movieInfo: {
-        seasons: '4 Seasons',
-        episodes: '42 Episodes',
-        platform: 'Netflix',
-        rating: '8.7/10',
-        awards: 'Emmy Nominations'
-      },
-      lastActivity: '45 minutes ago',
-      unreadMessages: 2,
-      isJoined: true,
-      level: 'Member'
+        budget: '$50M',
+        releaseDate: 'August 28, 2020',
+        boxOffice: '$100M',
+        topProjects: ['Smile', 'Teenage Dream', 'Prism', 'Witness']
+      }
+    },
+    {
+      id: 'nolan-circle',
+      name: 'Christopher Nolan',
+      type: 'director',
+      category: 'Hollywood',
+      members: 90000,
+      activeMembers: 12000,
+      avatar: 'https://upload.wikimedia.org/wikipedia/commons/0/0c/Christopher_Nolan_Cannes_2018.jpg',
+      cover: 'https://m.media-amazon.com/images/M/MV5BMTYwYjYwYzUtYjQwZi00YjQwLTg2YjMtYjQwYzYwYzYwYzYwXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_FMjpg_UX1000_.jpg',
+      description: 'Visionary director of Oppenheimer, Inception, The Dark Knight, Interstellar, and more.',
+      keyPeople: [
+        { name: 'Christopher Nolan', role: 'Director', verified: true, avatar: 'https://upload.wikimedia.org/wikipedia/commons/0/0c/Christopher_Nolan_Cannes_2018.jpg' }
+      ],
+      movieInfo: {
+        budget: '$100M',
+        releaseDate: 'July 21, 2023',
+        boxOffice: '$950M',
+        topProjects: ['Oppenheimer', 'Inception', 'The Dark Knight', 'Interstellar']
+      }
+    },
+    {
+      id: 'margot-circle',
+      name: 'Margot Robbie',
+      type: 'actor',
+      category: 'Hollywood',
+      members: 70000,
+      activeMembers: 8000,
+      avatar: 'https://upload.wikimedia.org/wikipedia/commons/6/6e/Margot_Robbie_by_Gage_Skidmore_2.jpg',
+      cover: 'https://m.media-amazon.com/images/M/MV5BMTYwYjYwYzUtYjQwZi00YjQwLTg2YjMtYjQwYzYwYzYwYzYwXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_FMjpg_UX1000_.jpg',
+      description: 'Oscar-nominated actress, known for Barbie, I, Tonya, and The Wolf of Wall Street.',
+      keyPeople: [
+        { name: 'Margot Robbie', role: 'Actress', verified: true, avatar: 'https://upload.wikimedia.org/wikipedia/commons/6/6e/Margot_Robbie_by_Gage_Skidmore_2.jpg' }
+      ],
+      movieInfo: {
+        budget: '$145M',
+        releaseDate: 'July 21, 2023',
+        boxOffice: '$1.4B',
+        topProjects: ['Barbie', 'I, Tonya', 'The Wolf of Wall Street', 'Birds of Prey']
+      }
     }
   ];
 
@@ -355,71 +323,8 @@ const Community: React.FC = () => {
     { id: 'behind-scenes', name: 'behind-the-scenes', icon: '🎭', unread: 5 }
   ];
 
-  const [feedPosts, setFeedPosts] = useState<FeedPost[]>([
-    {
-      id: '1',
-      user: {
-        name: 'Shah Rukh Khan',
-        avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100',
-        verified: true,
-        role: 'Lead Actor'
-      },
-      timestamp: '2 hours ago',
-      content: 'Just wrapped an incredible action sequence for Pathaan 2! The stunts are going to blow your minds. Thank you to all our amazing investors for making this possible! 🔥',
-      media: {
-        type: 'image',
-        url: 'https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&w=600'
-      },
-      reactions: [
-        { emoji: '🔥', count: 1234 },
-        { emoji: '❤️', count: 890 },
-        { emoji: '🎬', count: 567 },
-        { emoji: '💎', count: 234 }
-      ],
-      comments: 156,
-      shares: 89
-    },
-    {
-      id: '2',
-      user: {
-        name: 'Priya Sharma',
-        avatar: 'https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=100',
-        verified: false,
-        role: 'Producer Tier Investor'
-      },
-      timestamp: '4 hours ago',
-      content: 'Got exclusive behind-the-scenes access today! Being a Producer tier investor has its perks. The production quality is absolutely stunning! 📸',
-      media: {
-        type: 'video',
-        url: 'https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&w=600'
-      },
-      reactions: [
-        { emoji: '📸', count: 456 },
-        { emoji: '🎥', count: 234 },
-        { emoji: '💰', count: 123 }
-      ],
-      comments: 67,
-      shares: 23
-    },
-    {
-      id: '3',
-      user: {
-        name: 'Siddharth Anand',
-        avatar: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=100',
-        verified: true,
-        role: 'Director'
-      },
-      timestamp: '6 hours ago',
-      content: 'Working with this incredible cast and crew has been a dream. Special thanks to our investor community for believing in our vision! 🎬',
-      reactions: [
-        { emoji: '🎬', count: 789 },
-        { emoji: '👏', count: 456 },
-        { emoji: '🙏', count: 234 }
-      ],
-      comments: 89,
-      shares: 34
-    }
-  ]);
+  // Use the rich community posts data
+  const [feedPosts, setFeedPosts] = useState<CommunityPost[]>(communityPosts);
 
   const currentCircle = myCircles.find(circle => circle.id === selectedCircle) || myCircles[0];
 
@@ -431,6 +336,8 @@ const Community: React.FC = () => {
     { id: 'perks', label: 'Perks', icon: Gift },
     { id: 'merch', label: 'Merch', icon: ShoppingBag }
   ];
+
+
 
   return (
     <div
@@ -488,8 +395,6 @@ const Community: React.FC = () => {
                 className={`relative flex-shrink-0 w-20 h-20 rounded-full p-1 transition-all duration-300 snap-center ${
                   selectedCircle === circle.id
                     ? 'bg-gradient-to-r from-purple-500 to-blue-500'
-                    : circle.unreadMessages > 0
-                    ? 'bg-gradient-to-r from-green-500 to-emerald-500'
                     : 'bg-gray-600'
                 }`}
               >
@@ -498,11 +403,6 @@ const Community: React.FC = () => {
                   alt={circle.name}
                   className="w-full h-full rounded-full object-cover"
                 />
-                {circle.unreadMessages > 0 && (
-                  <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">{circle.unreadMessages}</span>
-                  </div>
-                )}
                 <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
                   <span className={`text-xs font-medium px-2 py-1 rounded-full ${
                     theme === 'light' ? 'bg-white text-gray-900' : 'bg-gray-900 text-white'
@@ -571,18 +471,6 @@ const Community: React.FC = () => {
                 <div className="flex items-center gap-1">
                   <Activity className="w-4 h-4 text-green-400" />
                   <span>{currentCircle.activeMembers.toLocaleString()} active</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
-                  <span>Active {currentCircle.lastActivity}</span>
-                </div>
-                <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  currentCircle.level === 'Producer' ? 'bg-yellow-500/20 text-yellow-400' :
-                  currentCircle.level === 'Executive' ? 'bg-green-500/20 text-green-400' :
-                  currentCircle.level === 'VIP' ? 'bg-purple-500/20 text-purple-400' :
-                  'bg-blue-500/20 text-blue-400'
-                }`}>
-                  {currentCircle.level} Level
                 </div>
               </div>
             </div>
@@ -769,22 +657,7 @@ const Community: React.FC = () => {
                         : postVideo
                         ? { type: 'video' as const, url: URL.createObjectURL(postVideo) }
                         : undefined;
-                      const newEntry: FeedPost = {
-                        id: Date.now().toString(),
-                        user: {
-                          name: 'You',
-                          avatar:
-                            'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100',
-                          verified: false,
-                          role: 'Member'
-                        },
-                        timestamp: 'just now',
-                        content: newPost,
-                        media,
-                        reactions: [],
-                        comments: 0,
-                        shares: 0
-                      };
+                      const newEntry = createNewPost(newPost, media);
                       setFeedPosts([newEntry, ...feedPosts]);
                       setNewPost('');
                       setPostImage(null);
@@ -816,30 +689,36 @@ const Community: React.FC = () => {
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-3">
                         <img 
-                          src={post.user.avatar}
-                          alt={post.user.name}
+                          src={post.userAvatar}
+                          alt={post.userName}
                           className="w-12 h-12 rounded-full object-cover"
                         />
                         <div>
                           <div className="flex items-center gap-2">
                             <span className={`font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
-                              {post.user.name}
+                              {post.userName}
                             </span>
-                            {post.user.verified && (
+                            {post.userVerified && (
                               <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
                                 <CheckCircle className="w-3 h-3 text-white" />
                               </div>
                             )}
                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              post.user.role.includes('Actor') || post.user.role.includes('Director') ? 'bg-purple-500/20 text-purple-400' :
-                              post.user.role.includes('Producer') ? 'bg-yellow-500/20 text-yellow-400' :
+                              post.category === 'behind-scenes' ? 'bg-purple-500/20 text-purple-400' :
+                              post.category === 'news' ? 'bg-yellow-500/20 text-yellow-400' :
+                              post.category === 'review' ? 'bg-green-500/20 text-green-400' :
                               'bg-blue-500/20 text-blue-400'
                             }`}>
-                              {post.user.role}
+                              {post.category.replace('-', ' ').toUpperCase()}
                             </span>
                           </div>
                           <div className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
-                            {post.timestamp}
+                            {new Date(post.timestamp).toLocaleDateString('en-US', { 
+                              month: 'short', 
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
                           </div>
                         </div>
                       </div>
@@ -861,39 +740,80 @@ const Community: React.FC = () => {
                     {post.media && (
                       <div className="mb-4">
                         <div className="relative rounded-xl overflow-hidden">
-                          <img 
-                            src={post.media.url}
-                            alt="Post media"
-                            className="w-full h-64 object-cover"
-                          />
-                          {post.media.type === 'video' && (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <button className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300">
-                                <Play className="w-8 h-8 text-white ml-1" />
-                              </button>
+                          {post.media.type === 'image' && post.media.url && (
+                            <img 
+                              src={post.media.url}
+                              alt="Post media"
+                              className="w-full h-64 object-cover"
+                            />
+                          )}
+                          {post.media.type === 'video' && post.media.thumbnail && (
+                            <div className="relative">
+                              <img 
+                                src={post.media.thumbnail}
+                                alt="Video thumbnail"
+                                className="w-full h-64 object-cover"
+                              />
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <button className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-300">
+                                  <Play className="w-8 h-8 text-white ml-1" />
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                          {post.media.type === 'poll' && post.media.pollOptions && (
+                            <div className="p-4 bg-white/10 rounded-xl">
+                              <h4 className={`font-bold mb-3 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                                Poll
+                              </h4>
+                              <div className="space-y-2">
+                                {post.media.pollOptions.map((option: string, idx: number) => (
+                                  <div key={idx} className="relative">
+                                    <div className={`p-3 rounded-lg border transition-all duration-300 cursor-pointer hover:bg-white/10 ${
+                                      theme === 'light' ? 'border-gray-200' : 'border-white/20'
+                                    }`}>
+                                      <span className={`${theme === 'light' ? 'text-gray-800' : 'text-gray-200'}`}>
+                                        {option}
+                                      </span>
+                                      {post.media?.pollResults && (
+                                        <div className="mt-2">
+                                          <div className="flex justify-between text-sm text-gray-500 mb-1">
+                                            <span>{post.media.pollResults[idx]} votes</span>
+                                            <span>{Math.round((post.media.pollResults[idx] / post.media.pollResults.reduce((a: number, b: number) => a + b, 0)) * 100)}%</span>
+                                          </div>
+                                          <div className="w-full bg-gray-200 rounded-full h-2">
+                                            <div 
+                                              className="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full transition-all duration-300"
+                                              style={{ width: `${(post.media.pollResults[idx] / post.media.pollResults.reduce((a: number, b: number) => a + b, 0)) * 100}%` }}
+                                            />
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                           )}
                         </div>
                       </div>
                     )}
 
-                    {/* Reactions */}
-                    <div className="flex items-center gap-2 mb-4">
-                      {post.reactions.map((reaction, idx) => (
-                        <button
-                          key={idx}
-                          className={`flex items-center gap-1 px-3 py-2 rounded-full transition-all duration-300 ${
-                            theme === 'light'
-                              ? 'bg-white/50 hover:bg-white/80'
-                              : 'bg-white/10 hover:bg-white/20'
-                          }`}
-                        >
-                          <span className="text-lg">{reaction.emoji}</span>
-                          <span className={`text-sm font-medium ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
-                            {reaction.count}
-                          </span>
-                        </button>
-                      ))}
+                    {/* Engagement Stats */}
+                    <div className="flex items-center gap-4 mb-4 text-sm text-gray-500">
+                      <span>{post.views.toLocaleString()} views</span>
+                      {post.trending && (
+                        <span className="flex items-center gap-1 text-orange-500">
+                          <Activity className="w-4 h-4" />
+                          Trending
+                        </span>
+                      )}
+                      {post.sponsored && (
+                        <span className="flex items-center gap-1 text-purple-500">
+                          <DollarSign className="w-4 h-4" />
+                          Sponsored
+                        </span>
+                      )}
                     </div>
 
                     {/* Engagement Actions */}
@@ -949,158 +869,59 @@ const Community: React.FC = () => {
               className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6"
             >
               {/* Channel List */}
-              <div className={`col-span-1 lg:col-span-1 p-6 rounded-2xl backdrop-blur-xl border ${
-                theme === 'light'
-                  ? 'light-glass-header'
-                  : 'bg-white/10 border-white/20'
-              } hidden md:block`}>
-                <h3 className={`font-bold text-lg mb-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
-                  Channels
-                </h3>
+              <div className={`col-span-1 lg:col-span-1 p-6 rounded-2xl backdrop-blur-xl border ${theme === 'light' ? 'light-glass-header' : 'bg-white/10 border-white/20'} hidden md:block`}>
+                <h3 className={`font-bold text-lg mb-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Channels</h3>
                 <div className="space-y-2">
                   {channels.map((channel) => (
                     <button
                       key={channel.id}
                       onClick={() => setSelectedChannel(channel.id)}
-                      className={`w-full flex items-center justify-between p-3 rounded-xl transition-all duration-300 ${
-                        selectedChannel === channel.id
-                          ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
-                          : `${theme === 'light' ? 'text-gray-700 hover:bg-white/50' : 'text-gray-300 hover:bg-white/10 hover:text-white'}`
-                      }`}
+                      className={`w-full flex items-center justify-between p-3 rounded-xl transition-all duration-300 ${selectedChannel === channel.id ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white' : `${theme === 'light' ? 'text-gray-700 hover:bg-white/50' : 'text-gray-300 hover:bg-white/10 hover:text-white'}`}`}
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-lg">{channel.icon}</span>
                         {!isMobile && <span className="font-medium">#{channel.name}</span>}
                       </div>
-                      {channel.unread > 0 && (
+                      {channelMessages[channel.id]?.length > 0 && (
                         <span className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-xs text-white font-bold">
-                          {channel.unread}
+                          {channelMessages[channel.id].length}
                         </span>
                       )}
                     </button>
                   ))}
                 </div>
               </div>
-
               {/* Chat Area */}
-              <div className={`col-span-1 md:col-span-2 lg:col-span-3 p-6 rounded-2xl backdrop-blur-xl border ${
-                theme === 'light'
-                  ? 'light-glass-header'
-                  : 'bg-white/10 border-white/20'
-              } ${isMobile ? 'pb-24' : ''}`}>
-                {isMobile && (
-                  <div className="flex gap-3 overflow-x-auto pb-4 pt-4 -mx-2 px-2 scrollbar-hide snap-x snap-mandatory">
-                    {channels.map((channel) => (
-                      <button
-                        key={channel.id}
-                        onClick={() => setSelectedChannel(channel.id)}
-                        onTouchStart={() => startPreview(channel.id, setPreviewChannel)}
-                        onTouchEnd={() => endPreview(setPreviewChannel)}
-                        onMouseDown={() => startPreview(channel.id, setPreviewChannel)}
-                        onMouseUp={() => endPreview(setPreviewChannel)}
-                        onMouseLeave={() => endPreview(setPreviewChannel)}
-                        className={`relative flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 snap-center ${
-                          selectedChannel === channel.id ? 'ring-2 ring-purple-500' : ''
-                        }`}
-                      >
-                        <span className="text-xl">{channel.icon}</span>
-                        {previewChannel === channel.id && (
-                          <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs px-2 py-1 rounded bg-black text-white whitespace-nowrap">
-                            #{channel.name}
-                          </div>
-                        )}
-                        {channel.unread > 0 && (
-                          <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center text-[10px] text-white font-bold">
-                            {channel.unread}
-                          </span>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                )}
+              <div className={`col-span-1 md:col-span-2 lg:col-span-3 p-6 rounded-2xl backdrop-blur-xl border ${theme === 'light' ? 'light-glass-header' : 'bg-white/10 border-white/20'} ${isMobile ? 'pb-24' : ''}`}>
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className={`font-bold text-xl ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
-                    #{selectedChannel}
-                  </h3>
+                  <h3 className={`font-bold text-xl ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>#{selectedChannel}</h3>
                   <div className="flex items-center gap-2">
-                    <button className={`p-2 rounded-lg transition-all duration-300 ${
-                      theme === 'light'
-                        ? 'text-gray-600 hover:bg-white/50'
-                        : 'text-gray-400 hover:bg-white/10 hover:text-white'
-                    }`}>
-                      <Bell className="w-5 h-5" />
-                    </button>
-                    <button className={`p-2 rounded-lg transition-all duration-300 ${
-                      theme === 'light'
-                        ? 'text-gray-600 hover:bg-white/50'
-                        : 'text-gray-400 hover:bg-white/10 hover:text-white'
-                    }`}>
-                      <Settings className="w-5 h-5" />
-                    </button>
+                    <button className={`p-2 rounded-lg transition-all duration-300 ${theme === 'light' ? 'text-gray-600 hover:bg-white/50' : 'text-gray-400 hover:bg-white/10 hover:text-white'}`}><Bell className="w-5 h-5" /></button>
+                    <button className={`p-2 rounded-lg transition-all duration-300 ${theme === 'light' ? 'text-gray-600 hover:bg-white/50' : 'text-gray-400 hover:bg-white/10 hover:text-white'}`}><Settings className="w-5 h-5" /></button>
                   </div>
                 </div>
-
-                {/* Chat Messages */}
-                <AnimatePresence mode="wait" key={selectedChannel}>
-                  <motion.div
-                    key={selectedChannel}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="space-y-4 mb-6 h-96 overflow-y-auto"
-                  >
-                    {(messages[selectedChannel] || []).map((msg, index) => (
-                      <div key={index} className="flex gap-3">
-                        <img
-                          src={msg.avatar}
-                          alt={msg.user}
-                          className="w-10 h-10 rounded-full object-cover"
-                        />
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
-                              {msg.user}
-                            </span>
-                            <span className={`text-xs ${theme === 'light' ? 'text-gray-500' : 'text-gray-500'}`}>
-                              {msg.time}
-                            </span>
-                          </div>
-                          <div className={`${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}> 
-                            {msg.message}
-                          </div>
+                {/* Channel Chat Messages */}
+                <div className="space-y-4 mb-6 h-96 overflow-y-auto">
+                  {(channelMessages[selectedChannel] || []).map((msg, index) => (
+                    <div key={index} className="flex gap-3 items-start">
+                      <img src={msg.avatar} alt={msg.user} className="w-10 h-10 rounded-full object-cover" />
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-sm">{msg.user}</span>
+                          <span className="text-xs text-gray-400">{msg.time}</span>
                         </div>
+                        {msg.type === 'text' && <div className="bg-white/20 rounded-xl px-4 py-2 mt-1 text-gray-900 dark:text-white">{msg.message}</div>}
+                        {msg.type === 'image' && <img src={msg.mediaUrl} alt="sent" className="max-w-[180px] rounded-lg mt-2" />}
+                        {msg.type === 'video' && <video src={msg.mediaUrl} controls className="max-w-[180px] rounded-lg mt-2" />}
                       </div>
-                    ))}
-                  </motion.div>
-                </AnimatePresence>
-
-                {/* Message Input */}
-                <div className="flex gap-3 sticky bottom-0 pb-4 bg-inherit">
-                  <input
-                    type="text"
-                    placeholder={`Message #${selectedChannel}`}
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        e.preventDefault();
-                        sendChannelMessage();
-                      }
-                    }}
-                    className={`flex-1 px-4 py-3 rounded-xl border focus:outline-none focus:border-purple-500/50 ${
-                      theme === 'light'
-                        ? 'bg-white/50 border-gray-300 text-gray-900 placeholder-gray-500'
-                        : 'bg-white/10 border-white/20 text-white placeholder-gray-400'
-                    }`}
-                  />
-                  <button
-                    onClick={sendChannelMessage}
-                    disabled={!newMessage.trim()}
-                    className="px-6 py-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl text-white font-medium hover:from-purple-400 hover:to-blue-400 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <Send className="w-5 h-5" />
-                  </button>
+                    </div>
+                  ))}
                 </div>
+                {/* Channel Message Input */}
+                <form className="flex items-center gap-2 mt-auto" onSubmit={e => { e.preventDefault(); if (!channelInput.trim()) return; setChannelMessages(prev => ({ ...prev, [selectedChannel]: [...(prev[selectedChannel] || []), { user: 'You', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face', message: channelInput, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), type: 'text' }] })); setChannelInput(''); }}>
+                  <input type="text" className="flex-1 px-4 py-2 rounded-full border bg-white/80 text-gray-900" placeholder="Type a message..." value={channelInput} onChange={e => setChannelInput(e.target.value)} />
+                  <button type="submit" className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full text-white font-bold">Send</button>
+                </form>
               </div>
             </motion.div>
           )}

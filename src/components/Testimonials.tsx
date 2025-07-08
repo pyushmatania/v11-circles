@@ -4,11 +4,14 @@ import { Star, Quote } from 'lucide-react';
 import { testimonials } from '../data/projects';
 import { useTheme } from './ThemeContext';
 import Typewriter from './Typewriter';
+import useIsMobile from '../hooks/useIsMobile';
 
 const Testimonials: React.FC = () => {
   const { theme } = useTheme();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile();
+  const visibleTestimonials = isMobile ? testimonials.slice(0, 3) : testimonials;
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -124,7 +127,7 @@ const Testimonials: React.FC = () => {
 
         {/* Testimonials Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {testimonials.map((testimonial, index) => (
+          {visibleTestimonials.map((testimonial, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 50 }}

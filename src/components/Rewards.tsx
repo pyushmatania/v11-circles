@@ -157,7 +157,7 @@ const Rewards: React.FC = () => {
         </motion.div>
 
         {/* Reward Tiers */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-24">
           {rewardTiers.map((tier, index) => (
             <motion.div
               key={index}
@@ -275,7 +275,7 @@ const Rewards: React.FC = () => {
             Go beyond traditional investing. Get access to once-in-a-lifetime experiences that money can't usually buy.
           </p>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {circlesIllustrations.map((illustration, index) => (
               <GlassCard
                 key={index}

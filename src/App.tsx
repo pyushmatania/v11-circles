@@ -16,6 +16,7 @@ import { AuthProvider } from './components/auth/AuthProvider';
 import { useAuth } from './components/auth/useAuth';
 import { useToast } from './hooks/useToast';
 import DebugPanel from './components/DebugPanel';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Lazy load heavy components for better performance
 const Dashboard = lazy(() => import('./components/Dashboard'));
@@ -199,11 +200,13 @@ function AppContent() {
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

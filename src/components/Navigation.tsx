@@ -282,29 +282,53 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                 </div>
 
                 {/* Mobile Navigation */}
-                <div className="md:hidden flex items-center gap-4 absolute left-1/2 -translate-x-1/2">
-                  {mainNavItems.map((item, index) => (
+                <div className="md:hidden flex items-center gap-4 w-full justify-between px-2">
+                  {/* Left: Logo (optional, or leave empty for spacing) */}
+                  <div className="w-8" />
+                  {/* Center: Main Nav Items */}
+                  <div className="flex items-center gap-2">
+                    {mainNavItems.map((item, index) => (
+                      <motion.button
+                        key={item.id}
+                        onClick={() => handleItemClick(item.id)}
+                        className={`p-2 rounded-lg transition-all duration-[3000ms] relative ${
+                          currentView === item.id
+                            ? 'text-cyan-400'
+                            : `${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`
+                        }`}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: index * 0.1 }}
+                      >
+                        <item.icon className="w-5 h-5 drop-shadow-lg" />
+                        {item.requiresAuth && !isAuthenticated && (
+                          <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-400 rounded-full animate-pulse" />
+                        )}
+                      </motion.button>
+                    ))}
+                  </div>
+                  {/* Right: Theme & Notification Buttons */}
+                  <div className="flex items-center gap-2">
                     <motion.button
-                      key={item.id}
-                      onClick={() => handleItemClick(item.id)}
-                      className={`p-2 rounded-lg transition-all duration-[3000ms] relative ${
-                        currentView === item.id
-                          ? 'text-cyan-400'
-                          : `${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`
-                      }`}
+                      onClick={toggleTheme}
+                      className={`p-2 rounded-lg transition-all duration-[3000ms] ${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: index * 0.1 }}
+                      aria-label="Toggle theme"
                     >
-                      <item.icon className="w-5 h-5 drop-shadow-lg" />
-                      {item.requiresAuth && !isAuthenticated && (
-                        <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-400 rounded-full animate-pulse" />
+                      {theme === 'light' ? (
+                        <Moon className="w-5 h-5 drop-shadow-lg" />
+                      ) : (
+                        <Sun className="w-5 h-5 drop-shadow-lg" />
                       )}
                     </motion.button>
-                  ))}
-              </div>
+                    <NotificationDropdown
+                      onViewAll={() => setCurrentView('notifications')}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </motion.nav>

@@ -814,193 +814,98 @@ const Merchandise: React.FC = () => {
         </div>
 
         {/* Merchandise Grid/List */}
-        {filteredItems.length > 0 ? (
-          <div
-            className={`${
-              viewMode === 'grid'
-                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-                : 'space-y-6'
-            } overflow-y-auto max-h-[70vh]`}
-          >
-            {filteredItems.map((item, index) => (
-              <motion.div
-                key={item.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className={`group relative rounded-2xl backdrop-blur-xl border overflow-hidden transition-all duration-500 hover:scale-105 ${
-                  theme === 'light'
-                    ? currentGradient === 0 ? 'bg-green-50/40 border-green-200/60 hover:shadow-xl hover:shadow-green-200/50' :
-                      currentGradient === 1 ? 'bg-orange-50/40 border-orange-200/60 hover:shadow-xl hover:shadow-orange-200/50' :
-                      currentGradient === 2 ? 'bg-blue-50/40 border-blue-200/60 hover:shadow-xl hover:shadow-blue-200/50' :
-                      currentGradient === 3 ? 'bg-emerald-50/40 border-emerald-200/60 hover:shadow-xl hover:shadow-emerald-200/50' :
-                      'bg-purple-50/40 border-purple-200/60 hover:shadow-xl hover:shadow-purple-200/50'
-                    : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20 hover:border-white/40 hover:shadow-2xl hover:shadow-purple-500/20'
-                } ${viewMode === 'list' ? 'flex gap-6 p-6' : 'flex flex-col'}`}
-              >
-                {/* Badges */}
-                <div className="absolute top-3 left-3 flex flex-col gap-2 z-20">
-                  {item.isNew && (
-                    <span className="px-2 py-1 bg-green-500 text-white text-xs font-bold rounded-full">
-                      NEW
-                    </span>
-                  )}
-                  {item.isTrending && (
-                    <span className="px-2 py-1 bg-red-500 text-white text-xs font-bold rounded-full">
-                      TRENDING
-                    </span>
-                  )}
-                  {item.isLimited && (
-                    <span className="px-2 py-1 bg-yellow-500 text-black text-xs font-bold rounded-full">
-                      LIMITED
-                    </span>
-                  )}
-                </div>
-
-                {/* Favorite & Cart Buttons */}
-                <div className="absolute top-3 right-3 flex gap-2 z-20">
-                  <button
-                    onClick={() => toggleFavorite(item.id)}
-                    className={`p-2 rounded-full backdrop-blur-md transition-all duration-300 ${
-                      favorites.has(item.id)
-                        ? 'bg-red-500 text-white'
-                        : 'bg-white/20 text-gray-600 hover:bg-white/40'
-                    }`}
-                  >
-                    <Heart className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => toggleCart(item.id)}
-                    className={`p-2 rounded-full backdrop-blur-md transition-all duration-300 ${
-                      cart.has(item.id)
-                        ? 'bg-green-500 text-white'
-                        : 'bg-white/20 text-gray-600 hover:bg-white/40'
-                    }`}
-                  >
-                    <ShoppingCart className="w-4 h-4" />
-                  </button>
-                </div>
-
-                {/* Image */}
-                <div className={`relative overflow-hidden ${
-                  viewMode === 'list' ? 'w-48 h-48 flex-shrink-0' : 'h-64'
-                } ${viewMode === 'grid' ? 'rounded-t-2xl' : 'rounded-xl'}`}>
-                  <img 
-                    src={item.image} 
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                  
-                  {/* Price Type Icon */}
-                  <div className="absolute bottom-3 left-3">
-                    <div className={`flex items-center gap-1 px-2 py-1 rounded-full backdrop-blur-md text-xs font-medium ${
-                      item.priceType === 'auction' ? 'bg-blue-500/20 text-blue-300' :
-                      item.priceType === 'free' ? 'bg-green-500/20 text-green-300' :
-                      'bg-gray-500/20 text-gray-300'
-                    }`}>
-                      {getPriceTypeIcon(item.priceType)}
-                      {item.priceType.toUpperCase()}
+        {filteredItems.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 overflow-x-auto md:overflow-x-visible whitespace-nowrap md:whitespace-normal snap-x md:snap-none pb-2">
+            {filteredItems.map(item => (
+              <div key={item.id} className="w-full md:block md:w-auto snap-center md:snap-none mr-0 md:mr-0">
+                {/* Inline Merchandise Card Start */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className={`relative flex flex-col h-full rounded-2xl shadow-lg border backdrop-blur-xl transition-all duration-[3000ms] overflow-hidden group
+                    ${theme === 'light'
+                      ? currentGradient === 0 ? 'bg-green-50/80 border-green-200' :
+                        currentGradient === 1 ? 'bg-orange-50/80 border-orange-200' :
+                        currentGradient === 2 ? 'bg-blue-50/80 border-blue-200' :
+                        currentGradient === 3 ? 'bg-emerald-50/80 border-emerald-200' :
+                        'bg-purple-50/80 border-purple-200'
+                      : 'bg-gray-900 border-gray-700'}
+                  `}
+                >
+                  <div className="relative">
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-full h-48 object-cover object-center rounded-t-2xl transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    {item.isLimited && (
+                      <span className="absolute top-2 left-2 bg-yellow-400 text-xs font-bold px-2 py-1 rounded shadow">Limited</span>
+                    )}
+                    {item.isTrending && (
+                      <span className="absolute top-2 right-2 bg-green-500 text-xs font-bold px-2 py-1 rounded shadow text-white">Trending</span>
+                    )}
+                    {item.isNew && (
+                      <span className="absolute bottom-2 left-2 bg-purple-500 text-xs font-bold px-2 py-1 rounded shadow text-white">New</span>
+                    )}
+                    <button
+                      onClick={() => toggleFavorite(item.id)}
+                      className={`absolute top-2 right-2 md:top-3 md:right-3 z-10 p-1 rounded-full transition-colors ${favorites.has(item.id) ? 'bg-pink-100 text-pink-600' : 'bg-white/80 text-gray-400 hover:text-pink-500'}`}
+                      aria-label={favorites.has(item.id) ? 'Remove from favorites' : 'Add to favorites'}
+                    >
+                      <Heart className={`w-5 h-5 ${favorites.has(item.id) ? 'fill-pink-500' : ''}`} />
+                    </button>
+                  </div>
+                  <div className="flex-1 flex flex-col p-4 gap-2">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`text-xs font-semibold px-2 py-1 rounded ${theme === 'light' ? 'bg-gray-200 text-gray-700' : 'bg-gray-800 text-gray-200'}`}>{item.category.replace('-', ' ')}</span>
+                      <span className={`text-xs font-semibold px-2 py-1 rounded ${getAvailabilityColor(item.availability)} bg-gray-100 dark:bg-gray-800`}>{item.availability.replace('-', ' ')}</span>
                     </div>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className={`${viewMode === 'list' ? 'flex-1' : 'p-6'}`}>
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1">
-                      <h3 className={`font-bold text-lg mb-1 line-clamp-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
-                        {item.title}
-                      </h3>
-                      <p className={`text-sm mb-2 line-clamp-2 ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'}`}>
-                        {item.description}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Rating */}
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                      <span className={`text-sm font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
-                        {item.rating}
-                      </span>
-                    </div>
-                    <span className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
-                      ({item.reviews} reviews)
-                    </span>
-                  </div>
-
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-1 mb-4">
-                    {item.tags.slice(0, 3).map((tag, tagIndex) => (
-                      <span 
-                        key={tagIndex}
-                        className={`px-2 py-1 text-xs rounded-full border ${
-                          theme === 'light'
-                            ? 'bg-white/60 text-gray-700 border-gray-300'
-                            : 'bg-white/10 text-gray-300 border-white/20'
-                        }`}
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Price and Availability */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      {item.priceType === 'free' ? (
-                        <span className="text-2xl font-bold text-green-400">FREE</span>
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <span className={`text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
-                            ₹{item.price.toLocaleString()}
-                          </span>
-                          {item.originalPrice && (
-                            <span className={`text-sm line-through ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>
-                              ₹{item.originalPrice.toLocaleString()}
-                            </span>
-                          )}
-                        </div>
+                    <h3 className={`text-lg font-bold line-clamp-2 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{item.title}</h3>
+                    <p className={`text-sm line-clamp-2 ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'}`}>{item.description}</p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className={`text-xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>₹{item.price}</span>
+                      {item.originalPrice && item.originalPrice > item.price && (
+                        <span className="text-sm line-through text-gray-400">₹{item.originalPrice}</span>
                       )}
+                      <span className="ml-2">{getPriceTypeIcon(item.priceType)}</span>
                     </div>
-                    <span className={`text-sm font-medium ${getAvailabilityColor(item.availability)}`}>
-                      {item.availability.replace('-', ' ').toUpperCase()}
-                    </span>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Star className="w-4 h-4 text-yellow-400" />
+                      <span className="text-sm font-medium">{item.rating}</span>
+                      <span className="text-xs text-gray-400">({item.reviews})</span>
+                    </div>
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {item.tags.slice(0, 3).map(tag => (
+                        <span key={tag} className="text-xs bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded px-2 py-0.5">{tag}</span>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-2 mt-3">
+                      <button
+                        onClick={() => toggleCart(item.id)}
+                        className={`flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold transition-colors
+                          ${cart.has(item.id)
+                            ? 'bg-green-600 text-white shadow-lg'
+                            : theme === 'light'
+                              ? 'bg-gray-100 text-gray-900 hover:bg-green-100'
+                              : 'bg-gray-800 text-white hover:bg-green-700'}
+                        `}
+                        aria-label={cart.has(item.id) ? 'Remove from cart' : 'Add to cart'}
+                      >
+                        <ShoppingCart className="w-5 h-5" />
+                        {cart.has(item.id) ? 'In Cart' : 'Add to Cart'}
+                      </button>
+                    </div>
                   </div>
-
-                  {/* Action Button */}
-                  <button
-                    className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 hover:scale-105 ${
-                      item.availability === 'sold-out'
-                        ? 'bg-gray-400 text-gray-600 cursor-not-allowed'
-                        : item.priceType === 'auction'
-                        ? 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white'
-                        : item.priceType === 'free'
-                        ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white'
-                        : `${theme === 'light' 
-                            ? currentGradient === 0 ? 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500' :
-                              currentGradient === 1 ? 'bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500' :
-                              currentGradient === 2 ? 'bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500' :
-                              currentGradient === 3 ? 'bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500' :
-                              'bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500'
-                            : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500'
-                          } text-white`
-                    }`}
-                    disabled={item.availability === 'sold-out'}
-                  >
-                    {item.availability === 'sold-out' ? 'Sold Out' :
-                     item.priceType === 'auction' ? 'Place Bid' :
-                     item.priceType === 'free' ? 'Claim Free' :
-                     item.availability === 'pre-order' ? 'Pre-Order' :
-                     'Add to Cart'}
-                  </button>
-                </div>
-              </motion.div>
+                </motion.div>
+                {/* Inline Merchandise Card End */}
+              </div>
             ))}
           </div>
-        ) : (
+        )}
+        {/* No merchandise found fallback */}
+        {filteredItems.length === 0 && (
           <div className="text-center py-16">
             <div className="text-6xl mb-4">🛍️</div>
             <h3 className={`text-2xl font-bold mb-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
