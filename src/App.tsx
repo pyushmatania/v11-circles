@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense, useCallback, memo, useEffect } from 'react';
+import { useState, lazy, Suspense, useCallback, memo, useEffect } from 'react';
 import Hero from './components/Hero';
 import ProblemSolution from './components/ProblemSolution';
 import HowItWorks from './components/HowItWorks';
@@ -161,13 +161,13 @@ function AppContent() {
             <Hero setCurrentView={handleViewChange} />
             <ProblemSolution setCurrentView={handleViewChange} />
             <HowItWorks setCurrentView={handleViewChange} />
+            <Rewards />
             <LiveProjects
               onViewAll={() => handleViewChange('projects')}
               onTrackInvestment={() => handleViewChange('dashboard')}
             />
             <WhyThisMatters onJoin={() => handleAuthRequired('register')} />
             <TechTrust />
-            <Rewards />
             <Testimonials />
             <CallToAction setCurrentView={handleViewChange} />
           </>

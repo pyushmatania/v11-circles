@@ -484,6 +484,58 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                     </span>
                   </div>
 
+                {/* Profile Icon */}
+                <div className="relative">
+                  <motion.button
+                    onClick={() => handleItemClick('profile')}
+                    className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-[3000ms] ${
+                      currentView === 'profile'
+                        ? `${theme === 'light' 
+                            ? 'text-purple-600 bg-purple-100/50 shadow-lg shadow-purple-400/25' 
+                            : 'text-cyan-400 bg-cyan-400/10 shadow-lg shadow-cyan-400/25'
+                          }`
+                        : `${theme === 'light' 
+                            ? 'text-gray-700 hover:text-gray-900 hover:bg-white/50' 
+                            : 'text-gray-400 hover:text-white hover:bg-white/10'
+                          }`
+                    }`}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {isAuthenticated && user?.avatar ? (
+                      <img 
+                        src={user.avatar} 
+                        alt={user.name}
+                        className="w-6 h-6 rounded-full object-cover"
+                        onError={(e) => {
+                          const target = e.currentTarget as HTMLImageElement;
+                          target.style.display = 'none';
+                          const fallback = target.nextElementSibling as HTMLElement;
+                          if (fallback) fallback.style.display = 'block';
+                        }}
+                      />
+                    ) : (
+                      <User className="w-6 h-6" />
+                    )}
+                    {!isAuthenticated && (
+                      <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-400 rounded-full animate-pulse" />
+                    )}
+                  </motion.button>
+                  
+                  {/* Hover Text for Profile */}
+                  <span className={`absolute left-16 top-1/2 transform -translate-y-1/2 whitespace-nowrap px-2 py-1 text-sm font-light opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out pointer-events-none select-none group-hover:translate-x-0 translate-x-[-10px] ${
+                    currentView === 'profile'
+                      ? theme === 'light'
+                        ? 'text-purple-600'
+                        : 'text-cyan-400'
+                      : theme === 'light'
+                        ? 'text-gray-700'
+                        : 'text-gray-400'
+                  }`}>
+                    {isAuthenticated ? 'Profile' : 'Sign In'}
+                  </span>
+                </div>
+
 
               </div>
             </div>

@@ -235,7 +235,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
       endingSoon,
       featuredProjects
     };
-  }, [projects]);
+  }, []);
 
   // Memoized callback functions for carousel controls
   const handleSlideChange = useCallback((index: number) => {

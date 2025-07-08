@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 // import { motion } from 'framer-motion';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 // import { AnimatePresence } from 'framer-motion';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 // import { Film, Music, Tv, Star, Clock, Play, Plus, Bookmark, Heart, TrendingUp, ArrowRight } from 'lucide-react';
 import PixelCard from './PixelCard';
 import { Project } from '../types';

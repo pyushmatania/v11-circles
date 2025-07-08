@@ -11260,36 +11260,51 @@ export const projects: Project[
 // Testimonial data (can be kept separate or merged if relevant)
 export const testimonials: Testimonial[] = [
   {
-    text: "This platform transformed my understanding of crowdfunding. The insights into film financing and community engagement are unparalleled.",
-    author: "Rohan Kumar",
-    movie: "The Silent Echo",
+    name: "Rohan Kumar",
+    role: "Producer Tier Investor",
+    content: "This platform transformed my understanding of crowdfunding. The insights into film financing and community engagement are unparalleled.",
+    avatar: "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=100",
+    project: "The Silent Echo",
     rating: 5,
   },
-{
-    text: "An innovative approach to connect with creators and invest in captivating projects. I love being part of this journey!",
-    author: "Priya Sharma",
-    movie: "Starlight Serenade",
+  {
+    name: "Priya Sharma",
+    role: "Backer Tier Investor",
+    content: "An innovative approach to connect with creators and invest in captivating projects. I love being part of this journey!",
+    avatar: "https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=100",
+    project: "Starlight Serenade",
     rating: 5,
   },
-{
-    text: "Finally, a platform that understands the pulse of the audience and empowers them to be a part of the creative process. Highly recommended!",
-    author: "Amit Patel",
-    movie: "City of Dreams",
+  {
+    name: "Amit Patel",
+    role: "Executive Producer",
+    content: "Finally, a platform that understands the pulse of the audience and empowers them to be a part of the creative process. Highly recommended!",
+    avatar: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=100",
+    project: "City of Dreams",
     rating: 4,
   },
-{
-    text: "The diverse range of projects and the transparency in funding make this platform a game-changer for independent cinema.",
-    author: "Deepika Singh",
-    movie: "Echoes of the Past",
+  {
+    name: "Deepika Singh",
+    role: "Supporter Tier Investor",
+    content: "The diverse range of projects and the transparency in funding make this platform a game-changer for independent cinema.",
+    avatar: "https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=100",
+    project: "Echoes of the Past",
     rating: 5,
   },
-{
-    text: "It's inspiring to see how this platform bridges the gap between filmmakers and their audience, creating a vibrant community.",
-    author: "Vikram Reddy",
-    movie: "The Last Chapter",
+  {
+    name: "Vikram Reddy",
+    role: "Producer Tier Investor",
+    content: "It's inspiring to see how this platform bridges the gap between filmmakers and their audience, creating a vibrant community.",
+    avatar: "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=100",
+    project: "The Last Chapter",
     rating: 4,
   },
-
-
-
+  {
+    name: "Kavya Nair",
+    role: "Backer Tier Investor",
+    content: "Being part of this community has been incredible. The exclusive behind-the-scenes access and direct connection with creators is unmatched.",
+    avatar: "https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=100",
+    project: "Pathaan 2",
+    rating: 5,
+  }
 ];

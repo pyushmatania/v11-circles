@@ -1,12 +1,65 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Medal, Box, Gem, Badge, Camera, Music, Ticket, Users, Crown, CheckCircle } from 'lucide-react';
+import { Medal, Box, Gem, Badge, Users, Crown, CheckCircle } from 'lucide-react';
 import { useTheme } from './ThemeContext';
 import Typewriter from './Typewriter';
 import ProfileCard from './Components/ProfileCard/ProfileCard';
+import GlassCard from './GlassCard';
+
+const circlesIllustrations = [
+  {
+    image: "/Circles illustration/1AD8E920-495A-497F-8547-BA54600E587C.png",
+    title: "Creative Collaboration",
+    description: "Connect with creators and shape the future of entertainment",
+    backTitle: "Name Credit",
+    backSubtitle: "Your name on the big screen",
+    backDescription: "Get officially credited in the movie your support gets permanent recognition alongside the creators."
+  },
+  {
+    image: "/Circles illustration/2B8E2CED-0A2D-4D4B-A960-22C2A61F3455.png",
+    title: "Investment Growth",
+    description: "Watch your investments grow alongside creative success",
+    backTitle: "Community Casting",
+    backSubtitle: "Help decide who gets the spotlight",
+    backDescription: "Vote on cast members, suggest talent, and influence who lands key roles in select indie or experimental projects."
+  },
+  {
+    image: "/Circles illustration/4DBD9870-12C0-43C5-AE5F-7ED69BD90B07.png",
+    title: "Community Building",
+    description: "Join exclusive circles of passionate investors and creators",
+    backTitle: "Movie Item",
+    backSubtitle: "Own a piece of the story",
+    backDescription: "Receive exclusive props, costumes, or memorabilia used on set — something no fan can buy off a shelf."
+  },
+  {
+    image: "/Circles illustration/7D37CFC2-59A6-4FBC-A4A0-AAA7CDC5AB9E.png",
+    title: "Exclusive Access",
+    description: "Get behind-the-scenes access to your favorite projects",
+    backTitle: "Premiere Access",
+    backSubtitle: "Be the first to watch it",
+    backDescription: "Get early invites to virtual or real-world premieres and private screenings before the world sees it."
+  },
+  {
+    image: "/Circles illustration/9C1D2BEF-CB2F-4F29-93B0-F27992B45F8F.png",
+    title: "Revenue Sharing",
+    description: "Earn returns while supporting the arts you love",
+    backTitle: "Trip with Movie Stars",
+    backSubtitle: "Hang out where the magic happens",
+    backDescription: "Win or unlock experiences to travel with the crew or spend a day on set with the stars."
+  },
+  {
+    image: "/Circles illustration/866A2053-CDDA-44FB-9641-D1E4189E8037.png",
+    title: "Global Network",
+    description: "Connect with entertainment enthusiasts worldwide",
+    backTitle: "Exclusive Merch",
+    backSubtitle: "Limited drops just for backers",
+    backDescription: "Receive rare collectibles, apparel, and themed kits — designed only for those who invested in the film"
+  }
+];
 
 const Rewards: React.FC = () => {
   const { theme } = useTheme();
+  const [flippedCards, setFlippedCards] = useState<Set<number>>(new Set());
 
   const rewardTiers = [
     {
@@ -57,33 +110,6 @@ const Rewards: React.FC = () => {
         "Producer credit",
         "Revenue sharing (up to 15%)"
       ]
-    }
-  ];
-
-  const uniqueExperiences = [
-    {
-      icon: <Camera className="w-8 h-8" />,
-      title: "On-Set Experience",
-      description: "Visit film sets, meet cast and crew, see movie magic in action",
-      image: "https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&w=400"
-    },
-    {
-      icon: <Music className="w-8 h-8" />,
-      title: "Studio Sessions",
-      description: "Join recording sessions, collaborate on tracks, influence creative decisions",
-      image: "https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=400"
-    },
-    {
-      icon: <Ticket className="w-8 h-8" />,
-      title: "Premiere Access",
-      description: "Red carpet premieres, film festivals, exclusive screenings worldwide",
-      image: "https://images.pexels.com/photos/2449665/pexels-photo-2449665.jpeg?auto=compress&cs=tinysrgb&w=400"
-    },
-    {
-      icon: <Users className="w-8 h-8" />,
-      title: "Creator Network",
-      description: "Join our exclusive community of investors, creators, and industry professionals",
-      image: "https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=400"
     }
   ];
 
@@ -198,6 +224,34 @@ const Rewards: React.FC = () => {
                     ))}
                   </ul>
                 </div>
+                {/* Top Edge (glass) */}
+                <div
+                  className="absolute left-0 top-0 w-full rounded-2xl"
+                  style={{
+                    height: '32px',
+                    background: theme === 'light'
+                      ? 'linear-gradient(90deg, rgba(191,219,254,0.85) 0%, rgba(59,130,246,0.85) 100%)'
+                      : 'linear-gradient(90deg, rgba(76,29,149,0.85) 0%, rgba(30,64,175,0.85) 100%)',
+                    boxShadow: '0 4px 16px 0 rgba(30,64,175,0.12), 0 0 0 2px rgba(255,255,255,0.18) inset',
+                    borderRadius: '16px',
+                    transform: `translateY(-16px) rotateX(90deg)`,
+                    zIndex: 1
+                  }}
+                />
+                {/* Bottom Edge (glass) */}
+                <div
+                  className="absolute left-0 bottom-0 w-full rounded-2xl"
+                  style={{
+                    height: '32px',
+                    background: theme === 'light'
+                      ? 'linear-gradient(90deg, rgba(191,219,254,0.85) 0%, rgba(59,130,246,0.85) 100%)'
+                      : 'linear-gradient(90deg, rgba(76,29,149,0.85) 0%, rgba(30,64,175,0.85) 100%)',
+                    boxShadow: '0 -4px 16px 0 rgba(30,64,175,0.12), 0 0 0 2px rgba(255,255,255,0.12) inset',
+                    borderRadius: '16px',
+                    transform: `translateY(16px) rotateX(-90deg)`,
+                    zIndex: 1
+                  }}
+                />
               </div>
             </motion.div>
           ))}
@@ -221,27 +275,17 @@ const Rewards: React.FC = () => {
             Go beyond traditional investing. Get access to once-in-a-lifetime experiences that money can't usually buy.
           </p>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {uniqueExperiences.map((experience, index) => (
-              <motion.div
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+            {circlesIllustrations.map((illustration, index) => (
+              <GlassCard
                 key={index}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className={`group relative overflow-hidden rounded-2xl backdrop-blur-xl border transition-all duration-500 ${
-                  theme === 'light'
-                    ? 'bg-white/40 border-white/60 hover:shadow-lg'
-                    : 'bg-gradient-to-br from-purple-900/40 to-pink-900/40 border-white/10 hover:shadow-xl'
-                }`}
-              >
-                <img src={experience.image} alt={experience.title} className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-60 transition duration-500" />
-                <div className="relative z-10 p-8 flex flex-col items-center text-center">
-                  <div className="mb-4">{experience.icon}</div>
-                  <h4 className={`text-xl font-bold mb-3 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>{experience.title}</h4>
-                  <p className={`leading-relaxed ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'}`}>{experience.description}</p>
-                </div>
-              </motion.div>
+                illustration={illustration}
+                index={index}
+                theme={theme}
+                flipped={flippedCards.has(index)}
+                onHoverStart={() => setFlippedCards(prev => new Set(prev).add(index))}
+                onHoverEnd={() => setFlippedCards(prev => { const newSet = new Set(prev); newSet.delete(index); return newSet; })}
+              />
             ))}
           </div>
         </motion.div>

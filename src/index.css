@@ -1038,3 +1038,8 @@ html, body {
   background: linear-gradient(135deg, #e0e7ff 0%, #ede9fe 100%) !important;
 }
 
+/* 3D Perspective for rotating cards */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
