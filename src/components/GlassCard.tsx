@@ -1,9 +1,18 @@
 import React from 'react';
 import { Star, Users, Gift, Film, Plane, ShoppingBag } from 'lucide-react';
-import logo1 from '../logo1.png';
+
+interface Illustration {
+  image: string;
+  imageFallback?: string;
+  title: string;
+  description: string;
+  backTitle: string;
+  backSubtitle: string;
+  backDescription: string;
+}
 
 interface GlassCardProps {
-  illustration: any;
+  illustration: Illustration;
   index: number;
   theme: string;
   flipped: boolean;
@@ -20,7 +29,7 @@ const iconMap: Record<string, JSX.Element> = {
   'Exclusive Merch': <ShoppingBag className="w-7 h-7 text-orange-400 mr-2" />,
 };
 
-const GlassCard: React.FC<GlassCardProps> = ({ illustration, index, theme, flipped, onHoverStart, onHoverEnd }) => (
+const GlassCard: React.FC<GlassCardProps> = ({ illustration, theme, flipped, onHoverStart, onHoverEnd }) => (
   <div
     className="group perspective-1000"
     onMouseEnter={onHoverStart}
@@ -159,13 +168,13 @@ const GlassCard: React.FC<GlassCardProps> = ({ illustration, index, theme, flipp
             {/* Gold Inscription */}
             <div className="mt-auto w-full flex justify-end items-center gap-2">
               <div className="relative w-12 h-12 flex items-center justify-center">
-                <img src={logo1} alt="Circle Logo" className="w-full h-full object-contain object-center" style={{filter: 'brightness(1.25) drop-shadow(0 0 6px #ffe066) drop-shadow(0 0 2px #ffd700)'}} />
+                <img src="/logo1.png" alt="Circle Logo" className="w-full h-full object-contain object-center" style={{filter: 'brightness(1.25) drop-shadow(0 0 6px #ffe066) drop-shadow(0 0 2px #ffd700)'}} />
                 {/* Animated sparkles */}
                 <span className="absolute w-2 h-2 rounded-full bg-yellow-200 opacity-90 animate-ping" style={{top: '18%', left: '70%'}} />
                 <span className="absolute w-1.5 h-1.5 rounded-full bg-white opacity-80 animate-pulse" style={{top: '60%', left: '35%'}} />
                 <span className="absolute w-1 h-1 rounded-full bg-yellow-300 opacity-80 animate-pulse" style={{top: '80%', left: '80%'}} />
               </div>
-              <span className="font-signature text-xl bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-500 bg-clip-text text-transparent" style={{fontFamily: 'cursive, \"Dancing Script\", \"Pacifico\", sans-serif', letterSpacing: '2px', textShadow: '0 2px 8px rgba(255,215,0,0.4)'}}>Official Perk</span>
+              <span className="font-signature text-xl bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-500 bg-clip-text text-transparent" style={{fontFamily: 'cursive, "Dancing Script", "Pacifico", sans-serif', letterSpacing: '2px', textShadow: '0 2px 8px rgba(255,215,0,0.4)'}}>Official Perk</span>
             </div>
           </div>
         </div>

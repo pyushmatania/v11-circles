@@ -8,8 +8,6 @@ import { Project } from '../types';
 interface ProjectCardProps {
   project: Project;
   featured?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // urgent?: boolean;
   compact?: boolean;
   layout?: 'netflix' | 'grid' | 'list';
 }
