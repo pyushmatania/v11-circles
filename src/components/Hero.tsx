@@ -509,7 +509,7 @@ const Hero: React.FC<HeroProps> = ({ setCurrentView }) => {
         </motion.div>
 
         {/* Platform Impact Section - Optimized */}
-        <div className="relative z-10 max-w-7xl mx-auto px-2 sm:px-6 text-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -517,7 +517,7 @@ const Hero: React.FC<HeroProps> = ({ setCurrentView }) => {
             viewport={{ once: true }}
             className="mb-8"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border font-medium mt-32 mb-4 text-sm bg-white/10 backdrop-blur-sm border-white/20 text-white">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border font-medium mt-16 sm:mt-32 mb-4 text-sm bg-white/10 backdrop-blur-sm border-white/20 text-white">
               Platform Impact
             </div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 text-white">
@@ -532,7 +532,7 @@ const Hero: React.FC<HeroProps> = ({ setCurrentView }) => {
           </motion.div>
 
           {/* Main Stats - Responsive Grid with Gradient Effects */}
-          <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
             {mainStats.map((stat, idx) => (
               <motion.div
                 key={stat.key}
@@ -542,7 +542,7 @@ const Hero: React.FC<HeroProps> = ({ setCurrentView }) => {
                 viewport={{ once: true, margin: "-100px" }}
                 onViewportEnter={() => setStatsInView((prev) => ({ ...prev, [idx]: true }))}
                 style={{ willChange: 'transform' }}
-                className={`group relative p-6 sm:p-8 py-8 sm:py-10 rounded-2xl backdrop-blur-xl border transition-all duration-500 ${idx === 0 || idx === 3 ? '' : 'hover:scale-105'} ${
+                className={`group relative p-4 sm:p-6 lg:p-8 py-6 sm:py-8 lg:py-10 rounded-2xl backdrop-blur-xl border transition-all duration-500 ${idx === 0 || idx === 3 ? '' : 'hover:scale-105'} ${
                   theme === 'light'
                     ? currentGradient === 0 ? 'bg-green-50/40 border-green-300/60 shadow-lg hover:shadow-xl' :
                       currentGradient === 1 ? 'bg-orange-50/40 border-orange-300/60 shadow-lg hover:shadow-xl' :
@@ -586,7 +586,7 @@ const Hero: React.FC<HeroProps> = ({ setCurrentView }) => {
           </div>
 
           {/* Supporting Stats - Responsive Grid with Gradient Effects */}
-          <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+          <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
             {supportingStats.map((metric, idx) => (
               <motion.div
                 key={metric.title}
@@ -595,7 +595,7 @@ const Hero: React.FC<HeroProps> = ({ setCurrentView }) => {
                 transition={{ duration: 0.6, delay: (mainStats.length + idx) * 0.1 }}
                 viewport={{ once: true, margin: "-100px" }}
                 style={{ willChange: 'transform' }}
-                className={`group relative p-6 sm:p-8 py-8 sm:py-10 rounded-2xl backdrop-blur-xl border transition-all duration-500 hover:scale-105 ${
+                className={`group relative p-4 sm:p-6 lg:p-8 py-6 sm:py-8 lg:py-10 rounded-2xl backdrop-blur-xl border transition-all duration-500 hover:scale-105 ${
                   theme === 'light'
                     ? 'bg-white/40 border-white/60 shadow-lg hover:shadow-xl'
                     : `${metric.color} border-white/20 hover:border-white/40`

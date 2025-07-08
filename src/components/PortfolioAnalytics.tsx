@@ -223,7 +223,7 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
           : 'bg-gradient-to-br from-black via-gray-900 to-purple-900'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -231,10 +231,10 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
           transition={{ duration: 0.8 }}
           className="mb-8"
         >
-          <h1 className={`text-4xl md:text-5xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'} mb-4`}>
+          <h1 className={`text-3xl sm:text-4xl md:text-5xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'} mb-3 sm:mb-4`}>
             Portfolio Analytics
           </h1>
-          <p className={`text-lg ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'}`}>
+          <p className={`text-base sm:text-lg ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'}`}>
             Detailed analysis of your investment performance and insights
           </p>
         </motion.div>
@@ -522,25 +522,25 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
         )}
 
         {/* Overview Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className={`p-6 rounded-2xl backdrop-blur-xl border ${
+            className={`p-4 sm:p-6 rounded-2xl backdrop-blur-xl border ${
               theme === 'light'
                 ? 'bg-white/50 border-white/60 shadow-lg'
                 : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
             }`}
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-xl bg-green-500/20">
-                  <DollarSign className="w-6 h-6 text-green-500" />
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="p-2 sm:p-3 rounded-xl bg-green-500/20">
+                  <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-green-500" />
                 </div>
                 <div>
-                  <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Total Invested</p>
-                  <p className={`text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                  <p className={`text-xs sm:text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Total Invested</p>
+                  <p className={`text-lg sm:text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                     ₹{portfolioData.totalInvested.toLocaleString()}
                   </p>
                 </div>
@@ -564,14 +564,14 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
                 : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
             }`}
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-xl bg-blue-500/20">
-                  <DollarSign className="w-6 h-6 text-blue-500" />
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="p-2 sm:p-3 rounded-xl bg-blue-500/20">
+                  <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500" />
                 </div>
                 <div>
-                  <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Current Value</p>
-                  <p className={`text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                  <p className={`text-xs sm:text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Current Value</p>
+                  <p className={`text-lg sm:text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                     ₹{portfolioData.totalReturns.toLocaleString()}
                   </p>
                 </div>
@@ -594,14 +594,14 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
                 : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
             }`}
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-xl bg-purple-500/20">
-                  <TrendingUp className="w-6 h-6 text-purple-500" />
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="p-2 sm:p-3 rounded-xl bg-purple-500/20">
+                  <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" />
                 </div>
                 <div>
-                  <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Total Profit</p>
-                  <p className={`text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                  <p className={`text-xs sm:text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Total Profit</p>
+                  <p className={`text-lg sm:text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                     ₹{portfolioData.totalProfit.toLocaleString()}
                   </p>
                 </div>
@@ -624,19 +624,19 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
                 : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
             }`}
           >
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="p-3 rounded-xl bg-yellow-500/20">
-                  <Zap className="w-6 h-6 text-yellow-500" />
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="p-2 sm:p-3 rounded-xl bg-yellow-500/20">
+                  <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500" />
                 </div>
                 <div>
-                  <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Portfolio Health</p>
-                  <p className={`text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                  <p className={`text-xs sm:text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Portfolio Health</p>
+                  <p className={`text-lg sm:text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                     {portfolioHealth}
                   </p>
                 </div>
               </div>
-              <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
+              <div className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full ${
                 portfolioHealth === 'Excellent' 
                   ? 'bg-green-500/20 text-green-500' 
                   : portfolioHealth === 'Good' 
@@ -646,8 +646,8 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
                   : 'bg-red-500/20 text-red-500'
               }`}>
                 {portfolioHealth === 'Excellent' || portfolioHealth === 'Good' 
-                  ? <TrendingUp className="w-5 h-5" /> 
-                  : <TrendingDown className="w-5 h-5" />}
+                  ? <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" /> 
+                  : <TrendingDown className="w-4 h-4 sm:w-5 sm:h-5" />}
               </div>
             </div>
             <div className="w-full h-1 bg-gradient-to-r from-yellow-500 to-yellow-300 rounded-full" />
@@ -655,24 +655,24 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
         </div>
 
         {/* Analytics Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {/* Returns Over Time */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className={`p-6 rounded-2xl backdrop-blur-xl border ${
+            className={`p-4 sm:p-6 rounded-2xl backdrop-blur-xl border ${
               theme === 'light'
                 ? 'bg-white/50 border-white/60 shadow-lg'
                 : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
             }`}
           >
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <div className="p-2 rounded-lg bg-blue-500/20">
-                  <LineChart className="w-5 h-5 text-blue-500" />
+                  <LineChart className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
                 </div>
-                <h3 className={`font-bold text-lg ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Returns Over Time</h3>
+                <h3 className={`font-bold text-base sm:text-lg ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Returns Over Time</h3>
               </div>
               <div className={`text-xs px-2 py-1 rounded-full ${
                 theme === 'light' ? 'bg-green-100 text-green-700' : 'bg-green-900/30 text-green-400'
@@ -682,18 +682,18 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
             </div>
             
             {/* Chart visualization - Simplified for this example */}
-            <div className="w-full h-64 relative">
-              <div className="absolute bottom-0 left-0 right-0 flex items-end h-48 justify-between">
+            <div className="w-full h-48 sm:h-64 relative">
+              <div className="absolute bottom-0 left-0 right-0 flex items-end h-36 sm:h-48 justify-between">
                 {portfolioData.monthlyReturns.map((item, index) => (
                   <div key={index} className="flex flex-col items-center">
                     <div 
-                      className="w-6 rounded-t-md bg-gradient-to-t from-blue-500 to-purple-500 hover:from-blue-400 hover:to-purple-400 transition-all cursor-pointer"
+                      className="w-4 sm:w-6 rounded-t-md bg-gradient-to-t from-blue-500 to-purple-500 hover:from-blue-400 hover:to-purple-400 transition-all cursor-pointer"
                       style={{ 
                         height: `${(item.returns / 72000) * 100}%`,
                       }}
                     >
                       <div className="relative group">
-                        <div className={`absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-24 text-center p-1 rounded text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity ${
+                        <div className={`absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-20 sm:w-24 text-center p-1 rounded text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity ${
                           theme === 'light' ? 'bg-gray-900 text-white' : 'bg-white text-gray-900'
                         }`}>
                           ₹{item.returns.toLocaleString()}
@@ -712,20 +712,20 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className={`p-6 rounded-2xl backdrop-blur-xl border ${
+            className={`p-4 sm:p-6 rounded-2xl backdrop-blur-xl border ${
               theme === 'light'
                 ? 'bg-white/50 border-white/60 shadow-lg'
                 : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
             }`}
           >
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <div className="p-2 rounded-lg bg-purple-500/20">
-                  <PieChart className="w-5 h-5 text-purple-500" />
+                  <PieChart className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
                 </div>
-                <h3 className={`font-bold text-lg ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Portfolio Allocation</h3>
+                <h3 className={`font-bold text-base sm:text-lg ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Portfolio Allocation</h3>
               </div>
-              <button className={`text-xs px-3 py-1 rounded-lg border ${
+              <button className={`text-xs px-2 sm:px-3 py-1 rounded-lg border ${
                 theme === 'light' ? 'border-gray-300 text-gray-700 hover:bg-gray-100' : 'border-gray-700 text-gray-300 hover:bg-gray-800'
               }`}>
                 By Category ▾
@@ -733,8 +733,8 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
             </div>
             
             {/* Pie chart visualization - Simplified for this example */}
-            <div className="flex items-center">
-              <div className="relative w-48 h-48">
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <div className="relative w-32 h-32 sm:w-48 sm:h-48">
                 <svg viewBox="0 0 100 100" className="w-full h-full">
                   {/* Film - 55.6% */}
                   <circle
@@ -775,13 +775,13 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center flex-col">
                   <span className={`text-xs ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>Total</span>
-                  <span className={`text-xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                  <span className={`text-lg sm:text-xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                     ₹{portfolioData.totalInvested.toLocaleString()}
                   </span>
                 </div>
               </div>
 
-              <div className="flex-1 space-y-4 pl-4">
+              <div className="flex-1 space-y-3 sm:space-y-4 pl-0 sm:pl-4">
                 {portfolioData.investmentsByCategory.map((item, index) => (
                   <div key={index} className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -806,24 +806,24 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
         </div>
 
         {/* Sector and Region Breakdown Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {/* Sector Breakdown */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className={`p-6 rounded-2xl backdrop-blur-xl border ${
+            className={`p-4 sm:p-6 rounded-2xl backdrop-blur-xl border ${
               theme === 'light'
                 ? 'bg-white/50 border-white/60 shadow-lg'
                 : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
             }`}
           >
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <div className="p-2 rounded-lg bg-indigo-500/20">
-                  <BarChart className="w-5 h-5 text-indigo-500" />
+                  <BarChart className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-500" />
                 </div>
-                <h3 className={`font-bold text-lg ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Sector Breakdown</h3>
+                <h3 className={`font-bold text-base sm:text-lg ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Sector Breakdown</h3>
               </div>
               <div className={`text-xs px-2 py-1 rounded-full ${
                 theme === 'light' ? 'bg-indigo-100 text-indigo-700' : 'bg-indigo-900/30 text-indigo-400'
@@ -832,7 +832,7 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
               </div>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {Object.entries(userInvestments.reduce((acc, inv) => {
                 const sector = inv.sector || 'Unknown';
                 if (!acc[sector]) {
@@ -877,18 +877,18 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.7 }}
-            className={`p-6 rounded-2xl backdrop-blur-xl border ${
+            className={`p-4 sm:p-6 rounded-2xl backdrop-blur-xl border ${
               theme === 'light'
                 ? 'bg-white/50 border-white/60 shadow-lg'
                 : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
             }`}
           >
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <div className="p-2 rounded-lg bg-teal-500/20">
-                  <PieChart className="w-5 h-5 text-teal-500" />
+                  <PieChart className="w-4 h-4 sm:w-5 sm:h-5 text-teal-500" />
                 </div>
-                <h3 className={`font-bold text-lg ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Region Breakdown</h3>
+                <h3 className={`font-bold text-base sm:text-lg ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Region Breakdown</h3>
               </div>
               <div className={`text-xs px-2 py-1 rounded-full ${
                 theme === 'light' ? 'bg-teal-100 text-teal-700' : 'bg-teal-900/30 text-teal-400'
@@ -897,7 +897,7 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
               </div>
             </div>
             
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {Object.entries(userInvestments.reduce((acc, inv) => {
                 const region = inv.region || 'Unknown';
                 if (!acc[region]) {

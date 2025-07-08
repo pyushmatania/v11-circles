@@ -89,23 +89,23 @@ const Community: React.FC = () => {
     announcements: [
       { user: 'Bollywood Insider', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face', message: 'Welcome to the Announcements channel! 🎉', time: '10:00 AM', type: 'text' },
       { user: 'Film Critic Pro', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face', message: 'New project launch: Pathaan 2!', time: '10:05 AM', type: 'text' },
-      { user: 'Cinema Lover', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face', message: 'Check out this poster!', time: '10:10 AM', type: 'image', mediaUrl: 'https://images.unsplash.com/photo-1489599832522-3ea1d11d9e11?w=400&h=300&fit=crop' }
+      { user: 'Cinema Lover', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face', message: 'Check out this poster!', time: '10:10 AM', type: 'image', mediaUrl: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=800&h=600&fit=crop' }
     ],
     'investor-hall': [
       { user: 'Priya Sharma', avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face', message: 'How are the returns on Animal?', time: '11:00 AM', type: 'text' },
       { user: 'Rahul Verma', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face', message: 'Pretty solid! 15% so far.', time: '11:02 AM', type: 'text' }
     ],
     'creator-talks': [
-      { user: 'Siddharth Anand', avatar: 'https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=100', message: 'Ask me anything about directing!', time: '12:00 PM', type: 'text' }
+      { user: 'Siddharth Anand', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face', message: 'Ask me anything about directing!', time: '12:00 PM', type: 'text' }
     ],
     'fan-zone': [
-      { user: 'Fan Art Creator', avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face', message: 'Check out my new SRK fan art!', time: '1:00 PM', type: 'image', mediaUrl: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=600&h=400&fit=crop' }
+      { user: 'Fan Art Creator', avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face', message: 'Check out my new SRK fan art!', time: '1:00 PM', type: 'image', mediaUrl: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=800&h=600&fit=crop' }
     ],
     polls: [
       { user: 'Bollywood Updates', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face', message: 'Who should star in the next big project?', time: '2:00 PM', type: 'text' }
     ],
     'behind-scenes': [
-      { user: 'Movie Buff', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face', message: 'Behind the scenes from Pathaan 2!', time: '3:00 PM', type: 'video', mediaUrl: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4' }
+      { user: 'Movie Buff', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face', message: 'Behind the scenes from Pathaan 2!', time: '3:00 PM', type: 'image', mediaUrl: 'https://images.unsplash.com/photo-1489599832522-3ea1d11d9e11?w=800&h=600&fit=crop' }
     ]
   };
   const [channelMessages, setChannelMessages] = useState(initialChannelMessages);
@@ -178,12 +178,12 @@ const Community: React.FC = () => {
       category: 'Bollywood',
       members: 120000,
       activeMembers: 18000,
-      avatar: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Shah_Rukh_Khan_grace_the_launch_of_the_new_Tag_Heuer_Carrera_watch_%28cropped%29.jpg',
-      cover: 'https://m.media-amazon.com/images/M/MV5BMjA2YjYwYzUtYjQwZi00YjQwLTg2YjMtYjQwYzYwYzYwYzYwXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_FMjpg_UX1000_.jpg',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+      cover: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=800&h=600&fit=crop',
       description: 'The King of Bollywood. Actor, producer, and global icon. Known for Pathaan, Jawan, DDLJ, and more.',
       keyPeople: [
-        { name: 'Shah Rukh Khan', role: 'Actor', verified: true, avatar: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Shah_Rukh_Khan_grace_the_launch_of_the_new_Tag_Heuer_Carrera_watch_%28cropped%29.jpg' },
-        { name: 'Atlee Kumar', role: 'Director', verified: true, avatar: 'https://upload.wikimedia.org/wikipedia/commons/2/2e/Atlee_Kumar.jpg' }
+        { name: 'Shah Rukh Khan', role: 'Actor', verified: true, avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face' },
+        { name: 'Atlee Kumar', role: 'Director', verified: true, avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face' }
       ],
       movieInfo: {
         budget: '₹300 Crores',
@@ -199,11 +199,11 @@ const Community: React.FC = () => {
       category: 'Bollywood',
       members: 95000,
       activeMembers: 12000,
-      avatar: 'https://upload.wikimedia.org/wikipedia/commons/8/8e/Salman_Khan_at_the_launch_of_Bigg_Boss_Season_12.jpg',
-      cover: 'https://m.media-amazon.com/images/M/MV5BMTYwYjYwYzUtYjQwZi00YjQwLTg2YjMtYjQwYzYwYzYwYzYwXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_FMjpg_UX1000_.jpg',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
+      cover: 'https://images.unsplash.com/photo-1489599832522-3ea1d11d9e11?w=800&h=600&fit=crop',
       description: 'Superstar of Bollywood. Known for Tiger, Bajrangi Bhaijaan, Sultan, and more.',
       keyPeople: [
-        { name: 'Salman Khan', role: 'Actor', verified: true, avatar: 'https://upload.wikimedia.org/wikipedia/commons/8/8e/Salman_Khan_at_the_launch_of_Bigg_Boss_Season_12.jpg' }
+        { name: 'Salman Khan', role: 'Actor', verified: true, avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face' }
       ],
       movieInfo: {
         budget: '₹200 Crores',
@@ -219,11 +219,11 @@ const Community: React.FC = () => {
       category: 'Hollywood',
       members: 200000,
       activeMembers: 35000,
-      avatar: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/Taylor_Swift_Red_Tour_5%2C_2013.jpg',
-      cover: 'https://upload.wikimedia.org/wikipedia/en/9/9e/Taylor_Swift_-_The_Eras_Tour.png',
+      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+      cover: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&h=600&fit=crop',
       description: 'Global pop icon, singer-songwriter, and record-breaking performer. Known for The Eras Tour, 1989, Folklore, and more.',
       keyPeople: [
-        { name: 'Taylor Swift', role: 'Artist', verified: true, avatar: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/Taylor_Swift_Red_Tour_5%2C_2013.jpg' }
+        { name: 'Taylor Swift', role: 'Artist', verified: true, avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face' }
       ],
       movieInfo: {
         budget: '$100M',
@@ -239,11 +239,11 @@ const Community: React.FC = () => {
       category: 'Hollywood',
       members: 80000,
       activeMembers: 9000,
-      avatar: 'https://upload.wikimedia.org/wikipedia/commons/9/9e/James_Cameron_by_Gage_Skidmore_2.jpg',
-      cover: 'https://m.media-amazon.com/images/M/MV5BMjA2YjYwYzUtYjQwZi00YjQwLTg2YjMtYjQwYzYwYzYwYzYwXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_FMjpg_UX1000_.jpg',
+      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+      cover: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=800&h=600&fit=crop',
       description: 'Legendary director of Avatar, Titanic, Terminator, and more.',
       keyPeople: [
-        { name: 'James Cameron', role: 'Director', verified: true, avatar: 'https://upload.wikimedia.org/wikipedia/commons/9/9e/James_Cameron_by_Gage_Skidmore_2.jpg' }
+        { name: 'James Cameron', role: 'Director', verified: true, avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face' }
       ],
       movieInfo: {
         budget: '$250M',
@@ -259,11 +259,11 @@ const Community: React.FC = () => {
       category: 'Hollywood',
       members: 65000,
       activeMembers: 7000,
-      avatar: 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Katy_Perry_UNICEF_2012.jpg',
-      cover: 'https://upload.wikimedia.org/wikipedia/en/9/9e/Taylor_Swift_-_The_Eras_Tour.png',
+      avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
+      cover: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=800&h=600&fit=crop',
       description: 'Pop superstar, known for hits like Roar, Firework, and Teenage Dream.',
       keyPeople: [
-        { name: 'Katy Perry', role: 'Artist', verified: true, avatar: 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Katy_Perry_UNICEF_2012.jpg' }
+        { name: 'Katy Perry', role: 'Artist', verified: true, avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face' }
       ],
       movieInfo: {
         budget: '$50M',
@@ -279,11 +279,11 @@ const Community: React.FC = () => {
       category: 'Hollywood',
       members: 90000,
       activeMembers: 12000,
-      avatar: 'https://upload.wikimedia.org/wikipedia/commons/0/0c/Christopher_Nolan_Cannes_2018.jpg',
-      cover: 'https://m.media-amazon.com/images/M/MV5BMTYwYjYwYzUtYjQwZi00YjQwLTg2YjMtYjQwYzYwYzYwYzYwXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_FMjpg_UX1000_.jpg',
+      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face',
+      cover: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop',
       description: 'Visionary director of Oppenheimer, Inception, The Dark Knight, Interstellar, and more.',
       keyPeople: [
-        { name: 'Christopher Nolan', role: 'Director', verified: true, avatar: 'https://upload.wikimedia.org/wikipedia/commons/0/0c/Christopher_Nolan_Cannes_2018.jpg' }
+        { name: 'Christopher Nolan', role: 'Director', verified: true, avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face' }
       ],
       movieInfo: {
         budget: '$100M',
@@ -299,11 +299,11 @@ const Community: React.FC = () => {
       category: 'Hollywood',
       members: 70000,
       activeMembers: 8000,
-      avatar: 'https://upload.wikimedia.org/wikipedia/commons/6/6e/Margot_Robbie_by_Gage_Skidmore_2.jpg',
-      cover: 'https://m.media-amazon.com/images/M/MV5BMTYwYjYwYzUtYjQwZi00YjQwLTg2YjMtYjQwYzYwYzYwYzYwXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_FMjpg_UX1000_.jpg',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face',
+      cover: 'https://images.unsplash.com/photo-1489599832522-3ea1d11d9e11?w=800&h=600&fit=crop',
       description: 'Oscar-nominated actress, known for Barbie, I, Tonya, and The Wolf of Wall Street.',
       keyPeople: [
-        { name: 'Margot Robbie', role: 'Actress', verified: true, avatar: 'https://upload.wikimedia.org/wikipedia/commons/6/6e/Margot_Robbie_by_Gage_Skidmore_2.jpg' }
+        { name: 'Margot Robbie', role: 'Actress', verified: true, avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face' }
       ],
       movieInfo: {
         budget: '$145M',
@@ -356,21 +356,21 @@ const Community: React.FC = () => {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-6 py-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8 relative z-10">
         
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mb-8"
+          className="mb-6 sm:mb-8"
         >
-          <h1 className={`text-4xl md:text-5xl font-bold mb-2 ${
+          <h1 className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-2 ${
             theme === 'light' ? 'text-gray-900' : 'text-white'
           }`}>
             Community
           </h1>
-          <p className={`text-lg ${
+          <p className={`text-base sm:text-lg ${
             theme === 'light' ? 'text-gray-600' : 'text-gray-300'
           }`}>
             Instagram + Discord for entertainment fans and investors
@@ -382,9 +382,9 @@ const Community: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-8"
+          className="mb-6 sm:mb-8"
         >
-          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
+          <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory">
             {myCircles.map((circle, index) => (
               <motion.button
                 key={circle.id}
@@ -392,7 +392,7 @@ const Community: React.FC = () => {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={`relative flex-shrink-0 w-20 h-20 rounded-full p-1 transition-all duration-300 snap-center ${
+                className={`relative flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-full p-1 transition-all duration-300 snap-center ${
                   selectedCircle === circle.id
                     ? 'bg-gradient-to-r from-purple-500 to-blue-500'
                     : 'bg-gray-600'
@@ -403,8 +403,8 @@ const Community: React.FC = () => {
                   alt={circle.name}
                   className="w-full h-full rounded-full object-cover"
                 />
-                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
-                  <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                <div className="absolute -bottom-1 sm:-bottom-2 left-1/2 transform -translate-x-1/2">
+                  <span className={`text-xs font-medium px-1 sm:px-2 py-0.5 sm:py-1 rounded-full ${
                     theme === 'light' ? 'bg-white text-gray-900' : 'bg-gray-900 text-white'
                   }`}>
                     {circle.name.split(' ')[0]}
@@ -418,13 +418,13 @@ const Community: React.FC = () => {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: myCircles.length * 0.1 }}
-              className={`flex-shrink-0 w-20 h-20 rounded-full border-2 border-dashed flex items-center justify-center transition-all duration-300 snap-center ${
+              className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-dashed flex items-center justify-center transition-all duration-300 snap-center ${
                 theme === 'light'
                   ? 'border-gray-300 text-gray-600 hover:border-purple-400 hover:text-purple-600'
                   : 'border-gray-600 text-gray-400 hover:border-purple-400 hover:text-purple-400'
               }`}
             >
-              <Plus className="w-8 h-8" />
+              <Plus className="w-6 h-6 sm:w-8 sm:h-8" />
             </motion.button>
           </div>
         </motion.div>
@@ -434,14 +434,14 @@ const Community: React.FC = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className={`relative overflow-hidden rounded-2xl backdrop-blur-xl border mb-8 ${
+          className={`relative overflow-hidden rounded-2xl backdrop-blur-xl border mb-6 sm:mb-8 ${
             theme === 'light'
               ? 'light-glass-header'
               : 'bg-white/10 border-white/20'
           }`}
         >
           {/* Cover Image */}
-          <div className="relative h-48 overflow-hidden">
+          <div className="relative h-32 sm:h-40 md:h-48 overflow-hidden">
             <img 
               src={currentCircle.cover}
               alt={currentCircle.name}
@@ -450,26 +450,26 @@ const Community: React.FC = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             
             {/* Circle Info Overlay */}
-            <div className="absolute bottom-6 left-6 right-6">
-              <div className="flex items-center gap-4 mb-4">
+            <div className="absolute bottom-3 sm:bottom-6 left-3 sm:left-6 right-3 sm:right-6">
+              <div className="flex items-center gap-2 sm:gap-4 mb-2 sm:mb-4">
                 <img 
                   src={currentCircle.avatar}
                   alt={currentCircle.name}
-                  className="w-16 h-16 rounded-full object-cover border-4 border-white/30"
+                  className="w-12 h-12 sm:w-16 sm:h-16 rounded-full object-cover border-2 sm:border-4 border-white/30"
                 />
                 <div>
-                  <h2 className="text-white text-2xl font-bold mb-1">{currentCircle.name}</h2>
-                  <p className="text-gray-300">{currentCircle.description}</p>
+                  <h2 className="text-white text-lg sm:text-xl md:text-2xl font-bold mb-1">{currentCircle.name}</h2>
+                  <p className="text-gray-300 text-sm sm:text-base">{currentCircle.description}</p>
                 </div>
               </div>
               
-              <div className="flex items-center gap-6 text-sm text-gray-300">
+              <div className="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm text-gray-300">
                 <div className="flex items-center gap-1">
-                  <Users className="w-4 h-4" />
+                  <Users className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>{currentCircle.members.toLocaleString()} members</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Activity className="w-4 h-4 text-green-400" />
+                  <Activity className="w-3 h-3 sm:w-4 sm:h-4 text-green-400" />
                   <span>{currentCircle.activeMembers.toLocaleString()} active</span>
                 </div>
               </div>
@@ -477,33 +477,33 @@ const Community: React.FC = () => {
           </div>
 
           {/* Key People & Project Info */}
-          <div className="p-6">
-            <div className="grid md:grid-cols-2 gap-6">
+          <div className="p-4 sm:p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
               {/* Key People */}
               <div>
-                <h3 className={`font-bold text-lg mb-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                <h3 className={`font-bold text-base sm:text-lg mb-3 sm:mb-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                   Key People
                 </h3>
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {currentCircle.keyPeople.map((person, index) => (
-                    <div key={index} className="flex items-center gap-3">
+                    <div key={index} className="flex items-center gap-2 sm:gap-3">
                       <div className="relative">
                         <img 
                           src={person.avatar}
                           alt={person.name}
-                          className="w-10 h-10 rounded-full object-cover"
+                          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
                         />
                         {person.verified && (
-                          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
-                            <CheckCircle className="w-3 h-3 text-white" />
+                          <div className="absolute -bottom-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                            <CheckCircle className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
                           </div>
                         )}
                       </div>
                       <div>
-                        <div className={`font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                        <div className={`font-medium text-sm sm:text-base ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                           {person.name}
                         </div>
-                        <div className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                        <div className={`text-xs sm:text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
                           {person.role}
                         </div>
                       </div>
@@ -514,16 +514,16 @@ const Community: React.FC = () => {
 
               {/* Project Info */}
               <div>
-                <h3 className={`font-bold text-lg mb-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                <h3 className={`font-bold text-base sm:text-lg mb-3 sm:mb-4 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                   Project Info
                 </h3>
-                <div className="space-y-3">
+                <div className="space-y-2 sm:space-y-3">
                   {Object.entries(currentCircle.movieInfo).map(([key, value], index) => (
                     <div key={index} className="flex justify-between">
-                      <span className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                      <span className={`text-xs sm:text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
                         {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}:
                       </span>
-                      <span className={`text-sm font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                      <span className={`text-xs sm:text-sm font-medium ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                         {value}
                       </span>
                     </div>
@@ -539,7 +539,7 @@ const Community: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className={`flex items-center gap-2 p-2 rounded-2xl backdrop-blur-xl border mb-8 overflow-x-auto justify-around md:justify-start ${
+          className={`flex items-center gap-1 sm:gap-2 p-2 rounded-2xl backdrop-blur-xl border mb-6 sm:mb-8 overflow-x-auto justify-around md:justify-start ${
             theme === 'light'
               ? 'light-glass-header'
               : 'bg-white/10 border-white/20'
@@ -549,48 +549,48 @@ const Community: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as 'feed' | 'channels' | 'friends' | 'media' | 'perks' | 'merch')}
-              className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
+              className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-300 ${
                 activeTab === tab.id
                   ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
                   : `${theme === 'light' ? 'text-gray-700 hover:bg-white/50 hover:text-gray-900' : 'text-gray-300 hover:bg-white/10 hover:text-white'}`
               }`}
             >
-              <tab.icon className="w-5 h-5" />
-              <span className="hidden md:inline">{tab.label}</span>
+              <tab.icon className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden md:inline text-sm sm:text-base">{tab.label}</span>
             </button>
           ))}
         </motion.div>
 
         {/* Tab Content */}
         <AnimatePresence mode="wait">
-          {/* Feed Tab */}
-          {activeTab === 'feed' && (
-            <motion.div
-              key="feed"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4 }}
-              className="space-y-6"
-            >
+                      {/* Feed Tab */}
+            {activeTab === 'feed' && (
+              <motion.div
+                key="feed"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4 }}
+                className="space-y-4 sm:space-y-6"
+              >
               {/* Create Post */}
-              <div className={`p-6 rounded-2xl backdrop-blur-xl border ${
+              <div className={`p-4 sm:p-6 rounded-2xl backdrop-blur-xl border ${
                 theme === 'light'
                   ? 'light-glass-header'
                   : 'bg-white/10 border-white/20'
               }`}>
-                <div className="flex items-center gap-4 mb-4">
+                <div className="flex items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
                   <img 
                     src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=50"
                     alt="Your avatar"
-                    className="w-12 h-12 rounded-full object-cover"
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
                   />
                   <input
                     type="text"
                     placeholder="Share your thoughts with the community..."
                     value={newPost}
                     onChange={(e) => setNewPost(e.target.value)}
-                    className={`flex-1 px-4 py-3 rounded-xl border focus:outline-none focus:border-purple-500/50 ${
+                    className={`flex-1 px-3 sm:px-4 py-2 sm:py-3 rounded-xl border focus:outline-none focus:border-purple-500/50 text-sm sm:text-base ${
                       theme === 'light'
                         ? 'bg-white/50 border-gray-300 text-gray-900 placeholder-gray-500'
                         : 'bg-white/10 border-white/20 text-white placeholder-gray-400'
@@ -672,38 +672,38 @@ const Community: React.FC = () => {
               </div>
 
               {/* Feed Posts */}
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {feedPosts.map((post, index) => (
                   <motion.div
                     key={post.id}
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: index * 0.1 }}
-                    className={`p-6 rounded-2xl backdrop-blur-xl border ${
+                    className={`p-4 sm:p-6 rounded-2xl backdrop-blur-xl border ${
                       theme === 'light'
                         ? 'light-glass-header hover:shadow-lg hover:shadow-purple-200/50'
                         : 'bg-white/10 border-white/20 hover:border-white/30'
                     } transition-all duration-300`}
                   >
                     {/* Post Header */}
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                      <div className="flex items-center gap-2 sm:gap-3">
                         <img 
                           src={post.userAvatar}
                           alt={post.userName}
-                          className="w-12 h-12 rounded-full object-cover"
+                          className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
                         />
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className={`font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
-                              {post.userName}
-                            </span>
-                            {post.userVerified && (
-                              <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
-                                <CheckCircle className="w-3 h-3 text-white" />
-                              </div>
-                            )}
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                                                  <div>
+                            <div className="flex items-center gap-1 sm:gap-2">
+                              <span className={`font-bold text-sm sm:text-base ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                                {post.userName}
+                              </span>
+                                                          {post.userVerified && (
+                                <div className="w-4 h-4 sm:w-5 sm:h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                                  <CheckCircle className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
+                                </div>
+                              )}
+                              <span className={`px-1 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-medium ${
                               post.category === 'behind-scenes' ? 'bg-purple-500/20 text-purple-400' :
                               post.category === 'news' ? 'bg-yellow-500/20 text-yellow-400' :
                               post.category === 'review' ? 'bg-green-500/20 text-green-400' :
@@ -712,7 +712,7 @@ const Community: React.FC = () => {
                               {post.category.replace('-', ' ').toUpperCase()}
                             </span>
                           </div>
-                          <div className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+                                                      <div className={`text-xs sm:text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
                             {new Date(post.timestamp).toLocaleDateString('en-US', { 
                               month: 'short', 
                               day: 'numeric',
@@ -1283,18 +1283,18 @@ const Community: React.FC = () => {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className={`p-6 rounded-2xl backdrop-blur-xl border ${
+                  className={`p-4 sm:p-6 rounded-2xl backdrop-blur-xl border min-h-[240px] sm:min-h-[200px] flex flex-col justify-between ${
                     theme === 'light'
                       ? 'light-glass-header hover:shadow-lg hover:shadow-purple-200/50'
                       : 'bg-white/10 border-white/20 hover:border-white/30'
                   } transition-all duration-300`}
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-xl bg-white/10 flex items-center justify-center">
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                    <div className="p-3 rounded-xl bg-white/10 flex items-center justify-center self-start">
                       <perk.icon className="w-6 h-6" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
                         <h3 className={`font-bold text-lg truncate ${theme === 'light' ? 'text-gray-900' : 'text-white'} flex-1`}>
                           {perk.title}
                         </h3>
@@ -1313,11 +1313,11 @@ const Community: React.FC = () => {
                           'bg-yellow-100 text-yellow-700'
                         }`}>{perk.status}</span>
                       </div>
-                      <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'} mb-2 truncate`}>
+                      <p className={`text-sm ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'} mb-3 sm:mb-2 truncate`}>
                         {perk.description}
                       </p>
                       {/* Metadata Row */}
-                      <div className="flex flex-wrap items-center gap-4 text-xs text-gray-400 mb-2">
+                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-gray-400 mb-3 sm:mb-2">
                         <div className="flex items-center gap-1">
                           <DollarSign className="w-4 h-4" />
                           <span className="font-semibold text-white">₹{perk.metadata.estimatedValue?.toLocaleString() || 'N/A'}</span>
@@ -1344,7 +1344,7 @@ const Community: React.FC = () => {
                       </div>
                       {/* Tags */}
                       {perk.metadata.tags && perk.metadata.tags.length > 0 && (
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-2">
                           <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">
                             {perk.metadata.tags[0]}
                           </span>
@@ -1358,11 +1358,9 @@ const Community: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex items-center justify-between mt-4 pt-2 border-t border-white/10">
-                    {perk.metadata.date && (
-                      <span className="text-xs text-gray-500 font-medium">
-                        {perk.metadata.date}
-                      </span>
-                    )}
+                    <span className="text-xs text-gray-500 font-medium">
+                      {perk.metadata.date}
+                    </span>
                     {perk.metadata.requiresVerification && (
                       <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded-full font-semibold">
                         Verification Required

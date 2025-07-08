@@ -48,7 +48,7 @@ const TechTrust: React.FC = () => {
         : 'bg-gradient-to-br from-gray-900 via-black to-purple-900'
     } relative overflow-hidden`}>
       
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         
         {/* Header */}
         <motion.div
@@ -56,24 +56,24 @@ const TechTrust: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="text-center mb-20"
+          className="text-center mb-12 sm:mb-20"
         >
-          <h2 className={`text-5xl md:text-6xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'} mb-8 flex items-center justify-center gap-3`}>
+          <h2 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'} mb-6 sm:mb-8 flex items-center justify-center gap-2 sm:gap-3`}>
             <span className={theme === 'light' ? 'text-gray-700' : 'text-gray-200'}>
-              <Handshake className="w-10 h-10 inline-block align-middle" />
+              <Handshake className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 inline-block align-middle" />
             </span>
             <Typewriter
               text="Trusted by Thousands"
               className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
             />
           </h2>
-          <p className={`text-xl ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'} max-w-3xl mx-auto`}>
+          <p className={`text-base sm:text-lg md:text-xl ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'} max-w-3xl mx-auto`}>
             Join a secure, regulated platform backed by cutting-edge technology and trusted by investors worldwide.
           </p>
         </motion.div>
 
         {/* Trust Factors Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-12 sm:mb-20">
           {trustFactors.map((factor, index) => (
             <motion.div
               key={index}
@@ -81,7 +81,7 @@ const TechTrust: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
-              className={`group relative p-8 rounded-2xl backdrop-blur-xl border transition-all duration-500 hover:scale-105 ${
+              className={`group relative p-4 sm:p-6 lg:p-8 rounded-2xl backdrop-blur-xl border transition-all duration-500 hover:scale-105 ${
                 theme === 'light'
                   ? 'bg-white/40 border-white/60 shadow-lg hover:shadow-xl'
                   : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20 hover:border-white/40'
@@ -90,14 +90,14 @@ const TechTrust: React.FC = () => {
               <div className="relative z-10 text-center">
                 {/* Icon */}
                 <motion.div
-                  className={`inline-flex p-4 rounded-xl bg-gradient-to-r ${factor.color} bg-opacity-20 mb-6`}
+                  className={`inline-flex p-3 sm:p-4 rounded-xl bg-gradient-to-r ${factor.color} bg-opacity-20 mb-4 sm:mb-6`}
                   whileHover={{ scale: 1.1, rotate: 5 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <factor.icon className={`w-8 h-8 text-white`} />
+                  <factor.icon className={`w-6 h-6 sm:w-8 sm:h-8 text-white`} />
                 </motion.div>
                 
-                <h3 className={`text-xl font-bold mb-3 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                <h3 className={`text-lg sm:text-xl font-bold mb-2 sm:mb-3 ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                   {factor.title}
                 </h3>
                 <p className={`text-sm leading-relaxed ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'}`}>
@@ -114,25 +114,25 @@ const TechTrust: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className={`p-8 rounded-2xl backdrop-blur-xl border ${
+          className={`p-4 sm:p-6 lg:p-8 rounded-2xl backdrop-blur-xl border ${
             theme === 'light'
               ? 'bg-white/40 border-white/60'
               : 'bg-gradient-to-r from-white/5 to-white/10 border-white/20'
           }`}
         >
-          <div className="text-center mb-8">
-            <h3 className={`text-3xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'} mb-4`}>
+          <div className="text-center mb-6 sm:mb-8">
+            <h3 className={`text-2xl sm:text-3xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'} mb-3 sm:mb-4`}>
               Platform{' '}
               <span className="bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent">
                 Achievements
               </span>
             </h3>
-            <p className={`text-lg ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'}`}>
+            <p className={`text-base sm:text-lg ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'}`}>
               Real numbers that showcase our commitment to your success
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {achievements.map((achievement, index) => (
               <motion.div
                 key={index}
@@ -140,7 +140,7 @@ const TechTrust: React.FC = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="flex items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-blue-500/10"
+                className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-blue-500/10"
               >
                 <CheckCircle className="w-6 h-6 text-green-400 flex-shrink-0" />
                 <span className={`font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
@@ -157,23 +157,23 @@ const TechTrust: React.FC = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           viewport={{ once: true }}
-          className="text-center mt-16"
+          className="text-center mt-12 sm:mt-16"
         >
-          <div className="flex justify-center items-center gap-2 mb-4">
+          <div className="flex justify-center items-center gap-1 sm:gap-2 mb-3 sm:mb-4">
             {[1, 2, 3, 4, 5].map((star) => (
               <motion.div
                 key={star}
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 0.5, delay: star * 0.1, repeat: Infinity, repeatDelay: 3 }}
               >
-                <Star className="w-8 h-8 fill-yellow-400 text-yellow-400" />
+                <Star className="w-6 h-6 sm:w-8 sm:h-8 fill-yellow-400 text-yellow-400" />
               </motion.div>
             ))}
           </div>
-          <p className={`text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'} mb-2`}>
+          <p className={`text-xl sm:text-2xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'} mb-2`}>
             4.9/5 Average Rating
           </p>
-          <p className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+          <p className={`text-sm sm:text-base ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
             Based on 1,200+ investor reviews
           </p>
         </motion.div>

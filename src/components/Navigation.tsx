@@ -90,6 +90,9 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                   className="hidden md:flex items-center gap-0 cursor-pointer"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0, duration: 0.3 }}
                 >
                   <div className="w-24 h-24 flex items-center justify-center">
                     <img 
@@ -107,7 +110,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                       C
                     </span>
                   </div>
-                  <span className={`font-bold text-4xl drop-shadow-lg transition-all duration-[3000ms] -ml-4 ${
+                  <span className={`font-bold text-4xl drop-shadow-lg transition-all duration-300 -ml-4 ${
                     theme === 'light' 
                       ? 'text-gray-900'
                       : 'text-white'
@@ -122,7 +125,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                     <motion.button
                       key={item.id}
                       onClick={() => handleItemClick(item.id)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-[3000ms] relative ${
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 relative ${
                         currentView === item.id
                           ? `${theme === 'light' 
                               ? 'text-purple-600' 
@@ -134,7 +137,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                       whileTap={{ scale: 0.95 }}
                       initial={{ opacity: 0, y: -20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
+                      transition={{ delay: index * 0.05, duration: 0.3 }}
                     >
                       <item.icon className="w-5 h-5 drop-shadow-lg" />
                       <span className="font-medium text-base drop-shadow-lg">
@@ -150,7 +153,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                   <div className="relative hidden md:block">
                     <motion.button
                       onClick={() => setShowMoreMenu(!showMoreMenu)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-[3000ms] ${
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-300 ${
                         moreNavItems.some(item => item.id === currentView)
                           ? `${theme === 'light' 
                               ? 'text-purple-600' 
@@ -160,6 +163,9 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                       }`}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2, duration: 0.3 }}
                     >
                       <MoreHorizontal className="w-5 h-5 drop-shadow-lg" />
                       <span className="font-medium text-base drop-shadow-lg">
@@ -216,18 +222,29 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                 {/* Right Side Actions */}
                 <div className="hidden md:flex items-center gap-4">
                   {/* Search Button */}
-                  <div className="relative hidden md:block">
+                  <motion.div 
+                    className="relative hidden md:block"
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.25, duration: 0.3 }}
+                  >
                     <SearchBar
                       onSelectProject={handleProjectSelect}
                       onViewAllResults={() => {
                         setCurrentView('search');
                       }}
                     />
-                  </div>
+                  </motion.div>
                   
-                  <NotificationDropdown
-                    onViewAll={() => setCurrentView('notifications')}
-                  />
+                  <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.3 }}
+                  >
+                    <NotificationDropdown
+                      onViewAll={() => setCurrentView('notifications')}
+                    />
+                  </motion.div>
 
                   {/* Profile Icon */}
                   <div className="relative">
@@ -239,7 +256,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                           setCurrentView('profile');
                         }
                       }}
-                      className={`flex items-center justify-center transition-all duration-[3000ms] ${
+                      className={`flex items-center justify-center transition-all duration-300 ${
                         theme === 'light'
                           ? 'text-gray-600 hover:text-purple-600'
                           : 'text-gray-300 hover:text-cyan-400'
@@ -247,6 +264,9 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                       whileHover={{ scale: 1.08 }}
                       whileTap={{ scale: 0.95 }}
                       aria-label={isAuthenticated ? "Profile" : "Sign In"}
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.35, duration: 0.3 }}
                     >
                       {isAuthenticated && user?.avatar ? (
                         <img 
@@ -269,9 +289,12 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                   {/* Theme Toggle Button */}
                   <motion.button
                     onClick={toggleTheme}
-                    className={`p-2 rounded-lg transition-all duration-[3000ms] ${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`}
+                    className={`p-2 rounded-lg transition-all duration-300 ${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`}
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4, duration: 0.3 }}
                   >
                     {theme === 'light' ? (
                       <Moon className="w-5 h-5 drop-shadow-lg" />
@@ -283,15 +306,48 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
 
                 {/* Mobile Navigation */}
                 <div className="md:hidden flex items-center gap-4 w-full justify-between px-2">
-                  {/* Left: Logo (optional, or leave empty for spacing) */}
-                  <div className="w-8" />
+                  {/* Left: Logo */}
+                  <motion.button 
+                    onClick={() => setCurrentView('home')}
+                    className="flex items-center gap-2 cursor-pointer"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0, duration: 0.3 }}
+                  >
+                    <div className="w-8 h-8 flex items-center justify-center">
+                      <img 
+                        src="/Improved Logo-01.png" 
+                        alt="Circles Logo" 
+                        className="w-8 h-8 object-contain drop-shadow-lg"
+                        onError={(e) => {
+                          const target = e.currentTarget as HTMLImageElement;
+                          target.style.display = 'none';
+                          const fallback = target.nextElementSibling as HTMLElement;
+                          if (fallback) fallback.style.display = 'block';
+                        }}
+                      />
+                      <span className={`font-bold text-lg hidden drop-shadow-lg ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                        C
+                      </span>
+                    </div>
+                    <span className={`font-bold text-lg drop-shadow-lg transition-all duration-300 ${
+                      theme === 'light' 
+                        ? 'text-gray-900'
+                        : 'text-white'
+                    }`}>
+                      Circles
+                    </span>
+                  </motion.button>
+                  
                   {/* Center: Main Nav Items */}
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
                     {mainNavItems.map((item, index) => (
                       <motion.button
                         key={item.id}
                         onClick={() => handleItemClick(item.id)}
-                        className={`p-2 rounded-lg transition-all duration-[3000ms] relative ${
+                        className={`p-2 rounded-lg transition-all duration-300 relative ${
                           currentView === item.id
                             ? 'text-cyan-400'
                             : `${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`
@@ -300,7 +356,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                         whileTap={{ scale: 0.9 }}
                         initial={{ opacity: 0, scale: 0 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: index * 0.1 }}
+                        transition={{ delay: index * 0.05, duration: 0.3 }}
                       >
                         <item.icon className="w-5 h-5 drop-shadow-lg" />
                         {item.requiresAuth && !isAuthenticated && (
@@ -309,14 +365,18 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                       </motion.button>
                     ))}
                   </div>
-                  {/* Right: Theme & Notification Buttons */}
-                  <div className="flex items-center gap-2">
+                  
+                  {/* Right: Theme, Notification & Profile Buttons */}
+                  <div className="flex items-center gap-1">
                     <motion.button
                       onClick={toggleTheme}
-                      className={`p-2 rounded-lg transition-all duration-[3000ms] ${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`}
+                      className={`p-2 rounded-lg transition-all duration-300 ${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       aria-label="Toggle theme"
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.2, duration: 0.3 }}
                     >
                       {theme === 'light' ? (
                         <Moon className="w-5 h-5 drop-shadow-lg" />
@@ -324,9 +384,54 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                         <Sun className="w-5 h-5 drop-shadow-lg" />
                       )}
                     </motion.button>
-                    <NotificationDropdown
-                      onViewAll={() => setCurrentView('notifications')}
-                    />
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.25, duration: 0.3 }}
+                    >
+                      <NotificationDropdown
+                        onViewAll={() => setCurrentView('notifications')}
+                      />
+                    </motion.div>
+                    <motion.button
+                      onClick={() => {
+                        if (!isAuthenticated) {
+                          onAuthRequired('login');
+                        } else {
+                          setCurrentView('profile');
+                        }
+                      }}
+                      className={`p-2 rounded-lg transition-all duration-300 relative ${
+                        currentView === 'profile'
+                          ? 'text-cyan-400'
+                          : `${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`
+                      }`}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      aria-label={isAuthenticated ? "Profile" : "Sign In"}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.3, duration: 0.3 }}
+                    >
+                      {isAuthenticated && user?.avatar ? (
+                        <img 
+                          src={user.avatar} 
+                          alt={user.name}
+                          className="w-5 h-5 rounded-full object-cover"
+                          onError={(e) => {
+                            const target = e.currentTarget as HTMLImageElement;
+                            target.style.display = 'none';
+                            const fallback = target.nextElementSibling as HTMLElement;
+                            if (fallback) fallback.style.display = 'block';
+                          }}
+                        />
+                      ) : (
+                        <User className="w-5 h-5 drop-shadow-lg" />
+                      )}
+                      {!isAuthenticated && (
+                        <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-400 rounded-full animate-pulse" />
+                      )}
+                    </motion.button>
                   </div>
                 </div>
               </div>
@@ -353,7 +458,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                   <div key={item.id} className="relative">
                     <motion.button
                       onClick={() => handleItemClick(item.id)}
-                      className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-[3000ms] ${
+                      className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 ${
                         currentView === item.id
                           ? `${theme === 'light' 
                               ? 'text-purple-600 bg-purple-100/50 shadow-lg shadow-purple-400/25' 
@@ -368,7 +473,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                       whileTap={{ scale: 0.95 }}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
+                      transition={{ delay: index * 0.05, duration: 0.3 }}
                     >
                       <item.icon className="w-6 h-6" />
                       {item.requiresAuth && !isAuthenticated && (
@@ -378,7 +483,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                       {currentView === item.id && (
                         <motion.div
                           layoutId="activeIndicator"
-                          className={`absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-8 rounded-r-full transition-all duration-[3000ms] ${
+                          className={`absolute -left-2 top-1/2 transform -translate-y-1/2 w-1 h-8 rounded-r-full transition-all duration-300 ${
                             theme === 'light' 
                               ? 'bg-gradient-to-b from-purple-400 to-purple-500'
                               : 'bg-gradient-to-b from-cyan-400 to-blue-500'
@@ -407,7 +512,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                 <div className="relative">
                   <motion.button
                     onClick={() => setShowMoreMenu(!showMoreMenu)}
-                    className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-[3000ms] ${
+                    className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 ${
                       moreNavItems.some(item => item.id === currentView)
                         ? `${theme === 'light' 
                             ? 'text-purple-600 bg-purple-100/50 shadow-lg shadow-purple-400/25' 
@@ -420,6 +525,9 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                     }`}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2, duration: 0.3 }}
                   >
                     <MoreHorizontal className="w-6 h-6" />
                   </motion.button>
@@ -483,13 +591,16 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                   <div className="relative">
                     <motion.button
                     onClick={toggleTheme}
-                      className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-[3000ms] ${
+                      className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 ${
                         theme === 'light' 
                           ? 'text-gray-700 hover:text-gray-900 hover:bg-white/50' 
                           : 'text-gray-400 hover:text-white hover:bg-white/10'
                       }`}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.25, duration: 0.3 }}
                     >
                     {theme === 'light' ? (
                       <Moon className="w-6 h-6" />
@@ -512,7 +623,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                 <div className="relative">
                   <motion.button
                     onClick={() => handleItemClick('profile')}
-                    className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-[3000ms] ${
+                    className={`relative flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 ${
                       currentView === 'profile'
                         ? `${theme === 'light' 
                             ? 'text-purple-600 bg-purple-100/50 shadow-lg shadow-purple-400/25' 
@@ -525,6 +636,9 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                     }`}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3, duration: 0.3 }}
                   >
                     {isAuthenticated && user?.avatar ? (
                       <img 

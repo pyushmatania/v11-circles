@@ -181,7 +181,7 @@ const Rewards: React.FC = () => {
                   </div>
                 </div>
               )}
-              <div className="relative h-full">
+              <div className="relative h-full min-h-[500px] sm:min-h-[450px] lg:min-h-[420px]">
                 {/* Place icon below badge for Backer, otherwise at top */}
                 {index === 1 && tier.popular ? (
                   <div className="flex justify-center items-center mt-8 mb-2">
@@ -206,16 +206,16 @@ const Rewards: React.FC = () => {
                   className="h-full bg-gray-100 dark:bg-gray-800 shadow-md border border-gray-200 dark:border-gray-700"
                   avatarStyle={{ objectPosition: getObjectPosition(index) }}
                 />
-                {/* Glassmorphic overlay for tier info */}
-                <div className="absolute left-0 right-0 bottom-0 p-4 rounded-b-2xl backdrop-blur-md bg-white/60 dark:bg-gray-900/60 border-t border-white/30 dark:border-gray-700/40 flex flex-col gap-2" style={{zIndex: 10}}>
+                {/* Glassmorphic overlay for tier info - full width */}
+                <div className="absolute left-0 right-0 bottom-0 p-4 sm:p-6 rounded-b-2xl backdrop-blur-md bg-white/60 dark:bg-gray-900/60 border-t border-white/30 dark:border-gray-700/40 flex flex-col gap-2 w-full" style={{zIndex: 10}}>
                   <div className="flex items-center gap-2 mb-1">
                     <span className={`inline-block w-2 h-8 rounded-l-xl ${index === 0 ? 'bg-yellow-400' : index === 1 ? 'bg-blue-400' : index === 2 ? 'bg-purple-400' : 'bg-orange-400'}`}></span>
-                    <span className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">{tier.title}</span>
+                    <span className="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">{tier.title}</span>
                   </div>
                   <div className="flex items-center gap-2 mb-2">
                     <span className={`px-3 py-1 rounded-full text-sm font-bold ${index === 0 ? 'bg-yellow-100 text-yellow-700' : index === 1 ? 'bg-blue-100 text-blue-700' : index === 2 ? 'bg-purple-100 text-purple-700' : 'bg-orange-100 text-orange-700'}`}>Min. Investment: {tier.minAmount}</span>
                   </div>
-                  <ul className="flex flex-col gap-1 text-left text-gray-700 dark:text-gray-200 text-base mb-0">
+                  <ul className="flex flex-col gap-1 text-left text-gray-700 dark:text-gray-200 text-sm sm:text-base mb-0">
                     {tier.perks.map((perk, i) => (
                       <li key={i} className="flex items-start gap-2">
                         <CheckCircle className={`w-4 h-4 mt-1 flex-shrink-0 ${index === 0 ? 'text-yellow-400' : index === 1 ? 'text-blue-400' : index === 2 ? 'text-purple-400' : 'text-orange-400'}`} />

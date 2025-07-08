@@ -55,7 +55,7 @@ const GlassCard: React.FC<GlassCardProps> = ({ illustration, theme, flipped, onH
     }}
   >
     <div
-      className="relative w-full h-[500px] rounded-2xl overflow-hidden cursor-pointer"
+      className="relative w-full h-[450px] sm:h-[420px] md:h-[400px] rounded-2xl overflow-hidden cursor-pointer"
       style={{
         perspective: '1500px',
         transformStyle: 'preserve-3d',

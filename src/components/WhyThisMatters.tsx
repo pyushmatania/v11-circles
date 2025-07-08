@@ -46,13 +46,13 @@ const WhyThisMatters: React.FC<WhyThisMattersProps> = ({ onJoin }) => {
   ];
 
   return (
-    <section className={`py-24 ${
+    <section className={`py-16 sm:py-24 ${
       theme === 'light' 
         ? 'animated-gradient-light' 
         : 'bg-gradient-to-b from-gray-900 to-black'
     } relative overflow-hidden`}>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         
         {/* Header */}
         <motion.div
@@ -60,238 +60,91 @@ const WhyThisMatters: React.FC<WhyThisMattersProps> = ({ onJoin }) => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="text-center mb-20"
+          className="text-center mb-16 sm:mb-20"
         >
-          <h2 className={`text-5xl md:text-6xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'} mb-8`}>
+          <h2 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold ${theme === 'light' ? 'text-gray-900' : 'text-white'} mb-6 sm:mb-8`}>
             <Typewriter
               text="Why This Matters"
               className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent"
             />
           </h2>
-          <p className={`text-xl ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'} max-w-3xl mx-auto`}>
+          <p className={`text-lg sm:text-xl ${theme === 'light' ? 'text-gray-600' : 'text-gray-300'} max-w-3xl mx-auto px-4`}>
             The entertainment industry is at a turning point. Here's the story of how we got here, and where we're going.
           </p>
         </motion.div>
 
         {/* Story Flow */}
-        <div className="space-y-24">
-          {/* Staggered layout for mobile */}
+        <div className="space-y-16 sm:space-y-24">
+          {/* Mobile layout - single column for better readability */}
           <div className="flex flex-col gap-8 md:hidden">
-            <div className="flex gap-4">
-              <div className="flex-1">
-                {/* First story */}
-                {stories[0] && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 100 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0 }}
-                    viewport={{ once: true }}
-                  >
-                    {/* Quote Card */}
-                    <div className={`relative p-12 md:p-16 rounded-3xl backdrop-blur-xl border ${
-                      theme === 'light'
-                        ? 'bg-white/40 border-white/60 shadow-lg'
-                        : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
-                    } ${stories[0].highlight ? (theme === 'light' ? 'shadow-xl' : 'border-white/40 shadow-2xl shadow-purple-500/20') : ''}`}>
-                      
-                      {/* Quote Icon */}
-                      <div className="relative z-10">
-                        <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-r ${stories[0].gradient} bg-opacity-20 mb-8`}>
-                          {React.createElement(stories[0].icon, { className: `w-8 h-8 ${theme === 'light' ? 'text-gray-900' : 'text-white'}` })}
-                        </div>
-
-                        {/* Main Quote */}
-                        <blockquote className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-8 ${
-                          stories[0].highlight 
-                            ? 'bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent' 
-                            : (theme === 'light' ? 'text-gray-900' : 'text-white')
-                        }`}>
-                          "{stories[0].text}"
-                        </blockquote>
-
-                        {/* Description */}
-                        <p className={`text-xl md:text-2xl leading-relaxed max-w-4xl ${
-                          theme === 'light' ? 'text-gray-600' : 'text-gray-300'
-                        }`}>
-                          {stories[0].description}
-                        </p>
-                      </div>
-
-                      {/* Decorative Elements */}
-                      {stories[0].highlight && (
-                        <>
-                          <div className="absolute -top-2 -left-2 w-4 h-4 bg-purple-500 rounded-full animate-pulse"></div>
-                          <div className="absolute -top-1 -right-3 w-3 h-3 bg-blue-500 rounded-full animate-pulse delay-500"></div>
-                          <div className="absolute -bottom-3 -left-1 w-2 h-2 bg-pink-500 rounded-full animate-pulse delay-1000"></div>
-                          <div className="absolute -bottom-2 -right-2 w-3 h-3 bg-cyan-500 rounded-full animate-pulse delay-1500"></div>
-                        </>
-                      )}
-                    </div>
-                  </motion.div>
-                )}
-              </div>
-              <div className="flex-1">
-                {/* Second story */}
-                {stories[1] && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 100 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                    viewport={{ once: true }}
-                  >
-                    {/* Quote Card */}
-                    <div className={`relative p-12 md:p-16 rounded-3xl backdrop-blur-xl border ${
-                      theme === 'light'
-                        ? 'bg-white/40 border-white/60 shadow-lg'
-                        : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
-                    } ${stories[1].highlight ? (theme === 'light' ? 'shadow-xl' : 'border-white/40 shadow-2xl shadow-purple-500/20') : ''}`}>
-                      
-                      {/* Quote Icon */}
-                      <div className="relative z-10">
-                        <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-r ${stories[1].gradient} bg-opacity-20 mb-8`}>
-                          {React.createElement(stories[1].icon, { className: `w-8 h-8 ${theme === 'light' ? 'text-gray-900' : 'text-white'}` })}
-                        </div>
-
-                        {/* Main Quote */}
-                        <blockquote className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-8 ${
-                          stories[1].highlight 
-                            ? 'bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent' 
-                            : (theme === 'light' ? 'text-gray-900' : 'text-white')
-                        }`}>
-                          "{stories[1].text}"
-                        </blockquote>
-
-                        {/* Description */}
-                        <p className={`text-xl md:text-2xl leading-relaxed max-w-4xl ${
-                          theme === 'light' ? 'text-gray-600' : 'text-gray-300'
-                        }`}>
-                          {stories[1].description}
-                        </p>
-                      </div>
-
-                      {/* Decorative Elements */}
-                      {stories[1].highlight && (
-                        <>
-                          <div className="absolute -top-2 -left-2 w-4 h-4 bg-purple-500 rounded-full animate-pulse"></div>
-                          <div className="absolute -top-1 -right-3 w-3 h-3 bg-blue-500 rounded-full animate-pulse delay-500"></div>
-                          <div className="absolute -bottom-3 -left-1 w-2 h-2 bg-pink-500 rounded-full animate-pulse delay-1000"></div>
-                          <div className="absolute -bottom-2 -right-2 w-3 h-3 bg-cyan-500 rounded-full animate-pulse delay-1500"></div>
-                        </>
-                      )}
-                    </div>
-                  </motion.div>
-                )}
-              </div>
-            </div>
-            <div className="flex justify-center">
-              <div className="w-full max-w-xs">
-                {/* Third story centered */}
-                {stories[2] && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 100 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.4 }}
-                    viewport={{ once: true }}
-                  >
-                    {/* Quote Card */}
-                    <div className={`relative p-12 md:p-16 rounded-3xl backdrop-blur-xl border ${
-                      theme === 'light'
-                        ? 'bg-white/40 border-white/60 shadow-lg'
-                        : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
-                    } ${stories[2].highlight ? (theme === 'light' ? 'shadow-xl' : 'border-white/40 shadow-2xl shadow-purple-500/20') : ''}`}>
-                      
-                      {/* Quote Icon */}
-                      <div className="relative z-10">
-                        <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-r ${stories[2].gradient} bg-opacity-20 mb-8`}>
-                          {React.createElement(stories[2].icon, { className: `w-8 h-8 ${theme === 'light' ? 'text-gray-900' : 'text-white'}` })}
-                        </div>
-
-                        {/* Main Quote */}
-                        <blockquote className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-8 ${
-                          stories[2].highlight 
-                            ? 'bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent' 
-                            : (theme === 'light' ? 'text-gray-900' : 'text-white')
-                        }`}>
-                          "{stories[2].text}"
-                        </blockquote>
-
-                        {/* Description */}
-                        <p className={`text-xl md:text-2xl leading-relaxed max-w-4xl ${
-                          theme === 'light' ? 'text-gray-600' : 'text-gray-300'
-                        }`}>
-                          {stories[2].description}
-                        </p>
-                      </div>
-
-                      {/* Decorative Elements */}
-                      {stories[2].highlight && (
-                        <>
-                          <div className="absolute -top-2 -left-2 w-4 h-4 bg-purple-500 rounded-full animate-pulse"></div>
-                          <div className="absolute -top-1 -right-3 w-3 h-3 bg-blue-500 rounded-full animate-pulse delay-500"></div>
-                          <div className="absolute -bottom-3 -left-1 w-2 h-2 bg-pink-500 rounded-full animate-pulse delay-1000"></div>
-                          <div className="absolute -bottom-2 -right-2 w-3 h-3 bg-cyan-500 rounded-full animate-pulse delay-1500"></div>
-                        </>
-                      )}
-                    </div>
-                  </motion.div>
-                )}
-              </div>
-            </div>
-            <div>
-              {/* Fourth story full width */}
-              {stories[3] && (
-                <motion.div
-                  initial={{ opacity: 0, y: 100 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.6 }}
-                  viewport={{ once: true }}
-                >
-                  {/* Quote Card */}
-                  <div className={`relative p-12 md:p-16 rounded-3xl backdrop-blur-xl border ${
-                    theme === 'light'
-                      ? 'bg-white/40 border-white/60 shadow-lg'
-                      : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
-                  } ${stories[3].highlight ? (theme === 'light' ? 'shadow-xl' : 'border-white/40 shadow-2xl shadow-purple-500/20') : ''}`}>
-                    
-                    {/* Quote Icon */}
-                    <div className="relative z-10">
-                      <div className={`inline-flex p-4 rounded-2xl bg-gradient-to-r ${stories[3].gradient} bg-opacity-20 mb-8`}>
-                        {React.createElement(stories[3].icon, { className: `w-8 h-8 ${theme === 'light' ? 'text-gray-900' : 'text-white'}` })}
-                      </div>
-
-                      {/* Main Quote */}
-                      <blockquote className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-8 ${
-                        stories[3].highlight 
-                          ? 'bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent' 
-                          : (theme === 'light' ? 'text-gray-900' : 'text-white')
-                      }`}>
-                        "{stories[3].text}"
-                      </blockquote>
-
-                      {/* Description */}
-                      <p className={`text-xl md:text-2xl leading-relaxed max-w-4xl ${
-                        theme === 'light' ? 'text-gray-600' : 'text-gray-300'
-                      }`}>
-                        {stories[3].description}
-                      </p>
+            {stories.map((story, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 100 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.2 }}
+                viewport={{ once: true }}
+                className="w-full"
+              >
+                {/* Quote Card */}
+                <div className={`relative p-6 sm:p-8 md:p-12 rounded-2xl sm:rounded-3xl backdrop-blur-xl border ${
+                  theme === 'light'
+                    ? 'bg-white/40 border-white/60 shadow-lg'
+                    : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
+                } ${story.highlight ? (theme === 'light' ? 'shadow-xl' : 'border-white/40 shadow-2xl shadow-purple-500/20') : ''}`}>
+                  
+                  {/* Quote Icon */}
+                  <div className="relative z-10">
+                    <div className={`inline-flex p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-r ${story.gradient} bg-opacity-20 mb-6 sm:mb-8`}>
+                      {React.createElement(story.icon, { className: `w-6 h-6 sm:w-8 sm:h-8 ${theme === 'light' ? 'text-gray-900' : 'text-white'}` })}
                     </div>
 
-                    {/* Decorative Elements */}
-                    {stories[3].highlight && (
-                      <>
-                        <div className="absolute -top-2 -left-2 w-4 h-4 bg-purple-500 rounded-full animate-pulse"></div>
-                        <div className="absolute -top-1 -right-3 w-3 h-3 bg-blue-500 rounded-full animate-pulse delay-500"></div>
-                        <div className="absolute -bottom-3 -left-1 w-2 h-2 bg-pink-500 rounded-full animate-pulse delay-1000"></div>
-                        <div className="absolute -bottom-2 -right-2 w-3 h-3 bg-cyan-500 rounded-full animate-pulse delay-1500"></div>
-                      </>
-                    )}
+                    {/* Main Quote */}
+                    <blockquote className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 leading-tight ${
+                      story.highlight 
+                        ? 'bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent' 
+                        : (theme === 'light' ? 'text-gray-900' : 'text-white')
+                    }`}>
+                      "{story.text}"
+                    </blockquote>
+
+                    {/* Description */}
+                    <p className={`text-base sm:text-lg md:text-xl leading-relaxed ${
+                      theme === 'light' ? 'text-gray-600' : 'text-gray-300'
+                    }`}>
+                      {story.description}
+                    </p>
                   </div>
-                </motion.div>
-              )}
-            </div>
+
+                  {/* Decorative Elements */}
+                  {story.highlight && (
+                    <>
+                      <div className="absolute -top-2 -left-2 w-3 h-3 sm:w-4 sm:h-4 bg-purple-500 rounded-full animate-pulse"></div>
+                      <div className="absolute -top-1 -right-2 sm:-right-3 w-2 h-2 sm:w-3 sm:h-3 bg-blue-500 rounded-full animate-pulse delay-500"></div>
+                      <div className="absolute -bottom-2 -left-1 w-2 h-2 bg-pink-500 rounded-full animate-pulse delay-1000"></div>
+                      <div className="absolute -bottom-1 -right-1 sm:-right-2 w-2 h-2 sm:w-3 sm:h-3 bg-cyan-500 rounded-full animate-pulse delay-1500"></div>
+                    </>
+                  )}
+                </div>
+
+                {/* Connection Line for mobile */}
+                {index < stories.length - 1 && (
+                  <div className="flex justify-center py-8">
+                    <motion.div
+                      initial={{ scaleY: 0 }}
+                      whileInView={{ scaleY: 1 }}
+                      transition={{ duration: 0.8, delay: 0.5 }}
+                      viewport={{ once: true }}
+                      className={`w-1 h-12 bg-gradient-to-b ${story.gradient} opacity-50`}
+                      style={{ transformOrigin: 'top' }}
+                    />
+                  </div>
+                )}
+              </motion.div>
+            ))}
           </div>
 
-          {/* Original vertical flow for md+ screens */}
+          {/* Desktop layout - original vertical flow */}
           <div className="hidden md:block">
             {stories.map((story, index) => (
               <motion.div
@@ -368,14 +221,14 @@ const WhyThisMatters: React.FC<WhyThisMattersProps> = ({ onJoin }) => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
           viewport={{ once: true }}
-          className="text-center mt-24"
+          className="text-center mt-16 sm:mt-24"
         >
-          <div className={`inline-flex flex-col items-center gap-6 p-8 rounded-2xl backdrop-blur-xl border ${
+          <div className={`inline-flex flex-col items-center gap-4 sm:gap-6 p-6 sm:p-8 rounded-2xl backdrop-blur-xl border ${
             theme === 'light'
               ? 'bg-white/40 border-white/60'
               : 'bg-gradient-to-br from-white/10 to-white/5 border-white/20'
           }`}>
-            <div className={`text-xl font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Ready to own the culture you love?</div>
+            <div className={`text-lg sm:text-xl font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>Ready to own the culture you love?</div>
             <button
               onClick={() => {
                 try { 
@@ -385,7 +238,7 @@ const WhyThisMatters: React.FC<WhyThisMattersProps> = ({ onJoin }) => {
                 }
                 onJoin?.();
               }}
-              className="group relative px-8 py-4 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full text-white font-semibold text-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25">
+              className="group relative px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full text-white font-semibold text-base sm:text-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/25">
               <span className="relative z-10 flex items-center gap-2">
                 Join the Revolution
                 <motion.div

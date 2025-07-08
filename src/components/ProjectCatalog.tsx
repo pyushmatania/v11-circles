@@ -384,7 +384,7 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: -150, opacity: 0 }}
                 transition={{ duration: 0.6, ease: 'easeInOut' }}
-                className={`absolute inset-0 w-full h-full object-cover bg-black transition-opacity duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
                 loading="lazy"
                 onLoad={() => setImageLoaded(true)}
               />
@@ -594,10 +594,10 @@ const ProjectCatalog: React.FC<ProjectCatalogProps> = ({ onTrackInvestment }) =>
       )}
 
       {/* Search and Filter Section */}
-      <div className="max-w-7xl mx-auto px-6 py-8 mt-20">
+      <div className="max-w-7xl mx-auto px-6 py-8 mt-8">
         <div className="flex flex-col lg:flex-row gap-4 mb-8">
           {/* Search Bar */}
-          <div className={`relative flex-1 ${showFilters ? 'block' : 'hidden md:block'}`}>
+          <div className="relative flex-1 block">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
             <input
               ref={searchInputRef}

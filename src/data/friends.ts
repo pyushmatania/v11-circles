@@ -93,5 +93,46 @@ export const friends: Friend[] = [
     investmentCount: 18,
     totalInvested: 890000,
     verified: true
+  },
+  {
+    id: '9',
+    name: 'Zara Khan',
+    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+    isOnline: true,
+    mutualCircles: ['Hollywood Circle', 'Action Films Circle'],
+    investmentCount: 14,
+    totalInvested: 750000,
+    verified: true
+  },
+  {
+    id: '10',
+    name: 'Aditya Sharma',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+    isOnline: false,
+    lastSeen: '3 hours ago',
+    mutualCircles: ['Classic Cinema Circle', 'Thriller Films Circle'],
+    investmentCount: 7,
+    totalInvested: 320000,
+    verified: false
+  },
+  {
+    id: '11',
+    name: 'Nisha Patel',
+    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
+    isOnline: true,
+    mutualCircles: ['Music Films Circle', 'Romance Films Circle'],
+    investmentCount: 11,
+    totalInvested: 580000,
+    verified: true
+  },
+  {
+    id: '12',
+    name: 'Rohan Mehta',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+    isOnline: true,
+    mutualCircles: ['Comedy Drama Circle', 'Friendship Films Circle'],
+    investmentCount: 5,
+    totalInvested: 220000,
+    verified: false
   }
 ]; 

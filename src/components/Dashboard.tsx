@@ -395,23 +395,23 @@ const Dashboard: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="space-y-6"
+            className="space-y-4 sm:space-y-6"
           >
             {investments.map((investment) => (
-              <div key={investment.id} className="p-6 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20 hover:border-white/30 transition-all duration-300">
-                <div className="flex flex-col md:flex-row gap-6">
+              <div key={investment.id} className="p-4 sm:p-6 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20 hover:border-white/30 transition-all duration-300">
+                <div className="flex flex-col md:flex-row gap-4 sm:gap-6">
                   <img 
                     src={investment.poster} 
                     alt={investment.title}
-                    className="w-full md:w-32 h-48 md:h-32 object-cover rounded-xl"
+                    className="w-full md:w-32 h-40 sm:h-48 md:h-32 object-cover rounded-xl"
                   />
                   
                   <div className="flex-1">
-                    <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-3 sm:mb-4">
                       <div>
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-white text-xl font-bold">{investment.title}</h3>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                          <h3 className="text-white text-lg sm:text-xl font-bold">{investment.title}</h3>
+                          <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${
                             investment.type === 'film' ? 'bg-purple-500/20 text-purple-300' :
                             investment.type === 'music' ? 'bg-blue-500/20 text-blue-300' :
                             'bg-green-500/20 text-green-300'
@@ -419,17 +419,17 @@ const Dashboard: React.FC = () => {
                             {investment.type.toUpperCase()}
                           </span>
                         </div>
-                        <p className="text-gray-400 mb-2">{investment.category}</p>
-                        <p className="text-gray-300 text-sm">Release: {investment.releaseDate}</p>
+                        <p className="text-gray-400 mb-1 sm:mb-2 text-sm">{investment.category}</p>
+                        <p className="text-gray-300 text-xs sm:text-sm">Release: {investment.releaseDate}</p>
                       </div>
                       
                       <div className="text-right">
-                        <div className={`text-2xl font-bold mb-1 ${
+                        <div className={`text-xl sm:text-2xl font-bold mb-1 ${
                           investment.returns >= 0 ? 'text-green-400' : 'text-red-400'
                         }`}>
                           {investment.returns >= 0 ? '+' : ''}₹{Math.abs(investment.returns).toLocaleString()}
                         </div>
-                        <div className={`text-sm ${
+                        <div className={`text-xs sm:text-sm ${
                           investment.returnPercentage >= 0 ? 'text-green-400' : 'text-red-400'
                         }`}>
                           {investment.returnPercentage >= 0 ? '+' : ''}{investment.returnPercentage}%
@@ -437,25 +437,25 @@ const Dashboard: React.FC = () => {
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-3 sm:mb-4">
                       <div>
-                        <p className="text-gray-400 text-sm">Invested</p>
-                        <p className="text-white font-semibold">₹{investment.invested.toLocaleString()}</p>
+                        <p className="text-gray-400 text-xs sm:text-sm">Invested</p>
+                        <p className="text-white font-semibold text-sm sm:text-base">₹{investment.invested.toLocaleString()}</p>
                       </div>
                       <div>
-                        <p className="text-gray-400 text-sm">Current Value</p>
-                        <p className="text-white font-semibold">₹{investment.currentValue.toLocaleString()}</p>
+                        <p className="text-gray-400 text-xs sm:text-sm">Current Value</p>
+                        <p className="text-white font-semibold text-sm sm:text-base">₹{investment.currentValue.toLocaleString()}</p>
                       </div>
                       <div>
-                        <p className="text-gray-400 text-sm">Status</p>
-                        <p className="text-white font-semibold">{investment.status}</p>
+                        <p className="text-gray-400 text-xs sm:text-sm">Status</p>
+                        <p className="text-white font-semibold text-sm sm:text-base">{investment.status}</p>
                       </div>
                       <div>
-                        <p className="text-gray-400 text-sm">Actions</p>
-                        <div className="flex gap-2">
+                        <p className="text-gray-400 text-xs sm:text-sm">Actions</p>
+                        <div className="flex gap-1 sm:gap-2">
                           {investment.circleId && (
                             <button 
-                              className="p-2 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs font-medium transition-colors"
+                              className="p-1 sm:p-2 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs font-medium transition-colors"
                               onClick={() => {
                                 // Navigate to circle page
                                 window.location.href = `/circles/${investment.circleId}`;
@@ -465,10 +465,10 @@ const Dashboard: React.FC = () => {
                             </button>
                           )}
                           <button className="p-1 rounded text-gray-400 hover:text-white">
-                            <ExternalLink className="w-4 h-4" />
+                            <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
                           </button>
                           <button className="p-1 rounded text-gray-400 hover:text-white">
-                            <Download className="w-4 h-4" />
+                            <Download className="w-3 h-3 sm:w-4 sm:h-4" />
                           </button>
                         </div>
                       </div>
@@ -493,13 +493,13 @@ const Dashboard: React.FC = () => {
               const showParticipants = perk.metadata.maxParticipants && perk.metadata.maxParticipants > 0;
               const showTags = perk.metadata.tags && perk.metadata.tags.length > 0;
               return (
-                <div key={perk.id} className="p-6 rounded-2xl shadow-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex flex-col justify-between min-h-[220px] transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 rounded-xl bg-white/10 flex items-center justify-center">
+                <div key={perk.id} className="p-4 sm:p-6 rounded-2xl shadow-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex flex-col justify-between min-h-[240px] sm:min-h-[200px] transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                    <div className="p-3 rounded-xl bg-white/10 flex items-center justify-center self-start">
                       {perk.icon}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
                         <h3 className="font-bold text-lg truncate text-white flex-1">{perk.title}</h3>
                         <span className={`px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${
                           perk.type === 'free' ? 'bg-green-100 text-green-700' :
@@ -517,9 +517,9 @@ const Dashboard: React.FC = () => {
                           'bg-yellow-100 text-yellow-700'
                         }`}>{perk.status}</span>
                       </div>
-                      <p className="text-sm text-gray-300 mb-2 truncate">{perk.description}</p>
+                      <p className="text-sm text-gray-300 mb-3 sm:mb-2 truncate">{perk.description}</p>
                       {/* Metadata Row */}
-                      <div className="flex flex-wrap items-center gap-4 text-xs text-gray-400 mb-2">
+                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-gray-400 mb-3 sm:mb-2">
                         <div className="flex items-center gap-1">
                           <DollarSign className="w-4 h-4" />
                           <span className="font-semibold text-white">₹{perk.metadata.estimatedValue?.toLocaleString() || 'N/A'}</span>
@@ -546,7 +546,7 @@ const Dashboard: React.FC = () => {
                       </div>
                       {/* Tags */}
                       {showTags && (
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-2">
                           <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">
                             {perk.metadata.tags?.[0]}
                           </span>

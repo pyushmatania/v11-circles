@@ -60,49 +60,51 @@ const Testimonials: React.FC = () => {
         : 'bg-gradient-to-b from-black to-gray-900'
     } relative overflow-hidden`}>
 
-      {/* Custom Cubes Animation Background */}
-      <div ref={containerRef} className="absolute inset-0 z-0 overflow-hidden">
-        <div className="absolute inset-0 w-full h-full">
-          <div className="relative w-full h-full">
-            {/* Grid of animated cubes covering entire section */}
-            {Array.from({ length: 10 }, (_, row) =>
-              Array.from({ length: 15 }, (_, col) => (
-                <motion.div
-                  key={`${row}-${col}`}
-                  className="absolute w-10 h-10 border border-purple-400/35 bg-purple-500/15 cursor-pointer blur-[0.3px]"
-                  style={{
-                    left: `${(col / 15) * 100}%`,
-                    top: `${(row / 10) * 100}%`,
-                    transformOrigin: 'center',
-                  }}
-                  animate={{
-                    ...getCubeAnimation(row, col),
-                    rotateX: [0, 12, -12, 0],
-                    rotateY: [0, 12, -12, 0],
-                    scale: [1, 1.08, 0.92, 1],
-                    opacity: [0.3, 0.6, 0.3],
-                    y: [0, -3, 3, 0],
-                    x: [0, 2, -2, 0],
-                  }}
-                  transition={{
-                    duration: 7 + Math.random() * 4,
-                    repeat: Infinity,
-                    delay: (row + col) * 0.12,
-                    ease: "easeInOut"
-                  }}
-                  whileHover={{
-                    scale: 1.2,
-                    rotateX: 25,
-                    rotateY: 25,
-                    opacity: 0.8,
-                    transition: { duration: 0.3 }
-                  }}
-                />
-              ))
-            )}
+      {/* Custom Cubes Animation Background - Hidden on Mobile */}
+      {!isMobile && (
+        <div ref={containerRef} className="absolute inset-0 z-0 overflow-hidden">
+          <div className="absolute inset-0 w-full h-full">
+            <div className="relative w-full h-full">
+              {/* Grid of animated cubes covering entire section */}
+              {Array.from({ length: 10 }, (_, row) =>
+                Array.from({ length: 15 }, (_, col) => (
+                  <motion.div
+                    key={`${row}-${col}`}
+                    className="absolute w-10 h-10 border border-purple-400/35 bg-purple-500/15 cursor-pointer blur-[0.3px]"
+                    style={{
+                      left: `${(col / 15) * 100}%`,
+                      top: `${(row / 10) * 100}%`,
+                      transformOrigin: 'center',
+                    }}
+                    animate={{
+                      ...getCubeAnimation(row, col),
+                      rotateX: [0, 12, -12, 0],
+                      rotateY: [0, 12, -12, 0],
+                      scale: [1, 1.08, 0.92, 1],
+                      opacity: [0.3, 0.6, 0.3],
+                      y: [0, -3, 3, 0],
+                      x: [0, 2, -2, 0],
+                    }}
+                    transition={{
+                      duration: 7 + Math.random() * 4,
+                      repeat: Infinity,
+                      delay: (row + col) * 0.12,
+                      ease: "easeInOut"
+                    }}
+                    whileHover={{
+                      scale: 1.2,
+                      rotateX: 25,
+                      rotateY: 25,
+                      opacity: 0.8,
+                      transition: { duration: 0.3 }
+                    }}
+                  />
+                ))
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         
