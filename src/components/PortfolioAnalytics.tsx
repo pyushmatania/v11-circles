@@ -22,6 +22,9 @@ import {
   Film,
   Music,
   Star
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 } from 'lucide-react';
 import { useTheme } from './ThemeContext';

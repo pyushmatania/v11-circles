@@ -9,6 +9,9 @@ import React, { useState } from 'react';
 =======
 import { motion, AnimatePresence } from 'framer-motion';
 import { Film, Music, Tv, Star, Clock, Play, TrendingUp, Calendar } from 'lucide-react';
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 import PixelCard from './PixelCard';
 import { Project } from '../types';
@@ -55,6 +58,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     }
   };
 >>>>>>> Stashed changes
+
+  const handleCloseDetailPage = () => {
+    setShowDetailPage(false);
+  };
 
   const handleCloseDetailPage = () => {
     setShowDetailPage(false);
@@ -273,6 +280,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           onInvest={onInvestClick}
         />
       )}
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     </PixelCard>
   );

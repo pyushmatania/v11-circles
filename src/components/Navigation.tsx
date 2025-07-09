@@ -282,9 +282,12 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
 
                 {/* Mobile Navigation */}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 <div className="md:hidden flex items-center gap-4 absolute left-1/2 -translate-x-1/2">
                   {mainNavItems.map((item, index) => (
 =======
+=======
+>>>>>>> Stashed changes
                 <div className="md:hidden flex items-center justify-between w-full px-4 min-w-0">
                   {/* Left: Logo Only */}
                   <motion.button 
@@ -341,6 +344,9 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                   
                   {/* Right: Theme, Notification & Profile Buttons */}
                   <div className="flex items-center gap-2 flex-shrink-0">
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                     <motion.button
                       key={item.id}

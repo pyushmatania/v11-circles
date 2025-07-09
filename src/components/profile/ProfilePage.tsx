@@ -25,6 +25,10 @@ import {
 import { useAuth } from '../auth/useAuth';
 import { useTheme } from '../ThemeContext';
 import { investmentService } from '../../data/investments';
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
 // If User type is not exported, define it here based on AuthProvider
 type User = {

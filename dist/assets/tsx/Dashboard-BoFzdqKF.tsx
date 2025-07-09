@@ -58,8 +58,16 @@ const Dashboard: React.FC = () => {
   };
 
 <<<<<<<< Updated upstream:dist/assets/tsx/Dashboard-5kkFTsXg.tsx
+<<<<<<< Updated upstream
   const investments = [
 ========
+=======
+<<<<<<<< Updated upstream:dist/assets/tsx/Dashboard-5kkFTsXg.tsx
+  const investments = [
+========
+========
+>>>>>>>> Stashed changes:dist/assets/tsx/Dashboard-BoFzdqKF.tsx
+>>>>>>> Stashed changes
   const investments = investmentService.getFormattedInvestments();
 
   const perks: DashboardPerk[] = [
@@ -463,9 +471,18 @@ const Dashboard: React.FC = () => {
                       </div>
                       <div>
 <<<<<<<< Updated upstream:dist/assets/tsx/Dashboard-5kkFTsXg.tsx
+<<<<<<< Updated upstream
                         <p className="text-gray-400 text-sm">Actions</p>
                         <div className="flex gap-2">
 ========
+=======
+<<<<<<<< Updated upstream:dist/assets/tsx/Dashboard-5kkFTsXg.tsx
+                        <p className="text-gray-400 text-sm">Actions</p>
+                        <div className="flex gap-2">
+========
+========
+>>>>>>>> Stashed changes:dist/assets/tsx/Dashboard-BoFzdqKF.tsx
+>>>>>>> Stashed changes
                         <p className="text-gray-400 text-xs sm:text-sm">Actions</p>
                         <div className="flex gap-1 sm:gap-2">
                           {investment.circleId && (

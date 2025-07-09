@@ -11302,5 +11302,8 @@ export const testimonials: Testimonial[] = [
     project: "Pathaan 2",
     rating: 5,
   }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 ];
