@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense, useCallback, memo, useEffect } from 'react';
+import { useState, lazy, Suspense, useCallback, memo, useEffect } from 'react';
 import Hero from './components/Hero';
 import ProblemSolution from './components/ProblemSolution';
 import HowItWorks from './components/HowItWorks';
@@ -16,6 +16,7 @@ import { AuthProvider } from './components/auth/AuthProvider';
 import { useAuth } from './components/auth/useAuth';
 import { useToast } from './hooks/useToast';
 import DebugPanel from './components/DebugPanel';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Lazy load heavy components for better performance
 const Dashboard = lazy(() => import('./components/Dashboard'));
@@ -40,7 +41,7 @@ const LoadingSpinner = memo(() => (
 
 function AppContent() {
   const [currentView, setCurrentView] = useState<'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search' | 'project-detail'>('home');
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedProject, setSelectedProject] = useState<any>(null);
   const [projectDetailTab, setProjectDetailTab] = useState<'overview' | 'invest'>('overview');
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login');
@@ -190,6 +191,7 @@ function AppContent() {
             <Hero setCurrentView={handleViewChange} />
             <ProblemSolution setCurrentView={handleViewChange} />
             <HowItWorks setCurrentView={handleViewChange} />
+            <Rewards />
             <LiveProjects
               onViewAll={() => handleViewChange('projects')}
               onTrackInvestment={() => handleViewChange('dashboard')}
@@ -201,7 +203,6 @@ function AppContent() {
             />
             <WhyThisMatters onJoin={() => handleAuthRequired('register')} />
             <TechTrust />
-            <Rewards />
             <Testimonials />
             <CallToAction setCurrentView={handleViewChange} />
           </>
@@ -238,11 +239,13 @@ function AppContent() {
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <AppContent />
-      </AuthProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

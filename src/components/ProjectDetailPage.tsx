@@ -1,20 +1,33 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { 
   ArrowLeft, 
+  Film, 
+  Music, 
+  Tv, 
   Star, 
   Clock, 
   DollarSign, 
   Users, 
   Calendar,
   MapPin,
+  Heart,
   Share2,
+  Download,
   ExternalLink,
   TrendingUp,
+  Award,
   Target,
+  BarChart3,
   Eye,
   MessageCircle,
   Medal,
+  Box,
+  Gem,
+  Badge,
+  Globe,
+  Shield,
+  Gift,
   Play,
   Pause,
   Volume2,
@@ -23,27 +36,45 @@ import {
   ChevronLeft,
   BookOpen,
   Camera,
+  Mic,
   Video,
   FileText,
-  FileCheck,
+  Settings,
   HelpCircle,
-  Shield,
-  Award,
-  Globe,
+  FileCheck,
+  TrendingDown,
   Zap,
+  Crown,
+  Trophy,
+  Sparkles,
+  Film as FilmIcon,
+  Music as MusicIcon,
+  Tv as TvIcon,
+  UserCheck,
+  Star as StarIcon,
   ThumbsUp,
   MessageSquare,
+  Hash,
+  Tag,
+  Award as AwardIcon,
+  Globe as GlobeIcon,
+  FileText as FileTextIcon,
+  Settings as SettingsIcon,
+  HelpCircle as HelpCircleIcon,
+  FileCheck as FileCheckIcon,
+  Shield as ShieldIcon,
   X,
   Maximize,
+  Info,
   AlertCircle,
   CheckCircle,
   Loader2,
   RotateCcw
 } from 'lucide-react';
-
-
+import { useTheme } from './ThemeContext';
+import { useAuth } from './auth/useAuth';
 import { Project } from '../types';
-
+import PixelCard from './PixelCard';
 
 interface ProjectDetailPageProps {
   project: Project;
@@ -53,11 +84,13 @@ interface ProjectDetailPageProps {
 }
 
 const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onClose, onInvest, initialTab = 'overview' }) => {
-
+  const { theme } = useTheme();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState(initialTab);
+  const [isLiked, setIsLiked] = useState(false);
   const [investmentAmount, setInvestmentAmount] = useState(10000);
   const [paymentMethod, setPaymentMethod] = useState<'upi' | 'card' | 'netbanking'>('upi');
-  const [isProcessing] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [showFullScript, setShowFullScript] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
@@ -68,16 +101,21 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onClose,
     minutes: 30,
     seconds: 15
   });
+  const [heroOpacity, setHeroOpacity] = useState(1);
+  const [heroScale, setHeroScale] = useState(1);
   const [isTrailerPlaying, setIsTrailerPlaying] = useState(false);
   const [isTrailerLoading, setIsTrailerLoading] = useState(false);
   const [trailerError, setTrailerError] = useState<string | null>(null);
-
+  const [showTrailerControls, setShowTrailerControls] = useState(false);
+  const [trailerVolume, setTrailerVolume] = useState(50);
+  const [isTrailerMuted, setIsTrailerMuted] = useState(false);
+  const [trailerProgress, setTrailerProgress] = useState(0);
   const [isTrailerFullscreen, setIsTrailerFullscreen] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const trailerRef = useRef<HTMLIFrameElement>(null);
   const trailerContainerRef = useRef<HTMLDivElement>(null);
-
+  const { scrollY } = useScroll();
 
   // Calculate funding statistics
   const fundingStats = {
@@ -181,7 +219,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onClose,
   };
 
   const scriptExcerpt = (
-                (project as Project & { scriptExcerpt?: string }).scriptExcerpt || `EXT. VILLAGE SQUARE - DAY\n\nThe sun blazes down on a bustling market. Two outlaws, VEERU and JAI, weave through the crowd, eyes alert.\n\nVEERU (whispering)\nWe need to lose them.\n\nJAI\nJust follow my lead.\n\nSuddenly, a whistle. The POLICE are close. The chase is on...`
+    (project as any).scriptExcerpt || `EXT. VILLAGE SQUARE - DAY\n\nThe sun blazes down on a bustling market. Two outlaws, VEERU and JAI, weave through the crowd, eyes alert.\n\nVEERU (whispering)\nWe need to lose them.\n\nJAI\nJust follow my lead.\n\nSuddenly, a whistle. The POLICE are close. The chase is on...`
   );
 
   // Static perks data for demonstration
@@ -262,7 +300,15 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onClose,
     }
   };
 
-
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'free': return 'bg-green-100 text-green-700';
+      case 'voting': return 'bg-purple-100 text-purple-700';
+      case 'exclusive': return 'bg-yellow-100 text-yellow-700';
+      case 'limited': return 'bg-yellow-100 text-yellow-700';
+      default: return 'bg-gray-100 text-gray-700';
+    }
+  };
 
   // Extract YouTube video ID from URL
   const getYouTubeVideoId = (url: string): string | null => {
@@ -381,7 +427,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onClose,
                   initial={{ x: -50, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: index * 0.1 }}
-                  onClick={() => setActiveTab(tab.id as typeof activeTab)}
+                  onClick={() => setActiveTab(tab.id as any)}
                   className={`w-full flex items-center gap-4 p-4 rounded-xl text-left transition-all duration-300 group ${
                     activeTab === tab.id
                       ? 'bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 text-white shadow-lg shadow-purple-500/20'
@@ -408,7 +454,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onClose,
         <div className="flex-1 overflow-y-auto">
           {/* Hero Video Section */}
           <motion.div
-                            style={{ opacity: 1, scale: 1 }}
+            style={{ opacity: heroOpacity, scale: heroScale }}
             className="relative h-screen overflow-hidden"
           >
             {/* Video Background */}
@@ -955,7 +1001,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onClose,
                               ].map((method) => (
                                 <button
                                   key={method.id}
-                                  onClick={() => setPaymentMethod(method.id as 'upi' | 'card' | 'netbanking')}
+                                  onClick={() => setPaymentMethod(method.id as any)}
                                   className={`p-4 rounded-xl border-2 transition-all duration-300 ${
                                     paymentMethod === method.id
                                       ? 'border-green-500 bg-green-500/10 text-green-400'
@@ -972,7 +1018,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onClose,
                           {/* Invest Button */}
                           <button
                             onClick={handleInvest}
-                            disabled={false}
+                            disabled={isProcessing}
                             className="w-full bg-gradient-to-r from-green-500 to-emerald-500 text-white py-6 px-8 rounded-2xl font-bold text-xl hover:from-green-600 hover:to-emerald-600 transition-all duration-300 shadow-2xl shadow-green-500/25 hover:shadow-green-500/40 disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             {isProcessing ? (

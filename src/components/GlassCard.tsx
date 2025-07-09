@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Star, Users, Gift, Film, Plane, ShoppingBag } from 'lucide-react';
 
 interface Illustration {
@@ -30,11 +30,12 @@ const iconMap: Record<string, JSX.Element> = {
 };
 
 const GlassCard: React.FC<GlassCardProps> = ({ illustration, theme, flipped, onHoverStart, onHoverEnd }) => {
-
+  const [isTouching, setIsTouching] = useState(false);
   const touchTimeoutRef = React.useRef<number | null>(null);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     e.preventDefault();
+    setIsTouching(true);
     onHoverStart();
     
     // Clear any existing timeout
@@ -45,6 +46,7 @@ const GlassCard: React.FC<GlassCardProps> = ({ illustration, theme, flipped, onH
 
   const handleTouchEnd = (e: React.TouchEvent) => {
     e.preventDefault();
+    setIsTouching(false);
     
     // Add a small delay to ensure smooth transition back
     touchTimeoutRef.current = setTimeout(() => {

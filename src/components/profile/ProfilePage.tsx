@@ -25,13 +25,7 @@ import {
 import { useAuth } from '../auth/useAuth';
 import { useTheme } from '../ThemeContext';
 import { investmentService } from '../../data/investments';
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
 
->>>>>>> Stashed changes
 
 // If User type is not exported, define it here based on AuthProvider
 type User = {
@@ -111,7 +105,7 @@ const ProfilePage: React.FC = () => {
   // Get investment data from shared service
   const investments = investmentService.getFormattedInvestments();
   const investmentStats = investmentService.getInvestmentStats();
-
+  
   const totalInvested = investmentStats.totalInvested;
   const totalReturns = investmentStats.totalReturns;
   const avgReturn = investmentStats.averageReturnPercentage;
@@ -280,7 +274,7 @@ const ProfilePage: React.FC = () => {
               className="space-y-8"
             >
               {/* Stats Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 <div className={`p-6 rounded-2xl backdrop-blur-xl border ${
                   theme === 'light'
                     ? 'bg-white/50 border-white/60'

@@ -1,46 +1,28 @@
 import React, { useState } from 'react';
-<<<<<<< Updated upstream
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// import { motion } from 'framer-motion';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// import { AnimatePresence } from 'framer-motion';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// import { Film, Music, Tv, Star, Clock, Play, Plus, Bookmark, Heart, TrendingUp, ArrowRight } from 'lucide-react';
-=======
 import { motion, AnimatePresence } from 'framer-motion';
 import { Film, Music, Tv, Star, Clock, Play, TrendingUp, Calendar } from 'lucide-react';
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 import PixelCard from './PixelCard';
 import { Project } from '../types';
 import ProjectDetailPage from './ProjectDetailPage';
 
 interface ProjectCardProps {
   project: Project;
+  onClick?: () => void;
+  onInvestClick?: (project: Project) => void;
   featured?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // urgent?: boolean;
   compact?: boolean;
+  urgent?: boolean;
   layout?: 'netflix' | 'grid' | 'list';
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ 
   project, 
+  onClick,
+  onInvestClick,
   featured, 
-  compact
+  compact,
+  urgent
 }) => {
-<<<<<<< Updated upstream
-  const [imageLoaded, setImageLoaded] = useState(false);
-
-  const cardWidth = featured ? 'w-96' : compact ? 'w-48' : 'w-72';
-  // Fixed: Use consistent aspect ratio for all cards
-  const aspectRatio = 'aspect-[2/3]';
-=======
   const [isHovered, setIsHovered] = useState(false);
   const [showDetailPage, setShowDetailPage] = useState(false);
 
@@ -60,58 +42,41 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       onInvestClick(project);
     }
   };
->>>>>>> Stashed changes
-
-  const handleCloseDetailPage = () => {
-    setShowDetailPage(false);
-  };
-
-  const handleCloseDetailPage = () => {
-    setShowDetailPage(false);
-  };
 
   const handleCloseDetailPage = () => {
     setShowDetailPage(false);
   };
 
   return (
-    <PixelCard
-      variant="pink"
-      className={`relative flex-shrink-0 ${cardWidth} snap-start`}
-    >
-      {/* <motion.div
+    <PixelCard variant="pink" className={`relative flex-shrink-0 ${cardWidth} snap-start`}> 
+      <motion.div
         className="absolute inset-0 cursor-pointer group"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        whileHover={{ scale: compact ? 1.02 : 1.05 }}
+        whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.3 }}
-        onClick={onClick}
-      > */}
+        onClick={handleClick}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleClick();
+          }
+        }}
+        tabIndex={0}
+        role="button"
+        aria-label={`View details for ${project.title}`}
+      >
       <div className={`relative ${aspectRatio} rounded-xl overflow-hidden bg-gray-800 shadow-2xl`}>
-        {/* Blurred placeholder (shows until imageLoaded) */}
+          {/* Main Poster Image with Blur Effect on Hover */}
+          <div className="relative w-full h-full">
         <img
-          src={project.poster}
+          src={featured ? project.poster.replace('SX300', 'SX1080') : project.poster}
           alt={project.title}
-          className={`w-full h-full object-cover absolute inset-0 transition-opacity duration-700 blur-lg scale-105 ${imageLoaded ? 'opacity-0' : 'opacity-100'}`}
-          aria-hidden="true"
-          loading="lazy"
-          style={{ filter: 'blur(20px)', pointerEvents: 'none' }}
-        />
-        {/* Main Poster Image */}
-        <img 
-          src={project.poster} 
-          alt={project.title}
-          className={`w-full h-full object-cover transition-opacity duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-          onLoad={() => setImageLoaded(true)}
+          className={`w-full h-full object-cover transition-all duration-700 ${
+            isHovered ? 'scale-110 blur-sm brightness-50' : 'scale-100 blur-0 brightness-100'
+          }`}
           loading="lazy"
         />
-        
-        {/* Loading placeholder */}
-        {!imageLoaded && (
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse flex items-center justify-center">
-            <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
-          </div>
-        )}
 
         {/* Cinematic Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-60" />
@@ -119,9 +84,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         {/* Premium Glow Effect */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       </div>
-<<<<<<< Updated upstream
-      {/* </motion.div> */}
-=======
           
           {/* Top Badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-2 z-20">
@@ -287,13 +249,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           onInvest={onInvestClick}
         />
       )}
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     </PixelCard>
   );
 };

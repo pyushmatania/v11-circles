@@ -4,10 +4,11 @@ import { Film, Music, Clock, Users, TrendingUp, ArrowRight } from 'lucide-react'
 import confetti from 'canvas-confetti';
 import AnimatedNumber from './AnimatedNumber';
 import { projects } from '../data/projects';
-
+import ProjectDetailModal from './ProjectDetailModal';
 import { Project } from '../types';
 import { useTheme } from './ThemeContext';
 import Typewriter from './Typewriter';
+import useIsMobile from '../hooks/useIsMobile';
 
 
 interface LiveProjectsProps {
@@ -16,13 +17,13 @@ interface LiveProjectsProps {
   onProjectSelect?: (project: Project, tab?: 'overview' | 'invest') => void;
 }
 
-const LiveProjects: React.FC<LiveProjectsProps> = ({ onViewAll, onProjectSelect }) => {
+const LiveProjects: React.FC<LiveProjectsProps> = ({ onViewAll, onTrackInvestment, onProjectSelect }) => {
 
   const { theme } = useTheme();
   const [statsInView, setStatsInView] = useState<{ [key: number]: boolean }>({});
-
   const sorted = [...projects].sort((a, b) => b.raisedAmount - a.raisedAmount);
-  const trendingProjects = sorted.slice(0, Math.min(Math.max(3, sorted.length), 6));
+  const isMobile = useIsMobile();
+  const visibleProjects = isMobile ? sorted.slice(0, 3) : sorted.slice(0, 6);
 
   const handleProjectClick = (project: Project, tab: 'overview' | 'invest' = 'overview') => {
     if (onProjectSelect) {
@@ -65,8 +66,8 @@ const LiveProjects: React.FC<LiveProjectsProps> = ({ onViewAll, onProjectSelect 
         </motion.div>
 
         {/* Projects Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {trendingProjects.map((project, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          {visibleProjects.map((project, index) => (
             <motion.div
               key={project.id}
               initial={{ opacity: 0, y: 50 }}
@@ -82,9 +83,9 @@ const LiveProjects: React.FC<LiveProjectsProps> = ({ onViewAll, onProjectSelect 
               {/* Background Image */}
               <div className="relative h-64 overflow-hidden">
                 <img 
-                  src={project.poster} 
+                  src={project.poster.replace('SX300', 'SX1080')} 
                   alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700 bg-black"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
                 

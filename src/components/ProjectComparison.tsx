@@ -16,7 +16,7 @@ import {
   X 
 } from 'lucide-react';
 import { useTheme } from './ThemeContext';
-
+import ProjectDetailModal from './ProjectDetailModal';
 import { Project } from '../types';
 import { projects } from '../data/projects';
 import confetti from 'canvas-confetti';
@@ -29,7 +29,7 @@ interface ProjectComparisonProps {
   onProjectSelect?: (project: Project, tab?: 'overview' | 'invest') => void;
 }
 
-const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, onProjectSelect }) => {
+const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, onTrackInvestment, setCurrentView, onProjectSelect }) => {
   const { theme } = useTheme();
 
   const [compareProjects, setCompareProjects] = useState<Project[]>(initialProjects || []);

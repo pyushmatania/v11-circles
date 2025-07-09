@@ -10,15 +10,13 @@ import {
   Crown,
   Ticket,
   Camera,
-  Play,
   Download,
   ExternalLink,
   BarChart3,
-  BarChart
+  BarChart,
+  MapPin
 } from 'lucide-react';
 import PortfolioAnalytics from './PortfolioAnalytics';
-<<<<<<< Updated upstream
-=======
 import { dashboardStats, recentActivities } from '../data/dashboard';
 import { superstars } from '../data/superstars';
 import { investmentService } from '../data/investments';
@@ -43,145 +41,121 @@ interface DashboardPerk {
   icon: React.ReactNode;
   metadata: PerkMetadata;
 }
->>>>>>> Stashed changes
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'investments' | 'perks' | 'circles' | 'portfolio'>('overview');
 
   const userStats = {
-    totalInvested: 125000,
-    totalReturns: 18750,
-    activeInvestments: 8,
+    totalInvested: dashboardStats.totalInvestments,
+    totalReturns: dashboardStats.totalReturns,
+    activeInvestments: dashboardStats.activeProjects,
     totalPerks: 24,
     circleLevel: 'Producer',
     nextLevel: 'Executive Producer'
   };
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  const investments = [
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
   const investments = investmentService.getFormattedInvestments();
 
   const perks: DashboardPerk[] = [
->>>>>>> Stashed changes
     {
       id: '1',
-      title: 'Neon Nights',
-      type: 'film',
-      category: 'Bollywood',
-      invested: 25000,
-      currentValue: 29500,
-      returns: 4500,
-      returnPercentage: 18,
-      status: 'In Production',
-      poster: 'https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&w=1080',
-      releaseDate: '2024-06-15'
-    },
-    {
-      id: '2',
-      title: 'Monsoon Melodies',
-      type: 'music',
-      category: 'Classical Fusion',
-      invested: 15000,
-      currentValue: 16800,
-      returns: 1800,
-      returnPercentage: 12,
-      status: 'Released',
-      poster: 'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=1080',
-      releaseDate: '2024-03-20'
-    },
-    {
-      id: '3',
-      title: 'The Last Village',
-      type: 'film',
-      category: 'Regional - Tamil',
-      invested: 50000,
-      currentValue: 62500,
-      returns: 12500,
-      returnPercentage: 25,
-      status: 'Post Production',
-      poster: 'https://images.pexels.com/photos/2449665/pexels-photo-2449665.jpeg?auto=compress&cs=tinysrgb&w=1080',
-      releaseDate: '2024-08-10'
-    },
-    {
-      id: '4',
-      title: 'Urban Beats',
-      type: 'music',
-      category: 'Hip Hop',
-      invested: 20000,
-      currentValue: 18000,
-      returns: -2000,
-      returnPercentage: -10,
-      status: 'In Production',
-      poster: 'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=1080',
-      releaseDate: '2024-07-05'
-    },
-    {
-      id: '5',
-      title: 'Midnight Express',
-      type: 'webseries',
-      category: 'Thriller',
-      invested: 15000,
-      currentValue: 17250,
-      returns: 2250,
-      returnPercentage: 15,
-      status: 'Streaming',
-      poster: 'https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&w=1080',
-      releaseDate: '2024-01-15'
-    }
-  ];
-
-  const perks = [
-    {
-      id: '1',
-      title: 'Neon Nights Premiere',
-      type: 'event',
-      description: 'Red carpet premiere access in Mumbai',
+      title: 'Premiere Screening Access',
+      type: 'exclusive',
+      description: 'VIP access to the movie premiere with red carpet',
       status: 'upcoming',
       date: '2024-06-10',
-      icon: <Ticket className="w-5 h-5" />
+      icon: <Ticket className="w-5 h-5" />,
+      metadata: {
+        location: 'Mumbai Multiplex',
+        maxParticipants: 100,
+        currentParticipants: 45,
+        virtual: false,
+        requiresVerification: true,
+        estimatedValue: 15000,
+        tags: ['premiere', 'vip', 'red-carpet']
+      }
     },
     {
       id: '2',
       title: 'Signed Poster Collection',
-      type: 'merchandise',
+      type: 'limited',
       description: 'Limited edition signed posters from 3 films',
       status: 'delivered',
       date: '2024-02-15',
-      icon: <Gift className="w-5 h-5" />
+      icon: <Gift className="w-5 h-5" />,
+      metadata: {
+        maxParticipants: 50,
+        currentParticipants: 50,
+        virtual: true,
+        requiresVerification: false,
+        estimatedValue: 8000,
+        tags: ['signed', 'limited-edition', 'poster']
+      }
     },
     {
       id: '3',
       title: 'Behind the Scenes Access',
-      type: 'content',
+      type: 'free',
       description: 'Exclusive BTS footage from The Last Village',
       status: 'available',
       date: '2024-03-01',
-      icon: <Camera className="w-5 h-5" />
+      icon: <Camera className="w-5 h-5" />,
+      metadata: {
+        virtual: true,
+        requiresVerification: false,
+        estimatedValue: 3000,
+        tags: ['bts', 'exclusive', 'content']
+      }
     },
     {
       id: '4',
-      title: 'Producer Credit',
-      type: 'credit',
+      title: 'Executive Producer Credit',
+      type: 'exclusive',
       description: 'Your name in end credits of Monsoon Melodies',
       status: 'active',
       date: '2024-03-20',
-      icon: <Crown className="w-5 h-5" />
+      icon: <Crown className="w-5 h-5" />,
+      metadata: {
+        virtual: false,
+        requiresVerification: true,
+        estimatedValue: 35000,
+        tags: ['credits', 'executive-producer', 'recognition']
+      }
     },
     {
       id: '5',
-      title: 'Early Music Release',
-      type: 'content',
-      description: 'Get Urban Beats album 2 weeks before public release',
+      title: 'Community Casting Vote',
+      type: 'voting',
+      description: 'Vote on cast members for upcoming projects',
       status: 'upcoming',
-      date: '2024-06-20',
-      icon: <Play className="w-5 h-5" />
+      date: '2024-04-15',
+      icon: <Users className="w-5 h-5" />,
+      metadata: {
+        maxParticipants: 200,
+        currentParticipants: 78,
+        virtual: true,
+        requiresVerification: true,
+        estimatedValue: 5000,
+        tags: ['voting', 'casting', 'community']
+      }
+    },
+    {
+      id: '6',
+      title: 'Set Visit Experience',
+      type: 'exclusive',
+      description: 'Visit the movie set during filming',
+      status: 'available',
+      date: '2024-05-20',
+      icon: <MapPin className="w-5 h-5" />,
+      metadata: {
+        location: 'Film City, Mumbai',
+        maxParticipants: 20,
+        currentParticipants: 12,
+        virtual: false,
+        requiresVerification: true,
+        estimatedValue: 25000,
+        tags: ['set-visit', 'exclusive', 'experience']
+      }
     }
   ];
 
@@ -267,7 +241,7 @@ const Dashboard: React.FC = () => {
             className="space-y-8"
           >
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 mb-8 md:mb-12">
               <div className="p-6 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-green-500/10 to-emerald-500/5 border border-green-500/20">
                 <div className="flex flex-col sm:flex-row items-center gap-4 mb-4 text-center sm:text-left">
                   <div className="p-3 rounded-xl bg-green-500/20">
@@ -346,37 +320,33 @@ const Dashboard: React.FC = () => {
             <div className="p-8 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20">
               <h3 className="text-white text-2xl font-bold mb-6">Recent Activity</h3>
               <div className="space-y-4">
-                {[
-                  { action: 'Received returns from Monsoon Melodies', amount: '+₹1,800', time: '2 hours ago', type: 'profit' },
-                  { action: 'New perk unlocked: BTS footage access', amount: '', time: '1 day ago', type: 'perk' },
-                  { action: 'Invested in Urban Beats', amount: '-₹20,000', time: '3 days ago', type: 'investment' },
-                  { action: 'Joined A.R. Rahman Music Circle', amount: '', time: '1 week ago', type: 'community' }
-                ].map((activity, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
+                {recentActivities.slice(0, 4).map((activity) => (
+                  <div key={activity.id} className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/10">
                     <div className="flex items-center gap-3">
                       <div className={`w-2 h-2 rounded-full ${
-                        activity.type === 'profit' ? 'bg-green-400' :
-                        activity.type === 'perk' ? 'bg-yellow-400' :
-                        activity.type === 'investment' ? 'bg-blue-400' : 'bg-purple-400'
+                        activity.type === 'return' ? 'bg-green-400' :
+                        activity.type === 'investment' ? 'bg-blue-400' :
+                        activity.type === 'circle_join' ? 'bg-purple-400' :
+                        activity.type === 'project_update' ? 'bg-yellow-400' : 'bg-orange-400'
                       }`} />
-                      <span className="text-white">{activity.action}</span>
+                      <span className="text-white">{activity.description}</span>
                     </div>
                     <div className="text-right">
                       {activity.amount && (
                         <div className={`font-semibold ${
-                          activity.amount.startsWith('+') ? 'text-green-400' : 'text-red-400'
+                          activity.amount > 0 ? 'text-green-400' : 'text-red-400'
                         }`}>
-                          {activity.amount}
+                          {activity.amount > 0 ? '+' : ''}₹{Math.abs(activity.amount).toLocaleString()}
                         </div>
                       )}
-                      <div className="text-gray-400 text-sm">{activity.time}</div>
+                      <div className="text-gray-400 text-sm">
+                        {new Date(activity.timestamp).toLocaleDateString()}
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-<<<<<<< Updated upstream
-=======
 
             {/* Superstars Section */}
             <div className="p-8 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20">
@@ -402,7 +372,6 @@ const Dashboard: React.FC = () => {
                 ))}
               </div>
             </div>
->>>>>>> Stashed changes
           </motion.div>
         )}
 
@@ -412,23 +381,23 @@ const Dashboard: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="space-y-6"
+            className="space-y-4 sm:space-y-6"
           >
             {investments.map((investment) => (
-              <div key={investment.id} className="p-6 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20 hover:border-white/30 transition-all duration-300">
-                <div className="flex flex-col md:flex-row gap-6">
+              <div key={investment.id} className="p-4 sm:p-6 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20 hover:border-white/30 transition-all duration-300">
+                <div className="flex flex-col md:flex-row gap-4 sm:gap-6">
                   <img 
                     src={investment.poster} 
                     alt={investment.title}
-                    className="w-full md:w-32 h-48 md:h-32 object-cover rounded-xl"
+                    className="w-full md:w-32 h-40 sm:h-48 md:h-32 object-cover rounded-xl"
                   />
                   
                   <div className="flex-1">
-                    <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-3 sm:mb-4">
                       <div>
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-white text-xl font-bold">{investment.title}</h3>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        <div className="flex items-center gap-2 sm:gap-3 mb-2">
+                          <h3 className="text-white text-lg sm:text-xl font-bold">{investment.title}</h3>
+                          <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${
                             investment.type === 'film' ? 'bg-purple-500/20 text-purple-300' :
                             investment.type === 'music' ? 'bg-blue-500/20 text-blue-300' :
                             'bg-green-500/20 text-green-300'
@@ -436,17 +405,17 @@ const Dashboard: React.FC = () => {
                             {investment.type.toUpperCase()}
                           </span>
                         </div>
-                        <p className="text-gray-400 mb-2">{investment.category}</p>
-                        <p className="text-gray-300 text-sm">Release: {investment.releaseDate}</p>
+                        <p className="text-gray-400 mb-1 sm:mb-2 text-sm">{investment.category}</p>
+                        <p className="text-gray-300 text-xs sm:text-sm">Release: {investment.releaseDate}</p>
                       </div>
                       
                       <div className="text-right">
-                        <div className={`text-2xl font-bold mb-1 ${
+                        <div className={`text-xl sm:text-2xl font-bold mb-1 ${
                           investment.returns >= 0 ? 'text-green-400' : 'text-red-400'
                         }`}>
                           {investment.returns >= 0 ? '+' : ''}₹{Math.abs(investment.returns).toLocaleString()}
                         </div>
-                        <div className={`text-sm ${
+                        <div className={`text-xs sm:text-sm ${
                           investment.returnPercentage >= 0 ? 'text-green-400' : 'text-red-400'
                         }`}>
                           {investment.returnPercentage >= 0 ? '+' : ''}{investment.returnPercentage}%
@@ -454,27 +423,38 @@ const Dashboard: React.FC = () => {
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-3 sm:mb-4">
                       <div>
-                        <p className="text-gray-400 text-sm">Invested</p>
-                        <p className="text-white font-semibold">₹{investment.invested.toLocaleString()}</p>
+                        <p className="text-gray-400 text-xs sm:text-sm">Invested</p>
+                        <p className="text-white font-semibold text-sm sm:text-base">₹{investment.invested.toLocaleString()}</p>
                       </div>
                       <div>
-                        <p className="text-gray-400 text-sm">Current Value</p>
-                        <p className="text-white font-semibold">₹{investment.currentValue.toLocaleString()}</p>
+                        <p className="text-gray-400 text-xs sm:text-sm">Current Value</p>
+                        <p className="text-white font-semibold text-sm sm:text-base">₹{investment.currentValue.toLocaleString()}</p>
                       </div>
                       <div>
-                        <p className="text-gray-400 text-sm">Status</p>
-                        <p className="text-white font-semibold">{investment.status}</p>
+                        <p className="text-gray-400 text-xs sm:text-sm">Status</p>
+                        <p className="text-white font-semibold text-sm sm:text-base">{investment.status}</p>
                       </div>
                       <div>
-                        <p className="text-gray-400 text-sm">Actions</p>
-                        <div className="flex gap-2">
+                        <p className="text-gray-400 text-xs sm:text-sm">Actions</p>
+                        <div className="flex gap-1 sm:gap-2">
+                          {investment.circleId && (
+                            <button 
+                              className="p-1 sm:p-2 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs font-medium transition-colors"
+                              onClick={() => {
+                                // Navigate to circle page
+                                window.location.href = `/circles/${investment.circleId}`;
+                              }}
+                            >
+                              Enter Circle
+                            </button>
+                          )}
                           <button className="p-1 rounded text-gray-400 hover:text-white">
-                            <ExternalLink className="w-4 h-4" />
+                            <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
                           </button>
                           <button className="p-1 rounded text-gray-400 hover:text-white">
-                            <Download className="w-4 h-4" />
+                            <Download className="w-3 h-3 sm:w-4 sm:h-4" />
                           </button>
                         </div>
                       </div>
@@ -494,50 +474,90 @@ const Dashboard: React.FC = () => {
             transition={{ duration: 0.6 }}
             className="grid md:grid-cols-2 gap-6"
           >
-            {perks.map((perk) => (
-              <div key={perk.id} className="p-6 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20">
-                <div className="flex items-start gap-4 mb-4">
-                  <div className={`p-3 rounded-xl ${
-                    perk.status === 'available' ? 'bg-green-500/20' :
-                    perk.status === 'upcoming' ? 'bg-blue-500/20' :
-                    perk.status === 'delivered' ? 'bg-purple-500/20' :
-                    'bg-yellow-500/20'
-                  }`}>
-                    <div className={`${
-                      perk.status === 'available' ? 'text-green-400' :
-                      perk.status === 'upcoming' ? 'text-blue-400' :
-                      perk.status === 'delivered' ? 'text-purple-400' :
-                      'text-yellow-400'
-                    }`}>
+            {perks.map((perk) => {
+              const showLocation = !perk.metadata.virtual && perk.metadata.location;
+              const showParticipants = perk.metadata.maxParticipants && perk.metadata.maxParticipants > 0;
+              const showTags = perk.metadata.tags && perk.metadata.tags.length > 0;
+              return (
+                <div key={perk.id} className="p-4 sm:p-6 rounded-2xl shadow-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex flex-col justify-between min-h-[240px] sm:min-h-[200px] transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl">
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                    <div className="p-3 rounded-xl bg-white/10 flex items-center justify-center self-start">
                       {perk.icon}
                     </div>
-                  </div>
-                  
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-white font-bold">{perk.title}</h3>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        perk.status === 'available' ? 'bg-green-500/20 text-green-300' :
-                        perk.status === 'upcoming' ? 'bg-blue-500/20 text-blue-300' :
-                        perk.status === 'delivered' ? 'bg-purple-500/20 text-purple-300' :
-                        'bg-yellow-500/20 text-yellow-300'
-                      }`}>
-                        {perk.status.toUpperCase()}
-                      </span>
-                    </div>
-                    <p className="text-gray-300 text-sm mb-3">{perk.description}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-400 text-sm">{perk.date}</span>
-                      {perk.status === 'available' && (
-                        <button className="px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg text-white text-sm font-medium hover:from-green-400 hover:to-emerald-400 transition-all duration-300">
-                          Claim Now
-                        </button>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <h3 className="font-bold text-lg truncate text-white flex-1">{perk.title}</h3>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${
+                          perk.type === 'free' ? 'bg-green-100 text-green-700' :
+                          perk.type === 'paid' ? 'bg-blue-100 text-blue-700' :
+                          perk.type === 'voting' ? 'bg-purple-100 text-purple-700' :
+                          perk.type === 'bidding' ? 'bg-orange-100 text-orange-700' :
+                          perk.type === 'exclusive' ? 'bg-pink-100 text-pink-700' :
+                          'bg-gray-100 text-gray-700'
+                        }`}>{perk.type}</span>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${
+                          perk.status === 'active' ? 'bg-green-100 text-green-700' :
+                          perk.status === 'upcoming' ? 'bg-blue-100 text-blue-700' :
+                          perk.status === 'available' ? 'bg-purple-100 text-purple-700' :
+                          perk.status === 'delivered' ? 'bg-gray-100 text-gray-700' :
+                          'bg-yellow-100 text-yellow-700'
+                        }`}>{perk.status}</span>
+                      </div>
+                      <p className="text-sm text-gray-300 mb-3 sm:mb-2 truncate">{perk.description}</p>
+                      {/* Metadata Row */}
+                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-gray-400 mb-3 sm:mb-2">
+                        <div className="flex items-center gap-1">
+                          <DollarSign className="w-4 h-4" />
+                          <span className="font-semibold text-white">₹{perk.metadata.estimatedValue?.toLocaleString() || 'N/A'}</span>
+                        </div>
+                        {showLocation && (
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-4 h-4" />
+                            <span>{perk.metadata.location}</span>
+                          </div>
+                        )}
+                        {showParticipants && (
+                          <div className="flex items-center gap-1">
+                            <Users className="w-4 h-4" />
+                            <span>{perk.metadata.currentParticipants || 0}/{perk.metadata.maxParticipants}</span>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-1">
+                          {perk.metadata.virtual ? (
+                            <span className="text-blue-400 font-medium">Virtual</span>
+                          ) : (
+                            <span className="text-green-400 font-medium">In-Person</span>
+                          )}
+                        </div>
+                      </div>
+                      {/* Tags */}
+                      {showTags && (
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full font-medium">
+                            {perk.metadata.tags?.[0]}
+                          </span>
+                          {perk.metadata.tags && perk.metadata.tags.length > 1 && (
+                            <span className="text-xs text-gray-400 font-medium">
+                              +{perk.metadata.tags.length - 1} more
+                            </span>
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
+                  <div className="flex items-center justify-between mt-4 pt-2 border-t border-white/10">
+                    <span className="text-xs text-gray-500 font-medium">
+                      {perk.date}
+                    </span>
+                    {perk.metadata.requiresVerification && (
+                      <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded-full font-semibold">
+                        Verification Required
+                      </span>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </motion.div>
         )}
 

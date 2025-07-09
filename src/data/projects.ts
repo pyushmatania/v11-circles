@@ -1,4 +1,5 @@
-import { Project, Testimonial } from '../types';
+import { Project } from '../types';
+import { Testimonial } from '../types';
 
 export const projects: Project[
 
@@ -51,7 +52,7 @@ export const projects: Project[
         "director": "Ramesh Sippy"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "2",
@@ -99,7 +100,7 @@ export const projects: Project[
         "director": "Aditya Chopra"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "3",
@@ -147,7 +148,7 @@ export const projects: Project[
         "director": "Rajkumar Hirani"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "4",
@@ -196,7 +197,7 @@ export const projects: Project[
         "director": "Ashutosh Gowariker"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "5",
@@ -245,7 +246,7 @@ export const projects: Project[
         "director": "Nitesh Tiwari"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "6",
@@ -294,7 +295,7 @@ export const projects: Project[
         "director": "Zoya Akhtar"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "7",
@@ -343,7 +344,7 @@ export const projects: Project[
         "director": "Zoya Akhtar"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "8",
@@ -392,7 +393,7 @@ export const projects: Project[
         "director": "Sriram Raghavan"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "9",
@@ -441,7 +442,7 @@ export const projects: Project[
         "director": "Vikas Bahl"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "10",
@@ -490,7 +491,7 @@ export const projects: Project[
         "director": "Anurag Basu"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "11",
@@ -540,7 +541,7 @@ export const projects: Project[
         "director": "Imtiaz Ali"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "12",
@@ -589,7 +590,7 @@ export const projects: Project[
         "director": "Anubhav Sinha"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "13",
@@ -638,7 +639,7 @@ export const projects: Project[
         "director": "Rahi Anil Barve, Anand Gandhi, Adesh Prasad"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "14",
@@ -685,7 +686,7 @@ export const projects: Project[
         "director": "Neeraj Ghaywan"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "15",
@@ -734,7 +735,7 @@ export const projects: Project[
         "director": "Nishikant Kamat"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "16",
@@ -782,7 +783,7 @@ export const projects: Project[
         "director": "Ashutosh Gowariker"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "17",
@@ -831,7 +832,7 @@ export const projects: Project[
         "director": "Shimit Amin"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "18",
@@ -880,7 +881,7 @@ export const projects: Project[
         "director": "Rajkumar Hirani"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "19",
@@ -928,7 +929,7 @@ export const projects: Project[
         "director": "Sujoy Ghosh"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "20",
@@ -980,7 +981,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "21",
@@ -1029,7 +1030,7 @@ export const projects: Project[
         "director": "K. Asif"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "22",
@@ -1078,7 +1079,7 @@ export const projects: Project[
         "director": "Mehboob Khan"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "23",
@@ -1126,7 +1127,7 @@ export const projects: Project[
         "director": "Anil Mattoo, A. Muthu"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "24",
@@ -1175,7 +1176,7 @@ export const projects: Project[
         "director": "Yash Chopra"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "25",
@@ -1224,7 +1225,7 @@ export const projects: Project[
         "director": "Karan Johar"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "26",
@@ -1273,7 +1274,7 @@ export const projects: Project[
         "director": "Farhan Akhtar"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "27",
@@ -1320,7 +1321,7 @@ export const projects: Project[
         "director": "Sanjay Leela Bhansali"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "28",
@@ -1368,7 +1369,7 @@ export const projects: Project[
         "director": "Rajkumar Hirani"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "29",
@@ -1417,7 +1418,7 @@ export const projects: Project[
         "director": "Rakeysh Omprakash Mehra"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "30",
@@ -1465,7 +1466,7 @@ export const projects: Project[
         "director": "Shoojit Sircar"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "31",
@@ -1513,7 +1514,7 @@ export const projects: Project[
         "director": "Amit Ravindernath Sharma"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "32",
@@ -1561,7 +1562,7 @@ export const projects: Project[
         "director": "Amar Kaushik"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "33",
@@ -1610,7 +1611,7 @@ export const projects: Project[
         "director": "Vishal Bhardwaj"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "34",
@@ -1659,7 +1660,7 @@ export const projects: Project[
         "director": "Neeraj Pandey, Ritesh Kumar"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "35",
@@ -1708,7 +1709,7 @@ export const projects: Project[
         "director": "Priyadarshan"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "36",
@@ -1757,7 +1758,7 @@ export const projects: Project[
         "director": "Farhan Akhtar"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "37",
@@ -1811,7 +1812,7 @@ export const projects: Project[
         "director": "Raj Kapoor"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "38",
@@ -1859,7 +1860,7 @@ export const projects: Project[
         "director": "Hrishikesh Mukherjee"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "39",
@@ -1908,7 +1909,7 @@ export const projects: Project[
         "director": "Nitesh Tiwari"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "40",
@@ -1957,7 +1958,7 @@ export const projects: Project[
         "director": "Kabir Khan"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "41",
@@ -2004,7 +2005,7 @@ export const projects: Project[
         "director": "Frank Darabont"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "42",
@@ -2052,7 +2053,7 @@ export const projects: Project[
         "director": "Francis Ford Coppola"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "43",
@@ -2101,7 +2102,7 @@ export const projects: Project[
         "director": "Christopher Nolan"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "44",
@@ -2149,7 +2150,7 @@ export const projects: Project[
         "director": "Quentin Tarantino"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "45",
@@ -2197,7 +2198,7 @@ export const projects: Project[
         "director": "Robert Zemeckis"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "46",
@@ -2246,7 +2247,7 @@ export const projects: Project[
         "director": "Christopher Nolan"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "47",
@@ -2295,7 +2296,7 @@ export const projects: Project[
         "director": "David Fincher"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "48",
@@ -2343,7 +2344,7 @@ export const projects: Project[
         "director": "Lana Wachowski, Lilly Wachowski"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "49",
@@ -2391,7 +2392,7 @@ export const projects: Project[
         "director": "David Fincher"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "50",
@@ -2440,7 +2441,7 @@ export const projects: Project[
         "director": "Martin Scorsese"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "51",
@@ -2488,7 +2489,7 @@ export const projects: Project[
         "director": "James Cameron"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "52",
@@ -2537,7 +2538,7 @@ export const projects: Project[
         "director": "Ridley Scott"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "53",
@@ -2587,7 +2588,7 @@ export const projects: Project[
         "director": "Christopher Nolan"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "54",
@@ -2636,7 +2637,7 @@ export const projects: Project[
         "director": "Todd Phillips"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "55",
@@ -2685,7 +2686,7 @@ export const projects: Project[
         "director": "Ryan Coogler"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "56",
@@ -2735,7 +2736,7 @@ export const projects: Project[
         "director": "Scott Derrickson"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "57",
@@ -2784,7 +2785,7 @@ export const projects: Project[
         "director": "Jon Favreau"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "58",
@@ -2832,7 +2833,7 @@ export const projects: Project[
         "director": "Joss Whedon"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "59",
@@ -2881,7 +2882,7 @@ export const projects: Project[
         "director": "Anthony Russo, Joe Russo"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "60",
@@ -2930,7 +2931,7 @@ export const projects: Project[
         "director": "James Cameron"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "61",
@@ -2984,7 +2985,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "62",
@@ -3040,7 +3041,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "63",
@@ -3094,7 +3095,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "64",
@@ -3143,7 +3144,7 @@ export const projects: Project[
         "director": "Brett Ratner"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "65",
@@ -3196,7 +3197,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "66",
@@ -3250,7 +3251,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "67",
@@ -3299,7 +3300,7 @@ export const projects: Project[
         "director": "Andy Serkis"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "68",
@@ -3354,7 +3355,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "69",
@@ -3409,7 +3410,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "70",
@@ -3456,7 +3457,7 @@ export const projects: Project[
         "director": "Pavel"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "71",
@@ -3509,7 +3510,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "72",
@@ -3565,7 +3566,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "73",
@@ -3618,7 +3619,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "74",
@@ -3670,7 +3671,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "75",
@@ -3724,7 +3725,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "76",
@@ -3777,7 +3778,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "77",
@@ -3828,7 +3829,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "78",
@@ -3881,7 +3882,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "79",
@@ -3930,7 +3931,7 @@ export const projects: Project[
         "director": "Patrick Graham"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "80",
@@ -3984,7 +3985,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "81",
@@ -4040,7 +4041,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "82",
@@ -4094,7 +4095,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "83",
@@ -4150,7 +4151,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "84",
@@ -4200,7 +4201,7 @@ export const projects: Project[
         "director": "Tomek Baginski"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "85",
@@ -4254,7 +4255,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "86",
@@ -4308,7 +4309,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "87",
@@ -4362,7 +4363,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "88",
@@ -4416,7 +4417,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "89",
@@ -4469,7 +4470,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "90",
@@ -4521,7 +4522,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "91",
@@ -4576,7 +4577,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "92",
@@ -4632,7 +4633,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "93",
@@ -4688,7 +4689,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "94",
@@ -4743,7 +4744,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "95",
@@ -4798,7 +4799,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "96",
@@ -4851,7 +4852,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "97",
@@ -4905,7 +4906,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "98",
@@ -4961,7 +4962,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "99",
@@ -5016,7 +5017,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "100",
@@ -5070,7 +5071,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "101",
@@ -5118,7 +5119,7 @@ export const projects: Project[
         "director": "Bong Joon Ho"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "102",
@@ -5167,7 +5168,7 @@ export const projects: Project[
         "director": "Hayao Miyazaki"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "103",
@@ -5216,7 +5217,7 @@ export const projects: Project[
         "director": "Ang Lee"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "104",
@@ -5264,7 +5265,7 @@ export const projects: Project[
         "director": "Jean-Pierre Jeunet"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "105",
@@ -5313,7 +5314,7 @@ export const projects: Project[
         "director": "Guillermo del Toro"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "106",
@@ -5361,7 +5362,7 @@ export const projects: Project[
         "director": "Fernando Meirelles, Kátia Lund"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "107",
@@ -5410,7 +5411,7 @@ export const projects: Project[
         "director": "Park Chan-wook"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "108",
@@ -5457,7 +5458,7 @@ export const projects: Project[
         "director": "Alfonso Cuarón"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "109",
@@ -5506,7 +5507,7 @@ export const projects: Project[
         "director": "Roberto Benigni"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "110",
@@ -5554,7 +5555,7 @@ export const projects: Project[
         "director": "Giuseppe Tornatore"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "111",
@@ -5609,7 +5610,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "112",
@@ -5663,7 +5664,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "113",
@@ -5717,7 +5718,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "114",
@@ -5771,7 +5772,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "115",
@@ -5818,7 +5819,7 @@ export const projects: Project[
       }
     ],
     "poster": "https://via.placeholder.com/300x450/cccccc/666666?text=Series+Poster",
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "116",
@@ -5865,7 +5866,7 @@ export const projects: Project[
       }
     ],
     "poster": "https://via.placeholder.com/300x450/cccccc/666666?text=Series+Poster",
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "117",
@@ -5921,7 +5922,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "118",
@@ -5969,7 +5970,7 @@ export const projects: Project[
         "director": "Matteo Garrone"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "119",
@@ -6022,7 +6023,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "120",
@@ -6075,7 +6076,7 @@ export const projects: Project[
         "director": "N/A"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "121",
@@ -6123,7 +6124,7 @@ export const projects: Project[
         "director": "Anil Sharma"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "122",
@@ -6171,7 +6172,7 @@ export const projects: Project[
         "director": "Siddharth Anand"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "123",
@@ -6219,7 +6220,7 @@ export const projects: Project[
         "director": "S.S. Rajamouli"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "124",
@@ -6264,7 +6265,7 @@ export const projects: Project[
         "director": "Atlee"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "125",
@@ -6310,7 +6311,7 @@ export const projects: Project[
         "director": "Karan Johar"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "126",
@@ -6355,7 +6356,7 @@ export const projects: Project[
         "director": "Sandeep Reddy Vanga"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "127",
@@ -6400,7 +6401,7 @@ export const projects: Project[
         "director": "Luv Ranjan"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "128",
@@ -6445,7 +6446,7 @@ export const projects: Project[
         "director": "Sameer Vidwans"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "129",
@@ -6490,7 +6491,7 @@ export const projects: Project[
         "director": "Ajay Devgn"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "130",
@@ -6535,7 +6536,7 @@ export const projects: Project[
         "director": "Amit Rai"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "131",
@@ -6580,7 +6581,7 @@ export const projects: Project[
         "director": "Gauri Joshi, Raaj Shaandilyaa"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "132",
@@ -6625,7 +6626,7 @@ export const projects: Project[
         "director": "Anubhav Sinha"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "133",
@@ -6670,7 +6671,7 @@ export const projects: Project[
         "director": "Ashima Chibber"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "134",
@@ -6715,7 +6716,7 @@ export const projects: Project[
         "director": "Raj Mehta"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "135",
@@ -6760,7 +6761,7 @@ export const projects: Project[
         "director": "Rohit Dhawan"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "136",
@@ -6805,7 +6806,7 @@ export const projects: Project[
         "director": "Shantanu Bagchi"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "137",
@@ -6850,7 +6851,7 @@ export const projects: Project[
         "director": "Christopher Nolan"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "138",
@@ -6895,7 +6896,7 @@ export const projects: Project[
         "director": "Greta Gerwig"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "139",
@@ -6940,7 +6941,7 @@ export const projects: Project[
         "director": "Chad Stahelski"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "140",
@@ -6985,7 +6986,7 @@ export const projects: Project[
         "director": "James Gunn"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "141",
@@ -7030,7 +7031,7 @@ export const projects: Project[
         "director": "Joaquim Dos Santos, Kemp Powers, Justin K. Thompson"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "142",
@@ -7075,7 +7076,7 @@ export const projects: Project[
         "director": "Nia DaCosta"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "143",
@@ -7120,7 +7121,7 @@ export const projects: Project[
         "director": "Denis Villeneuve"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "144",
@@ -7165,7 +7166,7 @@ export const projects: Project[
         "director": "Paul King"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "145",
@@ -7210,7 +7211,7 @@ export const projects: Project[
         "director": "Francis Lawrence"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "146",
@@ -7255,7 +7256,7 @@ export const projects: Project[
         "director": "Christopher McQuarrie"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "147",
@@ -7307,7 +7308,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "148",
@@ -7352,7 +7353,7 @@ export const projects: Project[
         "director": "James Mangold"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "149",
@@ -7397,7 +7398,7 @@ export const projects: Project[
         "director": "Martin Scorsese"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "150",
@@ -7442,7 +7443,7 @@ export const projects: Project[
         "director": "Ridley Scott"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "151",
@@ -7487,7 +7488,7 @@ export const projects: Project[
         "director": "Gareth Edwards"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "152",
@@ -7532,7 +7533,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "153",
@@ -7580,7 +7581,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "154",
@@ -7629,7 +7630,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "155",
@@ -7679,7 +7680,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "156",
@@ -7728,7 +7729,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "157",
@@ -7779,7 +7780,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "158",
@@ -7830,7 +7831,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "159",
@@ -7875,7 +7876,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "160",
@@ -7920,7 +7921,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "161",
@@ -7965,7 +7966,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "162",
@@ -8015,7 +8016,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "163",
@@ -8065,7 +8066,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "164",
@@ -8110,7 +8111,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "165",
@@ -8160,7 +8161,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "166",
@@ -8212,7 +8213,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "167",
@@ -8257,7 +8258,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "168",
@@ -8302,7 +8303,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "169",
@@ -8347,7 +8348,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "170",
@@ -8392,7 +8393,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "171",
@@ -8437,7 +8438,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "172",
@@ -8482,7 +8483,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "173",
@@ -8527,7 +8528,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "174",
@@ -8572,7 +8573,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "175",
@@ -8617,7 +8618,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "176",
@@ -8662,7 +8663,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "177",
@@ -8707,7 +8708,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "178",
@@ -8752,7 +8753,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "179",
@@ -8797,7 +8798,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "180",
@@ -8842,7 +8843,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "181",
@@ -8887,7 +8888,7 @@ export const projects: Project[
         "director": ""
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "182",
@@ -8932,7 +8933,7 @@ export const projects: Project[
         "director": "Anil Sharma"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "183",
@@ -8977,7 +8978,7 @@ export const projects: Project[
         "director": "Siddharth Anand"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "184",
@@ -9023,7 +9024,7 @@ export const projects: Project[
         "director": "S.S. Rajamouli"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "185",
@@ -9068,7 +9069,7 @@ export const projects: Project[
         "director": "Atlee"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "186",
@@ -9120,7 +9121,7 @@ export const projects: Project[
         "director": "Perala"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "187",
@@ -9165,7 +9166,7 @@ export const projects: Project[
         "director": "Prashanth Neel"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "188",
@@ -9210,7 +9211,7 @@ export const projects: Project[
         "director": "Sukumar"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "189",
@@ -9255,7 +9256,7 @@ export const projects: Project[
         "director": "Rohit Shetty"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "190",
@@ -9300,7 +9301,7 @@ export const projects: Project[
         "director": "Philip G. Atwell"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "191",
@@ -9345,7 +9346,7 @@ export const projects: Project[
         "director": "Rohit Shetty"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "192",
@@ -9390,7 +9391,7 @@ export const projects: Project[
         "director": "Rajkumar Hirani"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "193",
@@ -9435,7 +9436,7 @@ export const projects: Project[
         "director": "Sandeep Reddy Vanga"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "194",
@@ -9480,7 +9481,7 @@ export const projects: Project[
         "director": "Sriram Raghavan"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "195",
@@ -9525,7 +9526,7 @@ export const projects: Project[
         "director": "Amit Ravindernath Sharma"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "196",
@@ -9571,7 +9572,7 @@ export const projects: Project[
         "director": "Amar Kaushik"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "197",
@@ -9616,7 +9617,7 @@ export const projects: Project[
         "director": "Christopher Nolan"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "198",
@@ -9661,7 +9662,7 @@ export const projects: Project[
         "director": "Greta Gerwig"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "199",
@@ -9706,7 +9707,7 @@ export const projects: Project[
         "director": "Jon Watts"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "200",
@@ -9751,7 +9752,7 @@ export const projects: Project[
         "director": "Joseph Kosinski"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "201",
@@ -9796,7 +9797,7 @@ export const projects: Project[
         "director": "James Cameron"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "202",
@@ -9841,7 +9842,7 @@ export const projects: Project[
         "director": "David Lynch"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "203",
@@ -9887,7 +9888,7 @@ export const projects: Project[
         "director": "Matt Reeves"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "204",
@@ -9932,7 +9933,7 @@ export const projects: Project[
         "director": "Cary Joji Fukunaga"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "205",
@@ -9977,7 +9978,7 @@ export const projects: Project[
         "director": "Cate Shortland"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "206",
@@ -10022,7 +10023,7 @@ export const projects: Project[
         "director": "Louis Leterrier"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "207",
@@ -10067,7 +10068,7 @@ export const projects: Project[
         "director": "Christopher McQuarrie"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "208",
@@ -10112,7 +10113,7 @@ export const projects: Project[
         "director": "James Gunn"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "209",
@@ -10157,7 +10158,7 @@ export const projects: Project[
         "director": "Chad Stahelski"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "210",
@@ -10202,7 +10203,7 @@ export const projects: Project[
         "director": "Nia DaCosta"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "211",
@@ -10247,7 +10248,7 @@ export const projects: Project[
         "director": "Paul King"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "212",
@@ -10292,7 +10293,7 @@ export const projects: Project[
         "director": "Álex Pina"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "213",
@@ -10337,7 +10338,7 @@ export const projects: Project[
         "director": "The Duffer Brothers"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "214",
@@ -10382,7 +10383,7 @@ export const projects: Project[
         "director": "Tomek Baginski"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "215",
@@ -10427,7 +10428,7 @@ export const projects: Project[
         "director": "Karan Anshuman"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "216",
@@ -10472,7 +10473,7 @@ export const projects: Project[
         "director": "Brett Ratner"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "217",
@@ -10517,7 +10518,7 @@ export const projects: Project[
         "director": "Vikramaditya Motwane"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "218",
@@ -10562,7 +10563,7 @@ export const projects: Project[
         "director": "Vince Gilligan"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "219",
@@ -10607,7 +10608,7 @@ export const projects: Project[
         "director": "David Benioff"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "220",
@@ -10652,7 +10653,7 @@ export const projects: Project[
         "director": "Eric Kripke"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "221",
@@ -10697,7 +10698,7 @@ export const projects: Project[
         "director": "Richie Mehta"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "222",
@@ -10742,7 +10743,7 @@ export const projects: Project[
         "director": "Sudip Sharma"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "223",
@@ -10787,7 +10788,7 @@ export const projects: Project[
         "director": "Hwang Dong-hyuk"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "224",
@@ -10832,7 +10833,7 @@ export const projects: Project[
         "director": "Baran bo Odar"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "225",
@@ -10877,7 +10878,7 @@ export const projects: Project[
         "director": "Michael Waldron"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
   {
     "id": "226",
@@ -10922,378 +10923,54 @@ export const projects: Project[
         "director": "Zoya Akhtar"
       }
     ],
-    "disabled": false
+    "disabled": true
   },
  
-{
-  "id": "m1",
-    "title": "See You Again",
-  "artist": "Wiz Khalifa ft. Charlie Puth",
-    "type": "music",
-  "category": "International",
-  "language": "English",
-  "poster": "https://upload.wikimedia.org/wikipedia/en/0/08/Wiz_Khalifa_Feat._Charlie_Puth_-_See_You_Again_%28Official_Single_Cover%29.png",
-  "description": "A tribute song for Paul Walker from the Furious 7 soundtrack.",
-  "genre": "Hip-Hop, Pop",
-  "perks": [],
-  "rating": 4.8,
-  "trailer": "https://www.youtube.com/watch?v=RgKAFK5djSk",
-  "fundedPercentage": 0,
-  "targetAmount": 1000000,
-  "raisedAmount": 50000,
-    "tags": [
-    "hit",
-    "soundtrack"
-  ],
-  "disabled": false
-},
-{
-  "id": "m2",
-  "title": "Shape of You",
-  "artist": "Ed Sheeran",
-    "type": "music",
-  "category": "International",
-  "language": "English",
-  "poster": "https://upload.wikimedia.org/wikipedia/en/4/45/Divide_cover.png",
-  "description": "A chart-topping pop song from Ed Sheeran's album ÷ (Divide).",
-  "genre": "Pop",
-  "perks": [],
-  "rating": 4.7,
-  "trailer": "https://www.youtube.com/watch?v=JGwWNGJdvx8",
-  "fundedPercentage": 0,
-  "targetAmount": 1000000,
-  "raisedAmount": 990000,
-    "tags": [
-    "pop",
-    "hit"
-  ],
-  "disabled": false
-},
-{
-  "id": "m3",
-  "title": "Blinding Lights",
-  "artist": "The Weeknd",
-    "type": "music",
-  "category": "International",
-  "language": "English",
-  "poster": "https://upload.wikimedia.org/wikipedia/en/e/e6/The_Weeknd_-_Blinding_Lights.png",
-  "description": "A synthwave hit from The Weeknd's album After Hours.",
-  "genre": "Synthwave, Pop",
-  "perks": [],
-  "rating": 4.7,
-  "trailer": "https://www.youtube.com/watch?v=4NRXx6U8ABQ",
-  "fundedPercentage": 0,
-  "targetAmount": 1000000,
-  "raisedAmount": 56000,
-    "tags": [
-    "pop",
-    "hit"
-  ],
-  "disabled": false
-},
-{
-  "id": "m4",
-  "title": "Uptown Funk",
-  "artist": "Mark Ronson ft. Bruno Mars",
-    "type": "music",
-  "category": "International",
-  "language": "English",
-  "poster": "https://upload.wikimedia.org/wikipedia/en/a/a7/Mark_Ronson_-_Uptown_Funk_%28feat._Bruno_Mars%29_%28Official_Single_Cover%29.png",
-  "description": "A funky, danceable hit featuring Bruno Mars.",
-  "genre": "Funk, Pop",
-  "perks": [],
-    "rating": 4.6,
-  "trailer": "https://www.youtube.com/watch?v=OPf0YbXqDm0",
-  "fundedPercentage": 0,
-  "targetAmount": 1000000,
-  "raisedAmount": 0,
-    "tags": [
-    "funk",
-    "dance"
-  ],
-  "disabled": false
-},
-{
-  "id": "m5",
-  "title": "Despacito",
-  "artist": "Luis Fonsi ft. Daddy Yankee",
-    "type": "music",
-  "category": "International",
-  "language": "Spanish",
-  "poster": "https://upload.wikimedia.org/wikipedia/en/2/2c/Luis_Fonsi_-_Despacito_%28feat._Daddy_Yankee%29_%28Official_Single_Cover%29.png",
-  "description": "A global Latin pop phenomenon.",
-  "genre": "Reggaeton, Latin Pop",
-  "perks": [],
-    "rating": 4.8,
-  "trailer": "https://www.youtube.com/watch?v=kJQP7kiw5Fk",
-  "fundedPercentage": 0,
-  "targetAmount": 1000000,
-  "raisedAmount": 0,
-    "tags": [
-    "latin",
-    "hit"
-  ],
-  "disabled": false
-},
-{
-  "id": "m6",
-  "title": "Rolling in the Deep",
-  "artist": "Adele",
-    "type": "music",
-  "category": "International",
-  "language": "English",
-  "poster": "https://upload.wikimedia.org/wikipedia/en/1/1b/Adele_-_21.png",
-  "description": "A soulful anthem from Adele's album 21.",
-  "genre": "Soul, Pop",
-  "perks": [],
-  "rating": 4.7,
-  "trailer": "https://www.youtube.com/watch?v=rYEDA3JcQqw",
-  "fundedPercentage": 0,
-  "targetAmount": 1000000,
-  "raisedAmount": 0,
-    "tags": [
-    "soul",
-    "pop"
-  ],
-  "disabled": false
-},
-{
-  "id": "m7",
-  "title": "Bad Guy",
-  "artist": "Billie Eilish",
-    "type": "music",
-  "category": "International",
-  "language": "English",
-  "poster": "https://upload.wikimedia.org/wikipedia/en/7/7e/Billie_Eilish_-_When_We_All_Fall_Asleep%2C_Where_Do_We_Go%3F.png",
-  "description": "A genre-bending hit from Billie Eilish's debut album.",
-  "genre": "Pop, Electropop",
-  "perks": [],
-  "rating": 4.6,
-  "trailer": "https://www.youtube.com/watch?v=DyDfgMOUjCI",
-  "fundedPercentage": 0,
-  "targetAmount": 1000000,
-  "raisedAmount": 0,
-    "tags": [
-    "pop",
-    "electropop"
-  ],
-  "disabled": false
-},
-{
-  "id": "m8",
-  "title": "Faded",
-  "artist": "Alan Walker",
-    "type": "music",
-  "category": "International",
-  "language": "English",
-  "poster": "https://upload.wikimedia.org/wikipedia/en/1/1b/Alan_Walker_-_Faded.png",
-  "description": "A haunting electronic hit by Alan Walker.",
-  "genre": "Electronic, Dance",
-  "perks": [],
-  "rating": 4.5,
-  "trailer": "https://www.youtube.com/watch?v=60ItHLz5WEA",
-  "fundedPercentage": 0,
-  "targetAmount": 1000000,
-  "raisedAmount": 0,
-    "tags": [
-    "electronic",
-    "dance"
-  ],
-  "disabled": false
-},
-{
-  "id": "m9",
-  "title": "Counting Stars",
-  "artist": "OneRepublic",
-    "type": "music",
-  "category": "International",
-  "language": "English",
-  "poster": "https://upload.wikimedia.org/wikipedia/en/2/2e/OneRepublic_-_Native.png",
-  "description": "A catchy pop-rock anthem by OneRepublic.",
-  "genre": "Pop Rock",
-  "perks": [],
-  "rating": 4.5,
-  "trailer": "https://www.youtube.com/watch?v=hT_nvWreIhg",
-  "fundedPercentage": 0,
-  "targetAmount": 1000000,
-  "raisedAmount": 0,
-    "tags": [
-    "pop",
-    "rock"
-  ],
-  "disabled": false
-},
-{
-  "id": "m10",
-  "title": "Havana",
-  "artist": "Camila Cabello ft. Young Thug",
-    "type": "music",
-  "category": "International",
-  "language": "English",
-  "poster": "https://upload.wikimedia.org/wikipedia/en/4/4e/Camila_Cabello_-_Havana_%28Official_Single_Cover%29.png",
-  "description": "A Latin-inspired pop hit by Camila Cabello.",
-  "genre": "Latin Pop",
-  "perks": [],
-  "rating": 4.5,
-  "trailer": "https://www.youtube.com/watch?v=HCjNJDNzw8Y",
-  "fundedPercentage": 0,
-  "targetAmount": 1000000,
-  "raisedAmount": 0,
-    "tags": [
-    "latin",
-    "pop"
-  ],
-  "disabled": false
-},
-{
-  "id": "m11",
-  "title": "Dance Monkey",
-  "artist": "Tones and I",
-    "type": "music",
-  "category": "International",
-  "language": "English",
-  "poster": "https://upload.wikimedia.org/wikipedia/en/7/7a/Tones_and_I_-_Dance_Monkey.png",
-  "description": "A viral pop hit by Tones and I.",
-  "genre": "Pop",
-  "perks": [],
-  "rating": 4.4,
-  "trailer": "https://www.youtube.com/watch?v=q0hyYWKXF0Q",
-  "fundedPercentage": 0,
-  "targetAmount": 1000000,
-  "raisedAmount": 0,
-    "tags": [
-    "pop",
-    "viral"
-  ],
-  "disabled": false
-},
-{
-  "id": "m12",
-  "title": "Cheap Thrills",
-  "artist": "Sia ft. Sean Paul",
-    "type": "music",
-  "category": "International",
-  "language": "English",
-  "poster": "https://upload.wikimedia.org/wikipedia/en/6/6e/Sia_-_Cheap_Thrills_%28Official_Single_Cover%29.png",
-  "description": "A dance-pop anthem by Sia.",
-  "genre": "Dance Pop",
-  "perks": [],
-  "rating": 4.4,
-  "trailer": "https://www.youtube.com/watch?v=nYh-n7EOtMA",
-  "fundedPercentage": 0,
-  "targetAmount": 1000000,
-  "raisedAmount": 0,
-    "tags": [
-    "dance",
-    "pop"
-  ],
-  "disabled": false
-},
-{
-  "id": "m13",
-  "title": "Stressed Out",
-  "artist": "Twenty One Pilots",
-    "type": "music",
-  "category": "International",
-  "language": "English",
-  "poster": "https://upload.wikimedia.org/wikipedia/en/2/2b/Twenty_One_Pilots_-_Blurryface.png",
-  "description": "A genre-blending hit by Twenty One Pilots.",
-  "genre": "Alternative, Pop",
-  "perks": [],
-  "rating": 4.3,
-  "trailer": "https://www.youtube.com/watch?v=pXRviuL6vMY",
-  "fundedPercentage": 0,
-  "targetAmount": 1000000,
-  "raisedAmount": 0,
-    "tags": [
-    "alternative",
-    "pop"
-  ],
-  "disabled": false
-},
-{
-  "id": "m14",
-  "title": "Let Her Go",
-  "artist": "Passenger",
-    "type": "music",
-  "category": "International",
-  "language": "English",
-  "poster": "https://upload.wikimedia.org/wikipedia/en/7/7e/Passenger_-_Let_Her_Go.png",
-  "description": "A heartfelt acoustic ballad by Passenger.",
-  "genre": "Folk, Pop",
-  "perks": [],
-  "rating": 4.3,
-  "trailer": "https://www.youtube.com/watch?v=RBumgq5yVrA",
-  "fundedPercentage": 0,
-  "targetAmount": 1000000,
-  "raisedAmount": 0,
-    "tags": [
-    "folk",
-    "pop"
-  ],
-  "disabled": false
-},
-{
-  "id": "m15",
-  "title": "Wake Me Up",
-  "artist": "Avicii",
-    "type": "music",
-  "category": "International",
-  "language": "English",
-  "poster": "https://upload.wikimedia.org/wikipedia/en/5/5c/Avicii_-_Wake_Me_Up.png",
-  "description": "A dance anthem by Avicii.",
-  "genre": "Dance, EDM",
-  "perks": [],
-  "rating": 4.5,
-  "trailer": "https://www.youtube.com/watch?v=IcrbM1l_BoI",
-  "fundedPercentage": 0,
-  "targetAmount": 1000000,
-  "raisedAmount": 0,
-    "tags": [
-    "dance",
-    "edm"
-  ],
-  "disabled": false
-}
+
 ];
 
 // Testimonial data (can be kept separate or merged if relevant)
 export const testimonials: Testimonial[] = [
   {
-    text: "This platform transformed my understanding of crowdfunding. The insights into film financing and community engagement are unparalleled.",
-    author: "Rohan Kumar",
-    movie: "The Silent Echo",
+    name: "Rohan Kumar",
+    role: "Producer Tier Investor",
+    content: "This platform transformed my understanding of crowdfunding. The insights into film financing and community engagement are unparalleled.",
+    avatar: "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=80&q=80",
+    project: "The Silent Echo",
     rating: 5,
   },
-{
-    text: "An innovative approach to connect with creators and invest in captivating projects. I love being part of this journey!",
-    author: "Priya Sharma",
-    movie: "Starlight Serenade",
+  {
+    name: "Priya Sharma",
+    role: "Backer Tier Investor",
+    content: "An innovative approach to connect with creators and invest in captivating projects. I love being part of this journey!",
+    avatar: "https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=80&q=80",
+    project: "Starlight Serenade",
     rating: 5,
   },
-{
-    text: "Finally, a platform that understands the pulse of the audience and empowers them to be a part of the creative process. Highly recommended!",
-    author: "Amit Patel",
-    movie: "City of Dreams",
+  {
+    name: "Amit Patel",
+    role: "Executive Producer",
+    content: "Finally, a platform that understands the pulse of the audience and empowers them to be a part of the creative process. Highly recommended!",
+    avatar: "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=80&q=80",
+    project: "City of Dreams",
     rating: 4,
   },
-{
-    text: "The diverse range of projects and the transparency in funding make this platform a game-changer for independent cinema.",
-    author: "Deepika Singh",
-    movie: "Echoes of the Past",
+  {
+    name: "Deepika Singh",
+    role: "Supporter Tier Investor",
+    content: "The diverse range of projects and the transparency in funding make this platform a game-changer for independent cinema.",
+    avatar: "https://images.pexels.com/photos/3778876/pexels-photo-3778876.jpeg?auto=compress&cs=tinysrgb&w=80&q=80",
+    project: "Echoes of the Past",
     rating: 5,
   },
-{
-    text: "It's inspiring to see how this platform bridges the gap between filmmakers and their audience, creating a vibrant community.",
-    author: "Vikram Reddy",
-    movie: "The Last Chapter",
+  {
+    name: "Vikram Reddy",
+    role: "Producer Tier Investor",
+    content: "It's inspiring to see how this platform bridges the gap between filmmakers and their audience, creating a vibrant community.",
+    avatar: "https://images.pexels.com/photos/2182970/pexels-photo-2182970.jpeg?auto=compress&cs=tinysrgb&w=80&q=80",
+    project: "The Last Chapter",
     rating: 4,
   },
-<<<<<<< Updated upstream
-
-
-
-=======
   {
     name: "Kavya Nair",
     role: "Backer Tier Investor",
@@ -11302,11 +10979,4 @@ export const testimonials: Testimonial[] = [
     project: "Pathaan 2",
     rating: 5,
   }
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 ];
