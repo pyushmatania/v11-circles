@@ -92,8 +92,9 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onClose,
   const [paymentMethod, setPaymentMethod] = useState<'upi' | 'card' | 'netbanking'>('upi');
   const [isProcessing, setIsProcessing] = useState(false);
   const [showFullScript, setShowFullScript] = useState(false);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(true); // Autoplay enabled
+  const [isMuted, setIsMuted] = useState(false); // Sound on by default
+  const [videoVolume, setVideoVolume] = useState(0.5); // 50% volume
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState({
     days: 45,
@@ -116,6 +117,13 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onClose,
   const trailerRef = useRef<HTMLIFrameElement>(null);
   const trailerContainerRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
+
+  // Initialize video volume when component mounts
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.volume = videoVolume;
+    }
+  }, [videoVolume]);
 
   // Calculate funding statistics
   const fundingStats = {
@@ -208,14 +216,32 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onClose,
       if (isVideoPlaying) {
         videoRef.current.pause();
       } else {
-        videoRef.current.play();
+        videoRef.current.play().catch(console.error);
       }
       setIsVideoPlaying(!isVideoPlaying);
     }
   };
 
+  const handleMuteToggle = () => {
+    if (videoRef.current) {
+      const newMutedState = !isMuted;
+      setIsMuted(newMutedState);
+      videoRef.current.muted = newMutedState;
+      // Ensure volume is set correctly when unmuting
+      if (!newMutedState) {
+        videoRef.current.volume = videoVolume;
+      }
+    }
+  };
+
   const handleVideoLoad = () => {
     setIsVideoLoaded(true);
+    // Set volume to 50% when video loads
+    if (videoRef.current) {
+      videoRef.current.volume = videoVolume;
+      // Auto-start playing
+      videoRef.current.play().catch(console.error);
+    }
   };
 
   const scriptExcerpt = (
@@ -473,6 +499,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onClose,
                 }`}
                 onLoadedData={handleVideoLoad}
                 muted={isMuted}
+                autoPlay
                 loop
                 playsInline
               >
@@ -484,19 +511,19 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ project, onClose,
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
             </div>
 
-            {/* Floating Controls */}
-            <div className="absolute top-6 left-6 z-40 flex items-center gap-3">
+            {/* Minimalist Video Controls - Bottom Right */}
+            <div className="absolute bottom-6 right-6 z-40 flex items-center gap-2">
               <button
                 onClick={handleVideoPlay}
-                className="p-3 rounded-full bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 transition-all duration-300"
+                className="p-2 rounded-full bg-black/20 backdrop-blur-sm text-white/80 hover:bg-black/40 hover:text-white transition-all duration-200 text-sm"
               >
-                {isVideoPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
+                {isVideoPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
               </button>
               <button
-                onClick={() => setIsMuted(!isMuted)}
-                className="p-3 rounded-full bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 transition-all duration-300"
+                onClick={handleMuteToggle}
+                className="p-2 rounded-full bg-black/20 backdrop-blur-sm text-white/80 hover:bg-black/40 hover:text-white transition-all duration-200 text-sm"
               >
-                {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
+                {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
               </button>
             </div>
 
