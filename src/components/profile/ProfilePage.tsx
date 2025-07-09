@@ -26,7 +26,10 @@ import { useAuth } from '../auth/useAuth';
 import { useTheme } from '../ThemeContext';
 import { investmentService } from '../../data/investments';
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 
 >>>>>>> Stashed changes
 

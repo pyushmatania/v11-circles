@@ -10,6 +10,9 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Film, Music, Tv, Star, Clock, Play, TrendingUp, Calendar } from 'lucide-react';
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -58,6 +61,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     }
   };
 >>>>>>> Stashed changes
+
+  const handleCloseDetailPage = () => {
+    setShowDetailPage(false);
+  };
 
   const handleCloseDetailPage = () => {
     setShowDetailPage(false);
@@ -281,6 +288,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         />
       )}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

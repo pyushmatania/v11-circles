@@ -64,6 +64,9 @@ export interface Project {
   artist?: string;
   timeLeft?: string;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

@@ -11303,6 +11303,9 @@ export const testimonials: Testimonial[] = [
     rating: 5,
   }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes

@@ -59,8 +59,11 @@ const Dashboard: React.FC = () => {
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   const investments = [
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
   const investments = investmentService.getFormattedInvestments();

@@ -59,12 +59,21 @@ const Dashboard: React.FC = () => {
 
 <<<<<<<< Updated upstream:dist/assets/tsx/Dashboard-5kkFTsXg.tsx
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   const investments = [
 ========
 =======
+=======
+<<<<<<<< Updated upstream:dist/assets/tsx/Dashboard-5kkFTsXg.tsx
+>>>>>>> Stashed changes
 <<<<<<<< Updated upstream:dist/assets/tsx/Dashboard-5kkFTsXg.tsx
   const investments = [
 ========
+========
+>>>>>>>> Stashed changes:dist/assets/tsx/Dashboard-BoFzdqKF.tsx
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 ========
 >>>>>>>> Stashed changes:dist/assets/tsx/Dashboard-BoFzdqKF.tsx
 >>>>>>> Stashed changes
@@ -472,14 +481,23 @@ const Dashboard: React.FC = () => {
                       <div>
 <<<<<<<< Updated upstream:dist/assets/tsx/Dashboard-5kkFTsXg.tsx
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                         <p className="text-gray-400 text-sm">Actions</p>
                         <div className="flex gap-2">
 ========
 =======
+=======
+<<<<<<<< Updated upstream:dist/assets/tsx/Dashboard-5kkFTsXg.tsx
+>>>>>>> Stashed changes
 <<<<<<<< Updated upstream:dist/assets/tsx/Dashboard-5kkFTsXg.tsx
                         <p className="text-gray-400 text-sm">Actions</p>
                         <div className="flex gap-2">
 ========
+========
+>>>>>>>> Stashed changes:dist/assets/tsx/Dashboard-BoFzdqKF.tsx
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 ========
 >>>>>>>> Stashed changes:dist/assets/tsx/Dashboard-BoFzdqKF.tsx
 >>>>>>> Stashed changes

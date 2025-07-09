@@ -59,8 +59,11 @@ const Dashboard: React.FC = () => {
 
 <<<<<<<< Updated upstream:dist/assets/tsx/Dashboard-5kkFTsXg.tsx
 <<<<<<<< Updated upstream:dist/assets/tsx/Dashboard-5kkFTsXg.tsx
+<<<<<<<< Updated upstream:dist/assets/tsx/Dashboard-5kkFTsXg.tsx
   const investments = [
 ========
+========
+>>>>>>>> Stashed changes:dist/assets/tsx/Dashboard-BoFzdqKF.tsx
 ========
 >>>>>>>> Stashed changes:dist/assets/tsx/Dashboard-BoFzdqKF.tsx
   const investments = investmentService.getFormattedInvestments();
@@ -467,9 +470,12 @@ const Dashboard: React.FC = () => {
                       <div>
 <<<<<<<< Updated upstream:dist/assets/tsx/Dashboard-5kkFTsXg.tsx
 <<<<<<<< Updated upstream:dist/assets/tsx/Dashboard-5kkFTsXg.tsx
+<<<<<<<< Updated upstream:dist/assets/tsx/Dashboard-5kkFTsXg.tsx
                         <p className="text-gray-400 text-sm">Actions</p>
                         <div className="flex gap-2">
 ========
+========
+>>>>>>>> Stashed changes:dist/assets/tsx/Dashboard-BoFzdqKF.tsx
 ========
 >>>>>>>> Stashed changes:dist/assets/tsx/Dashboard-BoFzdqKF.tsx
                         <p className="text-gray-400 text-xs sm:text-sm">Actions</p>
