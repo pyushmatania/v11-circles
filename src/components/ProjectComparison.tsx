@@ -16,7 +16,7 @@ import {
   X 
 } from 'lucide-react';
 import { useTheme } from './ThemeContext';
-import ProjectDetailModal from './ProjectDetailModal';
+
 import { Project } from '../types';
 import { projects } from '../data/projects';
 import confetti from 'canvas-confetti';
@@ -25,13 +25,13 @@ import { Heart } from 'lucide-react';
 interface ProjectComparisonProps {
   initialProjects?: Project[];
   onTrackInvestment?: () => void;
-  setCurrentView?: (view: 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search') => void;
+  setCurrentView?: (view: 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search' | 'project-detail') => void;
+  onProjectSelect?: (project: Project, tab?: 'overview' | 'invest') => void;
 }
 
-const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, onTrackInvestment, setCurrentView }) => {
+const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, onProjectSelect }) => {
   const { theme } = useTheme();
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [compareProjects, setCompareProjects] = useState<Project[]>(initialProjects || []);
   const [searchTerm, setSearchTerm] = useState('');
   const [showResults, setShowResults] = useState(false);
@@ -82,8 +82,9 @@ const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, 
 
   const handleInvestClick = (project: Project) => {
     confetti({ particleCount: 40, spread: 70, origin: { y: 0.6 } });
-    setSelectedProject(project);
-    setIsModalOpen(true);
+    if (onProjectSelect) {
+      onProjectSelect(project, 'invest');
+    }
   };
 
   // Function to remove a project from comparison
@@ -808,7 +809,7 @@ const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, 
                           Invest Now
                         </button>
                         <button
-                          onClick={() => { setSelectedProject(project); setIsModalOpen(true); }}
+                          onClick={() => { if (onProjectSelect) onProjectSelect(project, 'overview'); }}
                           className={`w-full py-2 rounded-lg font-medium transition-colors ${
                             theme === 'light'
                               ? 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-100'
@@ -854,16 +855,7 @@ const ProjectComparison: React.FC<ProjectComparisonProps> = ({ initialProjects, 
           </div>
         )}
       </div>
-      <ProjectDetailModal
-        project={selectedProject}
-        isOpen={isModalOpen}
-        onClose={() => { setIsModalOpen(false); setSelectedProject(null); }}
-        onTrackInvestment={() => {
-          if (onTrackInvestment) onTrackInvestment();
-          if (setCurrentView) setCurrentView('dashboard');
-        }}
-        initialTab="invest"
-      />
+
     </div>
   );
 };

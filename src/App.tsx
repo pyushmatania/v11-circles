@@ -26,6 +26,7 @@ const ProfilePage = lazy(() => import('./components/profile/ProfilePage'));
 const AdminDashboard = lazy(() => import('./components/admin/AdminDashboard'));
 const PortfolioAnalytics = lazy(() => import('./components/PortfolioAnalytics'));
 const ProjectComparison = lazy(() => import('./components/ProjectComparison'));
+const ProjectDetailPage = lazy(() => import('./components/ProjectDetailPage'));
 const NewsAndUpdates = lazy(() => import('./components/NewsAndUpdates'));
 const NotificationCenter = lazy(() => import('./components/NotificationCenter'));
 const EnhancedSearch = lazy(() => import('./components/EnhancedSearch'));
@@ -38,7 +39,9 @@ const LoadingSpinner = memo(() => (
 ));
 
 function AppContent() {
-  const [currentView, setCurrentView] = useState<'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search' | 'project-detail'>('home');
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [projectDetailTab, setProjectDetailTab] = useState<'overview' | 'invest'>('overview');
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login');
   const { isAuthenticated } = useAuth();
@@ -97,7 +100,14 @@ function AppContent() {
       case 'projects':
         return (
           <Suspense fallback={<LoadingSpinner />}>
-            <ProjectCatalog onTrackInvestment={() => handleViewChange('dashboard')} />
+            <ProjectCatalog 
+              onTrackInvestment={() => handleViewChange('dashboard')}
+              onProjectSelect={(project, tab) => {
+                setSelectedProject(project);
+                setProjectDetailTab(tab || 'overview');
+                setCurrentView('project-detail');
+              }}
+            />
           </Suspense>
         );
       case 'dashboard':
@@ -134,7 +144,15 @@ function AppContent() {
       case 'compare':
         return (
           <Suspense fallback={<LoadingSpinner />}>
-            <ProjectComparison onTrackInvestment={() => handleViewChange('dashboard')} setCurrentView={handleViewChange} />
+            <ProjectComparison 
+              onTrackInvestment={() => handleViewChange('dashboard')} 
+              setCurrentView={handleViewChange}
+              onProjectSelect={(project, tab) => {
+                setSelectedProject(project);
+                setProjectDetailTab(tab || 'overview');
+                setCurrentView('project-detail');
+              }}
+            />
           </Suspense>
         );
       case 'news':
@@ -155,6 +173,17 @@ function AppContent() {
             <EnhancedSearch />
           </Suspense>
         );
+      case 'project-detail':
+        return selectedProject ? (
+          <Suspense fallback={<LoadingSpinner />}>
+            <ProjectDetailPage 
+              project={selectedProject} 
+              onClose={() => setCurrentView('projects')}
+              onInvest={() => handleViewChange('dashboard')}
+              initialTab={projectDetailTab}
+            />
+          </Suspense>
+        ) : null;
       default:
         return (
           <>
@@ -164,6 +193,11 @@ function AppContent() {
             <LiveProjects
               onViewAll={() => handleViewChange('projects')}
               onTrackInvestment={() => handleViewChange('dashboard')}
+              onProjectSelect={(project, tab) => {
+                setSelectedProject(project);
+                setProjectDetailTab(tab || 'overview');
+                setCurrentView('project-detail');
+              }}
             />
             <WhyThisMatters onJoin={() => handleAuthRequired('register')} />
             <TechTrust />
@@ -181,6 +215,11 @@ function AppContent() {
         currentView={currentView}
         setCurrentView={handleViewChange}
         onAuthRequired={handleAuthRequired}
+        onProjectSelect={(project, tab) => {
+          setSelectedProject(project);
+          setProjectDetailTab(tab || 'overview');
+          setCurrentView('project-detail');
+        }}
       />
       {renderCurrentView()}
       <DebugPanel currentView={currentView} />

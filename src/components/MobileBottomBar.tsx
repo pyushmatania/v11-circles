@@ -5,8 +5,8 @@ import { useTheme } from './ThemeContext';
 import { useAuth } from './auth/useAuth';
 
 interface MobileBottomBarProps {
-  currentView: 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search';
-  setCurrentView: (view: 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search') => void;
+  currentView: 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search' | 'project-detail';
+  setCurrentView: (view: 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search' | 'project-detail') => void;
   onAuthRequired: (mode?: 'login' | 'register') => boolean;
 }
 
@@ -24,13 +24,13 @@ const MobileBottomBar: React.FC<MobileBottomBarProps> = ({ currentView, setCurre
   const handleItemClick = (itemId: string) => {
     if (itemId === 'theme') {
       toggleTheme();
-    } else if (['home', 'projects', 'dashboard', 'community', 'merch', 'profile', 'admin', 'portfolio', 'compare', 'news', 'notifications', 'search'].includes(itemId)) {
+    } else if (['home', 'projects', 'dashboard', 'community', 'merch', 'profile', 'admin', 'portfolio', 'compare', 'news', 'notifications', 'search', 'project-detail'].includes(itemId)) {
       const item = mainNavItems.find(nav => nav.id === itemId);
       if (item?.requiresAuth && !isAuthenticated) {
       onAuthRequired('login');
       return;
     }
-      setCurrentView(itemId as 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search');
+      setCurrentView(itemId as 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search' | 'project-detail');
     }
   };
 

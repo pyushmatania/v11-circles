@@ -5,22 +5,21 @@ import { useTheme } from './ThemeContext';
 import { useAuth } from './auth/useAuth';
 import SearchBar from './SearchBar';
 import NotificationDropdown from './NotificationDropdown';
-import ProjectDetailModal from './ProjectDetailModal';
+
 import { Project } from '../types';
 import MobileBottomBar from './MobileBottomBar';
 
 interface NavigationProps {
-  currentView: 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search';
-  setCurrentView: (view: 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search') => void;
+  currentView: 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search' | 'project-detail';
+  setCurrentView: (view: 'home' | 'dashboard' | 'projects' | 'community' | 'merch' | 'profile' | 'admin' | 'portfolio' | 'compare' | 'news' | 'notifications' | 'search' | 'project-detail') => void;
   onAuthRequired: (mode?: 'login' | 'register') => boolean;
+  onProjectSelect?: (project: Project, tab?: 'overview' | 'invest') => void;
 }
 
-const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, onAuthRequired }) => {
+const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, onAuthRequired, onProjectSelect }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
-  const [initialTab, setInitialTab] = useState<'overview' | 'invest'>('overview');
+
   const { theme, toggleTheme } = useTheme();
   const { isAuthenticated, user } = useAuth();
 
@@ -66,10 +65,10 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
   }, [toggleTheme, mainNavItems, moreNavItems, isAuthenticated, onAuthRequired, setCurrentView]);
 
   const handleProjectSelect = useCallback((project: Project, tab: 'overview' | 'invest' = 'overview') => {
-    setSelectedProject(project);
-    setInitialTab(tab);
-    setIsProjectModalOpen(true);
-  }, []);
+    if (onProjectSelect) {
+      onProjectSelect(project, tab);
+    }
+  }, [onProjectSelect]);
 
   return (
     <>
@@ -282,8 +281,67 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
                 </div>
 
                 {/* Mobile Navigation */}
+<<<<<<< Updated upstream
                 <div className="md:hidden flex items-center gap-4 absolute left-1/2 -translate-x-1/2">
                   {mainNavItems.map((item, index) => (
+=======
+                <div className="md:hidden flex items-center justify-between w-full px-4 min-w-0">
+                  {/* Left: Logo Only */}
+                  <motion.button 
+                    onClick={() => setCurrentView('home')}
+                    className="flex items-center justify-center cursor-pointer flex-shrink-0"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0, duration: 0.3 }}
+                  >
+                    <div className="w-8 h-8 flex items-center justify-center">
+                      <img 
+                        src="/Improved Logo-01.png" 
+                        alt="Circles Logo" 
+                        className="w-8 h-8 object-contain drop-shadow-lg"
+                        onError={(e) => {
+                          const target = e.currentTarget as HTMLImageElement;
+                          target.style.display = 'none';
+                          const fallback = target.nextElementSibling as HTMLElement;
+                          if (fallback) fallback.style.display = 'block';
+                        }}
+                      />
+                      <span className={`font-bold text-lg hidden drop-shadow-lg ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                        C
+                      </span>
+                    </div>
+                  </motion.button>
+                  
+                  {/* Center: Main Nav Items */}
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    {mainNavItems.map((item, index) => (
+                      <motion.button
+                        key={item.id}
+                        onClick={() => handleItemClick(item.id)}
+                        className={`p-2 rounded-lg transition-all duration-300 relative ${
+                          currentView === item.id
+                            ? 'text-cyan-400'
+                            : `${theme === 'light' ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 hover:text-white'}`
+                        }`}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: index * 0.05, duration: 0.3 }}
+                      >
+                        <item.icon className="w-5 h-5 drop-shadow-lg" />
+                        {item.requiresAuth && !isAuthenticated && (
+                          <div className="absolute -top-1 -right-1 w-2 h-2 bg-orange-400 rounded-full animate-pulse" />
+                        )}
+                      </motion.button>
+                    ))}
+                  </div>
+                  
+                  {/* Right: Theme, Notification & Profile Buttons */}
+                  <div className="flex items-center gap-2 flex-shrink-0">
+>>>>>>> Stashed changes
                     <motion.button
                       key={item.id}
                       onClick={() => handleItemClick(item.id)}
@@ -491,17 +549,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, setCurrentView, on
         )}
       </AnimatePresence>
 
-      <ProjectDetailModal
-        project={selectedProject}
-        isOpen={isProjectModalOpen}
-        onClose={() => {
-          setIsProjectModalOpen(false);
-          setSelectedProject(null);
-          setInitialTab('overview');
-        }}
-        initialTab={initialTab}
-        onTrackInvestment={() => setCurrentView('dashboard')}
-      />
+
       <MobileBottomBar
         currentView={currentView}
         setCurrentView={setCurrentView}

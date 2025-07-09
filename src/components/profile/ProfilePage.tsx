@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../auth/useAuth';
 import { useTheme } from '../ThemeContext';
+import { investmentService } from '../../data/investments';
 
 // If User type is not exported, define it here based on AuthProvider
 type User = {
@@ -100,46 +101,13 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  // Mock investment data
-  const investments = [
-    {
-      id: '1',
-      title: 'Pathaan 2',
-      type: 'film',
-      poster: 'https://m.media-amazon.com/images/M/MV5BOGY4NWNlM2QtMzVjYy00OGY1LWI4N2UtZDNlYWE2ZThjYmRmXkEyXkFqcGdeQXVyMTUzNTgzNzM0._V1_FMjpg_UX1000_.jpg',
-      invested: 25000,
-      currentValue: 29500,
-      returns: 4500,
-      returnPercentage: 18,
-      status: 'Active'
-    },
-    {
-      id: '2',
-      title: 'A.R. Rahman: Symphony',
-      type: 'music',
-      poster: 'https://i.scdn.co/image/ab67616d0000b273f54b99bf27cda88f4a7403ac',
-      invested: 15000,
-      currentValue: 16800,
-      returns: 1800,
-      returnPercentage: 12,
-      status: 'Active'
-    },
-    {
-      id: '3',
-      title: 'Sacred Games 3',
-      type: 'webseries',
-      poster: 'https://m.media-amazon.com/images/M/MV5BMzRjZWVmMzItNTdmYS00OWEzLTgyOGUtNThiNTU2ZThlYjY0XkEyXkFqcGdeQXVyOTAzMTc2MjA@._V1_FMjpg_UX1000_.jpg',
-      invested: 20000,
-      currentValue: 24000,
-      returns: 4000,
-      returnPercentage: 20,
-      status: 'Completed'
-    }
-  ];
+  // Get investment data from shared service
+  const investments = investmentService.getFormattedInvestments();
+  const investmentStats = investmentService.getInvestmentStats();
 
-  const totalInvested = investments.reduce((sum, inv) => sum + inv.invested, 0);
-  const totalReturns = investments.reduce((sum, inv) => sum + inv.returns, 0);
-  const avgReturn = totalReturns / totalInvested * 100;
+  const totalInvested = investmentStats.totalInvested;
+  const totalReturns = investmentStats.totalReturns;
+  const avgReturn = investmentStats.averageReturnPercentage;
 
   return (
     <div className={`min-h-screen pt-20 pb-[100px] transition-all duration-[3000ms] ${

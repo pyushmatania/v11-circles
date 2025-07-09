@@ -17,6 +17,33 @@ import {
   BarChart
 } from 'lucide-react';
 import PortfolioAnalytics from './PortfolioAnalytics';
+<<<<<<< Updated upstream
+=======
+import { dashboardStats, recentActivities } from '../data/dashboard';
+import { superstars } from '../data/superstars';
+import { investmentService } from '../data/investments';
+
+interface PerkMetadata {
+  location?: string;
+  maxParticipants?: number;
+  currentParticipants?: number;
+  virtual: boolean;
+  requiresVerification: boolean;
+  estimatedValue?: number;
+  tags?: string[];
+}
+
+interface DashboardPerk {
+  id: string;
+  title: string;
+  type: 'free' | 'paid' | 'voting' | 'bidding' | 'exclusive' | 'limited';
+  description: string;
+  status: 'active' | 'upcoming' | 'available' | 'delivered';
+  date: string;
+  icon: React.ReactNode;
+  metadata: PerkMetadata;
+}
+>>>>>>> Stashed changes
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'investments' | 'perks' | 'circles' | 'portfolio'>('overview');
@@ -30,7 +57,13 @@ const Dashboard: React.FC = () => {
     nextLevel: 'Executive Producer'
   };
 
+<<<<<<< Updated upstream
   const investments = [
+=======
+  const investments = investmentService.getFormattedInvestments();
+
+  const perks: DashboardPerk[] = [
+>>>>>>> Stashed changes
     {
       id: '1',
       title: 'Neon Nights',
@@ -336,6 +369,34 @@ const Dashboard: React.FC = () => {
                 ))}
               </div>
             </div>
+<<<<<<< Updated upstream
+=======
+
+            {/* Superstars Section */}
+            <div className="p-8 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20">
+              <h3 className="text-white text-2xl font-bold mb-6">Top Superstars</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {superstars.slice(0, 6).map((star) => (
+                  <div key={star.id} className="text-center">
+                    <div className="relative w-16 h-16 mx-auto mb-2">
+                      <img 
+                        src={star.avatar} 
+                        alt={star.name}
+                        className="w-full h-full object-cover rounded-full border-2 border-purple-500/30"
+                      />
+                      {star.verified && (
+                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs">✓</span>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-white text-sm font-medium truncate">{star.name}</p>
+                    <p className="text-gray-400 text-xs">{star.followers}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+>>>>>>> Stashed changes
           </motion.div>
         )}
 

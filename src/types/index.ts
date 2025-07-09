@@ -12,6 +12,7 @@ export interface Project {
   tags: string[];
   description: string;
   director?: string;
+<<<<<<< Updated upstream
   artist?: string;
   genre: string;
   perks: string[];
@@ -33,6 +34,36 @@ export interface Project {
   keyCommunityData?: unknown;
   disabled?: boolean;
   featured?: boolean;
+=======
+  genre: string;
+  tags: string[];
+  perks: string[];
+  rating: number;
+  trailer: string;
+  movie?: string;
+  keyPeople: unknown[];
+  actor?: string;
+  actress?: string;
+  productionHouse?: string;
+  targetAmountHuman?: string;
+  raisedAmountHuman?: string;
+  keyCommunityData?: Array<{
+    id: string;
+    movieId: string;
+    movieName: string;
+    productionHouse: string;
+    keyPeople: unknown[];
+    actor: string;
+    actress: string;
+    director: string;
+  }>;
+  disabled: boolean;
+  featured?: boolean;
+  budget?: number;
+  cast?: string;
+  artist?: string;
+  timeLeft?: string;
+>>>>>>> Stashed changes
 }
 
 export interface Testimonial {

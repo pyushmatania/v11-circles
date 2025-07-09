@@ -12,7 +12,17 @@ import {
   ChevronDown,
   Filter,
   Download,
+<<<<<<< Updated upstream
   Zap
+=======
+  Zap,
+  ChevronRight,
+  MapPin,
+  Globe,
+  Film,
+  Music,
+  Star
+>>>>>>> Stashed changes
 } from 'lucide-react';
 import { useTheme } from './ThemeContext';
 
@@ -73,6 +83,61 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
   const { theme } = useTheme();
   const [timeframe, setTimeframe] = useState<'1m' | '3m' | '6m' | '1y' | 'all'>('1y');
   const [showFilters, setShowFilters] = useState(false);
+<<<<<<< Updated upstream
+=======
+  const [sortKey, setSortKey] = useState<
+    'investmentDate' | 'projectName' | 'investmentAmount' | 'currentValue' | 'returnPercentage' | 'status' | 'projectType' | 'genre' | 'sector' | 'region' | 'language' | 'returnAmount' | 'maturityDate' | 'risk'
+  >('investmentDate');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [expandedInvestments, setExpandedInvestments] = useState<Set<string>>(new Set());
+  const [filterProjectType, setFilterProjectType] = useState<string>('all');
+  const [filterGenre, setFilterGenre] = useState<string>('all');
+  const [filterRegion, setFilterRegion] = useState<string>('all');
+  const [filterRisk, setFilterRisk] = useState<string>('all');
+
+
+  // Sort and filter investments
+  const filteredInvestments = userInvestments.filter(inv => {
+    const statusMatch = filterStatus === 'all' || inv.status === filterStatus;
+    const typeMatch = filterProjectType === 'all' || inv.projectType === filterProjectType;
+    const genreMatch = filterGenre === 'all' || inv.genre === filterGenre;
+    const regionMatch = filterRegion === 'all' || inv.region === filterRegion;
+    const riskMatch = filterRisk === 'all' || inv.risk === filterRisk;
+    return statusMatch && typeMatch && genreMatch && regionMatch && riskMatch;
+  });
+  const sortedInvestments = [...filteredInvestments].sort((a, b) => {
+    let aValue = a[sortKey];
+    let bValue = b[sortKey];
+    if (sortKey === 'investmentDate' || sortKey === 'maturityDate') {
+      aValue = new Date((aValue as string) ?? '').getTime();
+      bValue = new Date((bValue as string) ?? '').getTime();
+    }
+    if (aValue == null) aValue = '';
+    if (bValue == null) bValue = '';
+    if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
+    if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  // CSV export data
+  const csvHeaders = [
+    { label: 'Project', key: 'projectName' },
+    { label: 'Type', key: 'projectType' },
+    { label: 'Genre', key: 'genre' },
+    { label: 'Sector', key: 'sector' },
+    { label: 'Region', key: 'region' },
+    { label: 'Language', key: 'language' },
+    { label: 'Invested', key: 'investmentAmount' },
+    { label: 'Current Value', key: 'currentValue' },
+    { label: 'Returns', key: 'returnAmount' },
+    { label: 'ROI (%)', key: 'returnPercentage' },
+    { label: 'Status', key: 'status' },
+    { label: 'Risk', key: 'risk' },
+    { label: 'Investment Date', key: 'investmentDate' },
+    { label: 'Maturity Date', key: 'maturityDate' }
+  ];
+>>>>>>> Stashed changes
 
   // Portfolio health calculation
   const portfolioHealth = mockPortfolioData.roi > 15 ? 'Excellent' : 
@@ -278,6 +343,7 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
               </div>
             </div>
 
+<<<<<<< Updated upstream
             <div className="flex justify-end mt-6">
               <button
                 className={`px-4 py-2 rounded-lg transition-colors ${
@@ -288,6 +354,91 @@ const PortfolioAnalytics: React.FC<PortfolioAnalyticsProps> = () => {
               >
                 Apply Filters
               </button>
+=======
+              <div>
+                <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                  Sort By
+                </label>
+                <select
+                  value={sortKey}
+                  onChange={(e) => setSortKey(e.target.value as typeof sortKey)}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    theme === 'light'
+                      ? 'border-gray-300 focus:border-purple-500 bg-white text-gray-900'
+                      : 'border-gray-600 focus:border-purple-500 bg-gray-800 text-white'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
+                >
+                  <option value="investmentDate">Investment Date</option>
+                  <option value="projectName">Project Name</option>
+                  <option value="investmentAmount">Investment Amount</option>
+                  <option value="currentValue">Current Value</option>
+                  <option value="returnPercentage">ROI %</option>
+                  <option value="status">Status</option>
+                </select>
+              </div>
+
+              <div>
+                <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                  Sort Order
+                </label>
+                <select
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+                  className={`w-full px-4 py-2 rounded-lg border ${
+                    theme === 'light'
+                      ? 'border-gray-300 focus:border-purple-500 bg-white text-gray-900'
+                      : 'border-gray-600 focus:border-purple-500 bg-gray-800 text-white'
+                  } focus:outline-none focus:ring-2 focus:ring-purple-500/20`}
+                >
+                  <option value="desc">Descending</option>
+                  <option value="asc">Ascending</option>
+                </select>
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                  Quick Actions
+                </label>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => {
+                      setFilterStatus('all');
+                      setFilterProjectType('all');
+                      setFilterGenre('all');
+                      setFilterRegion('all');
+                      setFilterRisk('all');
+                    }}
+                    className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                      theme === 'light'
+                        ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                    }`}
+                  >
+                    Clear All Filters
+                  </button>
+                  <button
+                    onClick={() => setSortKey('returnPercentage')}
+                    className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                      theme === 'light'
+                        ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                        : 'bg-green-900/30 text-green-400 hover:bg-green-900/50'
+                    }`}
+                  >
+                    Show Best Performers
+                  </button>
+                  <button
+                    onClick={() => setFilterRisk('high')}
+                    className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                      theme === 'light'
+                        ? 'bg-red-100 text-red-700 hover:bg-red-200'
+                        : 'bg-red-900/30 text-red-400 hover:bg-red-900/50'
+                    }`}
+                  >
+                    High Risk Only
+                  </button>
+                </div>
+              </div>
+>>>>>>> Stashed changes
             </div>
           </motion.div>
         )}

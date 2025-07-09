@@ -199,16 +199,16 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ onViewAll, 
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className={`fixed md:absolute top-16 md:top-auto right-2 md:right-0 mt-0 md:mt-2 w-80 rounded-xl border shadow-xl z-50 overflow-hidden ${
+            className={`fixed md:absolute top-16 md:top-auto right-2 md:right-0 mt-0 md:mt-2 w-72 md:w-80 rounded-xl border shadow-xl z-50 overflow-hidden ${
               theme === 'light'
                 ? 'bg-white border-gray-200'
                 : 'bg-gray-900 border-gray-700'
             }`}
           >
             {/* Header */}
-            <div className={`p-4 border-b ${theme === 'light' ? 'border-gray-200' : 'border-gray-700'}`}>
+            <div className={`p-3 md:p-4 border-b ${theme === 'light' ? 'border-gray-200' : 'border-gray-700'}`}>
               <div className="flex items-center justify-between">
-                <h3 className={`font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
+                <h3 className={`font-semibold text-sm md:text-base ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>
                   Notifications
                 </h3>
                 <div className="flex items-center gap-2">
@@ -241,7 +241,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ onViewAll, 
                   <div 
                     key={notification.id}
                     onClick={() => markAsRead(notification.id)}
-                    className={`relative p-4 border-b last:border-b-0 cursor-pointer transition-colors ${
+                    className={`relative p-3 md:p-4 border-b last:border-b-0 cursor-pointer transition-colors ${
                       notification.read
                         ? theme === 'light'
                           ? 'bg-white border-gray-200 hover:bg-gray-50'
@@ -305,13 +305,13 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ onViewAll, 
             </div>
 
             {/* Footer */}
-            <div className={`p-3 border-t ${theme === 'light' ? 'border-gray-200' : 'border-gray-700'}`}>
+            <div className={`p-2 md:p-3 border-t ${theme === 'light' ? 'border-gray-200' : 'border-gray-700'}`}>
               <button
                 onClick={() => {
                   setIsOpen(false);
                   onViewAll();
                 }}
-                className={`w-full py-2 text-center rounded-lg transition-colors ${
+                className={`w-full py-2 text-center rounded-lg transition-colors text-sm md:text-base ${
                   theme === 'light'
                     ? 'bg-purple-100 text-purple-700 hover:bg-purple-200'
                     : 'bg-purple-900/20 text-purple-400 hover:bg-purple-900/30'
